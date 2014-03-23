@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	h1= title
+	p Welcome to #{title}
+
+	form(action='/scores/upload', method='post', enctype='multipart/form-data')
+		input(type='file', name='game')
+		input(type='text', name='gamename')
+		input(type='submit')
+
