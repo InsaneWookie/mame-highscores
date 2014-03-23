@@ -27,7 +27,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 		return null; 
 	}
 
-	console.log("gameName: " + gameName);
+	//console.log("gameName: " + gameName);
 
 	//see if we need to skip any bytes
 	if(structure['skip'] != undefined){

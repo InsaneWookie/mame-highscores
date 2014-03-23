@@ -1,0 +1,16 @@
+extends layout
+
+block content	
+
+	h1 Scores for game #{gameName}
+	if scores == null
+		p Unable to decode scores for game #{gameName}
+	else
+		table
+			tr
+				td Name
+				td Score
+				each item in scores[gameName]
+					tr
+						td= item.name
+						td= item.score

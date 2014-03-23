@@ -1,5 +1,4 @@
 var express = require('express');
-//var form = require('connect-form');
 var http = require('http');
 var path = require('path');
 var favicon = require('static-favicon');
@@ -28,6 +27,7 @@ app.use(bodyParser.urlencoded());
 //needed for file uploads
 app.use(express.methodOverride());
 app.use(express.bodyParser({keepExtensions: true, uploadDir: '/tmp'}));
+app.use(express.limit('1mb')); //max upload size (NOTE: this has been deprecated)
 
 app.use(cookieParser());
 app.use(require('stylus').middleware(path.join(__dirname, 'public')));

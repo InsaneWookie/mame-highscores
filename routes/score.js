@@ -8,14 +8,25 @@ exports.game = function(req, res){
 };
 
 exports.upload = function(req, res){
-  	require('../modules/gameMaps');
+
+	path = require('path');
+  	require('../game_mappings/gameMaps');
   	decoder = require('../modules/score_decoder');
 
-	//console.log(JSON.stringify(req.files));
+	console.log(JSON.stringify(req.files));
   	//console.log(req.body);
 
-	result = decoder.decode(gameMaps, req.files.game.path, req.body.gamename);
+  	var filePath = req.files.game.path;
+  	var gameName = req.body.gamename;
+	//invalid game so try and work it out from the file name
+	if(typeof gameName != 'string' || gameName.length == 0){
+		gameName = path.basename(req.files.game.name, '.hi');	
+	}
 
-	res.send(JSON.stringify(result));
+
+	result = decoder.decode(gameMaps, filePath, gameName);
+
+	//res.send(JSON.stringify(result));
+	res.render('score', {'gameName' : gameName, 'scores' : result});
 	
 };
