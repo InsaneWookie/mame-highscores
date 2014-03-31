@@ -26,6 +26,15 @@ exports.upload = function(req, res){
 
 	result = decoder.decode(gameMaps, filePath, gameName);
 
+	pg.connect(connectionString, function(err, client, done) {
+
+	  client.query('INSERT INTO scores (name, score) VALUES ($1, $2)', ['test', '123'], function(err, result) {
+	    done();
+	    if(err) return console.error(err);
+	    //console.log(result.rows);
+	  });
+	});
+
 	//res.send(JSON.stringify(result));
 	res.render('score', {'gameName' : gameName, 'scores' : result});
 	

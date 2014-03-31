@@ -6,11 +6,30 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var pg = require('pg');
+
+//CREATE USER "mame-highscores" WITH PASSWORD 'mame-highscores';
+//create database "mame-highscores" with owner "mame-highscores";
+
+var connectionString = process.env.DATABASE_URL || "postgres://postgres:postgres@localhost:5432/mame-highscores";
+
+
 var routes = require('./routes');
 var users = require('./routes/user');
 var scores = require('./routes/score');
 
 var app = express();
+
+
+//console.log(connectionString);
+
+pg.connect(connectionString, function(err, client, done) {
+  client.query('SELECT * FROM scores', function(err, result) {
+    done();
+    if(err) return console.error(err);
+    console.log(result.rows);
+  });
+});
 
 
 
