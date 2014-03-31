@@ -6,11 +6,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var pg = require('pg');
+//var pg = require('pg');
+var db = require('./db');
 
 //CREATE USER "mame-highscores" WITH PASSWORD 'mame-highscores';
 //create database "mame-highscores" with owner "mame-highscores";
 
+//TODO: use an ORM like http://sequelizejs.com/
 var connectionString = process.env.DATABASE_URL || "postgres://postgres:postgres@localhost:5432/mame-highscores";
 
 
@@ -19,10 +21,29 @@ var users = require('./routes/user');
 var scores = require('./routes/score');
 
 var app = express();
+ 
+
+db.query('SELECT * FROM scores', [], function(err, result) {
+    console.log(result.rows);
+});
 
 
 //console.log(connectionString);
+/*
+var client = new pg.Client(connectionString);
+client.connect();
 
+var query = client.query("SELECT * FROM scores");
+query.on("row", function (row, result) {
+    result.addRow(row);
+});
+query.on("end", function (result) {
+    console.log("some rows:");
+    console.log(JSON.stringify(result.rows, null, "    "));
+    client.end();
+});
+*/
+/*
 pg.connect(connectionString, function(err, client, done) {
   client.query('SELECT * FROM scores', function(err, result) {
     done();
@@ -30,6 +51,7 @@ pg.connect(connectionString, function(err, client, done) {
     console.log(result.rows);
   });
 });
+*/
 
 
 

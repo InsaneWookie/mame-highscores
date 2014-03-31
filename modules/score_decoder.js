@@ -1,4 +1,5 @@
 
+var fs = require('fs');
 
 exports.decode = function(gameSaveMappings, filePath, gameName){
 	var decoder = new ScoreDecoder(gameSaveMappings);
@@ -12,8 +13,6 @@ function ScoreDecoder(gameSaveMappings){
 
 ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	
-	fs = require('fs');
-
 	fileHandle = fs.openSync(filePath, 'r');
 
 	//structure for storing the scores we read out
@@ -24,10 +23,9 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 
 	if(structure === null){
 		//no game mapping strucure found for this game
+		fs.closeSync(fileHandle);
 		return null; 
 	}
-
-	//console.log("gameName: " + gameName);
 
 	//see if we need to skip any bytes
 	if(structure['skip'] != undefined){
@@ -62,6 +60,9 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 		
 		scoreData[gameName].push(data);
 	}
+
+	//TODO: need to catch any errors otherwise it will leave the file handle open (maybe its better if we dont open the file in this function?)
+	fs.closeSync(fileHandle);
 
 	return scoreData;
 } 

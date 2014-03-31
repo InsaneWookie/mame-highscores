@@ -1,15 +1,15 @@
 fs = require('fs')
 path = require('path')
 
-var gameSaveMappings = require('./modules/gameMaps');
+var gameSaveMappings = require('./game_mappings/gameMaps');
 var decoder = require('./modules/score_decoder');
 
 
 
-fileData = fs.readFileSync('./hi/1943.hi');
+//fileData = fs.readFileSync('./hi/1943.hi');
 
 
-buff = new Buffer(fileData, 'hex');
+//buff = new Buffer(fileData, 'hex');
 
 
 //console.log(fileData);
@@ -31,6 +31,8 @@ for(f in files){
 
 	result = decoder.decode(gameMaps, './hi/' + file, gameName);
 
+	console.log(gameName);
+	
 	if(result != null){
 		console.log(result);	
 	}
