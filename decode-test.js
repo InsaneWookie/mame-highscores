@@ -16,9 +16,10 @@ var decoder = require('./modules/score_decoder');
 
 var files = fs.readdirSync('./hi');
 
+var foundGames = Array();
+var missingGames = Array();
+
 for(f in files){
-
-
 
 	file = files[f];
 
@@ -32,9 +33,20 @@ for(f in files){
 	result = decoder.decode(gameMaps, './hi/' + file, gameName);
 
 	console.log(gameName);
-	
+
 	if(result != null){
-		console.log(result);	
+		console.log(result);
+		foundGames.push(gameName);
+	} else {
+		missingGames.push(gameName);
 	}
+
 	
 }
+
+console.log("===Found Games===");
+console.log(foundGames);
+
+
+console.log("===Missing Games===");
+console.log(missingGames);

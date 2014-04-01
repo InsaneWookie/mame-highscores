@@ -1,4 +1,5 @@
 
+//TODO: clean this up to follow node js module way
 var fs = require('fs');
 
 exports.decode = function(gameSaveMappings, filePath, gameName){
