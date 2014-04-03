@@ -68,5 +68,33 @@ app.use(function(err, req, res, next) {
     });
 });
 
+var db = require('./db');
+require('./game_mappings/gameInfos'); //creates a variable "gameInfos"
+//on start up we load the games into the database for look up later
+//console.log(db.connectionString);
+
+var client = new pg.Client(db.connectionString);
+
+
+//
+for(i in gameInfos){
+    //console.log(gameInfos[i]);
+
+    client.query("INSERT INTO games (game_id, game_name, has_mapping) SELECT $1::varchar, $2::varchar, true WHERE NOT EXISTS (SELECT 1 FROM games WHERE game_id = $1)", 
+        [gameInfos[i].name, gameInfos[i].fullName], function(err, result){
+          //  done();
+            if(err) { console.log(err); }
+        });
+/*
+    query.on('end', function(result) {
+      
+    });
+  */  
+
+}
+
+client.connect();
+
+
 
 module.exports = app;
