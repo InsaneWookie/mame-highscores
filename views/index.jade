@@ -3,7 +3,7 @@ extends layout
 block content
 	h1= title
 	p Upload a hiscore file
-	form(action='/scores/upload', method='post', enctype='multipart/form-data')
+	form(action='/games/upload', method='post', enctype='multipart/form-data')
 		input(type='file', name='game')
 		br
 		input(type='text', name='gamename', placeholder='Enter optional game name') 
@@ -14,11 +14,11 @@ block content
 	a(href='/games') All Games
 	br
 	br
-	form(action='/scores', method='get')
+	form(action='/games', method='get')
 		div Select game to view scores
 		select(name='game')
 			each val in games
-				option(value='#{val.game_id}') #{val.game_name}
+				option(value='#{val.name}') #{val.fullName}
 		input(type='submit')
 
 

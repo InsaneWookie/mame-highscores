@@ -1,5 +1,6 @@
 fs = require('fs')
 path = require('path')
+//process = require('process');
 
 var gameSaveMappings = require('./game_mappings/gameMaps');
 var decoder = require('./modules/score_decoder');
@@ -14,7 +15,16 @@ var decoder = require('./modules/score_decoder');
 
 //console.log(fileData);
 
-var files = fs.readdirSync('./hi');
+console.log(process.argv);
+
+if(process.argv[2] != undefined){
+	var files = [ process.argv[2] ];
+} else {
+	var files = fs.readdirSync('./hi');
+}
+
+
+
 
 var foundGames = Array();
 var missingGames = Array();
@@ -32,7 +42,7 @@ for(f in files){
 
 	result = decoder.decode(gameMaps, './hi/' + file, gameName);
 
-	console.log(gameName);
+	//console.log(gameName);
 
 	if(result != null){
 		console.log(result);
@@ -44,9 +54,9 @@ for(f in files){
 	
 }
 
-console.log("===Found Games===");
-console.log(foundGames);
+//console.log("===Found Games===");
+//console.log(foundGames);
 
 
-console.log("===Missing Games===");
-console.log(missingGames);
+//console.log("===Missing Games===");
+//console.log(missingGames);

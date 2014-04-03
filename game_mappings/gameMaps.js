@@ -171,7 +171,8 @@ gameMaps = [
             "special": {
               "1A": " ",
               "1B": ".",
-              "1C": "-"
+              "1C": "-",
+              "20": " "
             }
           }
         },
@@ -441,7 +442,7 @@ gameMaps = [
         {"name": "score", "bytes": 3, "format": "asIs", "settings": { "append": "0"}},
         {"name": "name", "bytes": 10, "format": "ascii", "settings": {
             "special": {
-              "2E": "&nbsp;"
+              "2E": " "
             }
           }
         }
@@ -838,14 +839,14 @@ gameMaps = [
     "structure": {
       "blocks": 10,
       "fields": [
-        {"name": "score", "bytes": 4, "format": "asIs", "settings": {"append": "0"}},
+        {"name": "score", "bytes": 3, "format": "asIs", "settings": {"append": "0"}},
         {"name": "name", "bytes": 3, "format": "ascii", "settings": {
             "special": {
               "3D": "."
             }
           }
         },
-        {"name": "trash", "bytes": 3}
+        {"name": "trash", "bytes": 4}
       ]
     }
   },
@@ -885,11 +886,18 @@ gameMaps = [
             "charMap": "upper",
             "ignoreBytes": [1, 3],
             "special": {
-              "1A": "."
+              "1A": ".",
+              "1B": " "
             }
           }
         }
       ]
     }
+  },
+  {
+    "name": [
+      "zerowing"
+    ],
+    "structure": { "custom": true }
   }
 ];

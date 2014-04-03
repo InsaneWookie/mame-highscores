@@ -14,11 +14,11 @@ function ScoreDecoder(gameSaveMappings){
 
 ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	
-	fileHandle = fs.openSync(filePath, 'r');
+	var fileHandle = fs.openSync(filePath, 'r');
 
 	//structure for storing the scores we read out
 	// array('game_name' => array('name' => 'ABC', 'score' => 1234))
-	scoreData = {};
+	var scoreData = {};
 	
 	structure = this.getGameMappingStructure(gameName);
 
@@ -34,28 +34,35 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 		fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
 	}
 
+	//use a custom functions for decoding this file
+	if('custom' in structure){
+		var buff = fs.readFileSync(filePath, {flag: 'r'});
+		//console.log(buff.toString('hex'));
+		return this.decodeCustom(buff, gameName);
+	}
+
 	scoreData[gameName] = new Array();
 
 	for(scoreCount = 0; scoreCount < structure['blocks']; scoreCount++){
 		
-		data = {};
+		var data = {};
 
 		for(fieldIndex in structure['fields']){
-			field = structure['fields'][fieldIndex];
+			var field = structure['fields'][fieldIndex];
 
-			byteCount = field['bytes'];
-			bytes = new Buffer(byteCount);
+			var byteCount = field['bytes'];
+			var bytes = new Buffer(byteCount);
 			fs.readSync(fileHandle, bytes, 0, byteCount);
 
 		
 			//currently only store name and score, skip all other fields
 			if(field['name'] === 'name' || field['name'] === 'score'){
-				format = field['format'];
-				settings = (field['settings'] != undefined) ? field['settings'] : new Array(); //array or null, can't decide
+				var format = field['format'];
+				var settings = (field['settings'] != undefined) ? field['settings'] : new Array(); //array or null, can't decide
 
-				decodedBytes = this.decodeBytes(bytes, byteCount, format, settings);
+				var decodedBytes = this.decodeBytes(bytes, format, settings);
 		
-				data[field['name']] = decodedBytes;
+				data[field['name']] = decodedBytes + ''; //make sure is a string
 			}
 		}
 		
@@ -74,7 +81,7 @@ ScoreDecoder.prototype.getGameMappingStructure = function(gameName){
 	//console.log(this.gameSaveMappings);
 	for(gameMapping in this.gameSaveMappings){
 		
-		gameMappingNames = this.gameSaveMappings[gameMapping]['name']; 
+		var gameMappingNames = this.gameSaveMappings[gameMapping]['name']; 
 		
 		for(gameMappingName in gameMappingNames){
 			if(gameName === gameMappingNames[gameMappingName]){
@@ -88,81 +95,198 @@ ScoreDecoder.prototype.getGameMappingStructure = function(gameName){
 }
 
 
-ScoreDecoder.prototype.decodeBytes = function(bytes, byteCount, format, settings){
-	//byteArray = unpack("C$byteCount", bytes);
-	hexString = bytes.toString('hex').replace(' ', '');
-
+ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 	
 
-	specialSettings = (settings['special'] != undefined) ? settings['special'] : null;
+	bytes = this.preProcessBytes(bytes, settings);
+
+	var hexString = bytes.toString('hex').replace(' ', '');
+
+	var specialSettings = (settings['special'] != undefined) ? settings['special'] : {};
+
+	var value = "";
 
 	switch (format) {
 		case 'ascii':
-			return this.decodeAscii(bytes); 
+			value = this.decodeAscii(bytes, settings); 
+			break;
 		case 'fromCharMap':
-			return this.decodeFromCharMap(bytes, settings['charMap'], specialSettings);
-		case 'paddedAsIs':
+			value = this.decodeFromCharMap(bytes, settings['charMap'], settings);
+			break;		
 		case 'bcd':
-			return this.decodeFromPaddedAsIs(hexString);
+			value = this.decodeBcd(hexString, settings);
+			break;
+		case 'paddedAsIs':
+			value = this.decodeFromPaddedAsIs(hexString);
+			break;
 		case 'asIs':
-			return this.decodeAsIs(hexString);	
+			value = this.decodeAsIs(hexString, settings);	
+			break;
 		case 'reverseDecimal':
-			return this.decodeReverseDecimal(hexString, specialSettings);
+			value = this.decodeReverseDecimal(hexString, specialSettings);
+			break;
 		case 'hexToDecimal': 
-			return this.decodeHexToDecimal(hexString, specialSettings);
+			value = this.decodeHexToDecimal(hexString, specialSettings);
+			break;
 		default:
-			consol.log('unknown format type ' + format + ' \n');
+			console.log('unknown format type ' + format + ' \n');
 			break;
 	}
+
+	return this.postProcessValue(value, settings);
 }
 
+
+ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
+	
+	//console.log('pre processing');
+	bytes = this.removeIgnoreBytes(bytes, settings);
+	bytes = this.addOffset(bytes, settings);
+	return bytes;
+}
+
+ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
+	
+	var clean = bytes.toJSON();
+	var removedCount = 0;
+	if(settings.ignoreBytes != undefined){
+		for(var i = 0; i < settings.ignoreBytes.length; i++){
+			//because we are editing in place we need to adjust for the elemtents removed
+			clean.splice(settings.ignoreBytes[i] - removedCount, 1); //remove the bytes we dont want
+			removedCount++;
+		}		
+	}
+	return new Buffer(clean);
+}
+
+
+ScoreDecoder.prototype.addOffset = function(bytes, settings){
+	//console.log(bytes.length);
+	if(settings.offset != undefined){
+		for(var i = 0; i < bytes.length; i++){
+			var b = new Buffer(1);
+			b[0] = bytes[i];
+
+			if(!this.inSpecialChars(b.toString('hex'), settings)){
+				//console.log('converting');
+				bytes[i] -= parseInt(settings.offset, 16);
+			}
+		}
+	}
+
+	return bytes;
+}
+
+
+ScoreDecoder.prototype.postProcessValue = function(value, settings){
+	value = this.appendChars(value, settings);
+	return value;
+}
+
+ScoreDecoder.prototype.appendChars = function(value, settings){
+	if(settings.append != undefined){
+		value += settings.append
+	}
+	return value;
+}
+
+ScoreDecoder.prototype.getSpecialChar = function(specialChars, specialCharKey){
+	specialCharKey = specialCharKey.toUpperCase();
+	return (specialChars[specialCharKey] == undefined) ? '[' + specialCharKey + ']' : specialChars[specialCharKey];
+}
+
+ScoreDecoder.prototype.inSpecialChars = function(specialCharKey, settings){
+	if("special" in settings && specialCharKey.toUpperCase() in settings.special){
+		return true;
+	}
+	return false;
+}
+
+
+
+
+//TODO: handle "settings": { "ignoreBytes": [1, 3, 5, 7] }
+ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
+
+	var specialChars = (settings.special == undefined) ? {} : settings.special ;
+	//Get special chars
+	var processedString = "";
+	for(var i = 0; i < byteArray.length; i++){
+
+		var specialCharValue = new Buffer(1);
+		specialCharValue[0] = byteArray[i];
+
+		//see if the ascii representation is actually displayable
+		if(this.inSpecialChars(specialCharValue.toString('hex'), settings)){
+			processedString += this.getSpecialChar(specialChars, specialCharValue.toString('hex'));
+		} else {
+			processedString += specialCharValue.toString('ascii') 
+		}
+
+	}
+	return processedString;
+	//return byteArray.toString('ascii');
+}
 //not sure what this format is called but a score of 0x0000000200000000
 //equals 20,000 decimal
 //basicaly we just grab every second charater of the hex string,
 // build up a new string and conver it to decimal
 //probably just need to add skip bytes (or half bytes) to the mapping file??
 ScoreDecoder.prototype.decodeFromPaddedAsIs = function(hexString){
-	decimalValue = '';
+	var decimalValue = '';
 	for(byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
 		decimalValue += hexString[byteCount];
 	}
 
-	return parseInt(decimalValue, 10);
+	return parseInt(decimalValue, 10).toString().replace(/^0+/,'');
+}
+
+ScoreDecoder.prototype.decodeBcd = function(hexString, settings){
+	return parseInt(hexString, 10).toString().replace(/^0+/,'');
 }
 
 //TODO: handle "settings": {"append": "0"} 
-ScoreDecoder.prototype.decodeAsIs = function(hexString){
+ScoreDecoder.prototype.decodeAsIs = function(hexString, settings){
 	//just remove leading zeros
 	return hexString.replace(/^0+/,'');
 }
 
 //TODO: handle "offset": 1,
-ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, specialChars){
+ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, specialOptions){
 	//TODO: this should be read in form file
-	charMaps = {
+	var charMaps = {
 	  "upper" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	  "numericUpper" : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	  "numericCharUpper" : "0123456789,’.!?- ABCDEFGHIJKLMNOPQRSTUVWXYZ",
 	  "upperNumeric" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
 
 	charMap = charMaps[charMapType];
+	var specialChars = ('special' in specialOptions) ? specialOptions.special : {};
 
+	//console.log(specialChars);
 
 	//TODO: error handling if values do not exist
-	name = "";
-	for(mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
-		b = byteArray[mapIndex];
+	var name = "";
+	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
+		//skip over any bytes that have been flaged to ignore
+		if(specialOptions.ignoreBytes != undefined 
+			&&  specialOptions.ignoreBytes.indexOf(mapIndex) != -1){
+			continue;
+		}
+
+
+		var b = byteArray[mapIndex];
 		//console.log(b.toString(10, 'utf8'));
 
-			specialCharValue = new Buffer(1);
-			specialCharValue[0] = b;
+		var specialCharValue = new Buffer(1);
+		specialCharValue[0] = b;
 
 		if(b > charMap.length){
-			value = specialCharValue.toString('hex').toUpperCase();
-			//console.log(value);
-			name += specialChars[value];
+			console.log('special chars');
+			var value = specialCharValue.toString('hex');
+			name += this.getSpecialChar(specialChars, value)
 		} else {
-			//console.log(specialCharValue.toString('hex'));
+			console.log('normal char');
 			name += charMap[b];
 		}
 
@@ -171,29 +295,76 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	return name;
 }
 
-//TODO: handle "settings": { "ignoreBytes": [1, 3, 5, 7] }
-ScoreDecoder.prototype.decodeAscii = function(byteArray){
-	return byteArray.toString('ascii');
-}
+
+
 
 ScoreDecoder.prototype.decodeHexToDecimal = function(hexString, specialSettings){
-	return parseInt(hexString, 16);
+	return parseInt(hexString, 16).toString().replace(/^0+/,'');
 }
 
 ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSettings){
 	//work backwards and build a new reversed string
-	reversedString = "";
-	for(i = hexString.length; i > 0; i = i - 2){
+	var reversedString = "";
+	for(var i = hexString.length; i > 0; i = i - 2){
 		reversedString += hexString.substr(i - 2, 2);
 	}
 
-	return reversedString
+	return reversedString.replace(/^0+/,'')
 }
 
-ScoreDecoder.prototype.decodeBcd = function(){
-	//TODO: this seems pretty rare
-}
+
 
 ScoreDecoder.prototype.decodeSpecialOnly = function(){
 	//TODO: probably not worth worring about this one at the moment
 }
+
+
+
+ScoreDecoder.prototype.decodeCustom = function(bytes, gameName){
+	switch(gameName){
+		case "zerowing":
+		case "zerowing2":
+			return this.decodeZerowing(bytes);
+	}
+}
+
+
+//TODO: files like this can probably be turned into a 1st scores = these bytes, 
+//2nd score = some other bytes, etc type mapping
+ScoreDecoder.prototype.decodeZerowing = function(bytes){
+
+	var scoreData = [];
+
+	var scoreStart = 5;
+	var nameStart = 25;
+	//get scores and names
+	for(var i = 0; i < 5; i++){
+		var currentScoreByte = scoreStart + (i * 4);
+		var currentNameByte = nameStart + (i * 12);
+		var scoreBytes = bytes.slice(currentScoreByte, currentScoreByte + 4);
+		//console.log(scoreBytes);
+		//scoreBytes = this.preProcessBytes(scoreBytes, { ignoreBytes: [3]});
+
+		var nameBytes = new Buffer(bytes.slice(currentNameByte, currentNameByte + 12));
+
+		var nameData = new Buffer([nameBytes[0], nameBytes[2], nameBytes[4]]);
+		console.log(nameData);
+		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
+		console.log(nameData);
+
+		scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
+		//scoreString = scoreString.substring(0, scoreString.length-1);
+		scoreData.push({
+			name: this.decodeFromCharMap(nameData, "upper", 
+				{ special: {'24': "!", '25': ',', '26': '.', '27': '+'}}),
+			score : scoreString 
+		});
+	} 
+	var data = {};
+	data['zerowing'] = scoreData;
+	return data;
+
+}
+
+
+

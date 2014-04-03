@@ -1491,5 +1491,15 @@ gameInfos = [
       "by": "score",
       "order": "desc"
     }
+  },
+  {
+    "name": "zerowing",
+    "fullName": "Zerowing",
+    "letter": "z",
+    "order": ["score", "name"],
+    "sort": {
+      "by": "score",
+      "order": "desc"
+    }
   }
 ];

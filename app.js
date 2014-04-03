@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var fs = require('fs');
 var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -9,8 +10,35 @@ var bodyParser = require('body-parser');
 var routes = require('./routes');
 var users = require('./routes/user');
 var scores = require('./routes/score');
+var games = require('./routes/game');
 
 var app = express();
+
+
+var mongoose = require('mongoose');
+
+var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores'
+// Makes connection asynchronously.  Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.connect(uristring);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+    console.log("Connected to mongo db"); 
+
+    require('./game_mappings/gameInfos'); //creates a variable "gameInfos"
+
+    //create any missing game records
+    gameInfos.forEach(function(game){
+        game.hasMapping = true;
+        db.collection('games').update({ name: game.name }, game, { upsert: true }, function(){});
+    });
+});
+
+// Bootstrap models (this loads all the models for easy access, not that there is many) 
+fs.readdirSync(__dirname + '/models').forEach(function (file) {
+  if (~file.indexOf('.js')) require(__dirname + '/models/' + file)
+});
  
 
 // view engine setup
@@ -33,8 +61,14 @@ app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
+
 app.get('/', routes.index);
-app.get('/users', users.list);
+//app.get('/users', users.list);
+
+app.get('/games', games.list);
+app.get('/games/:game_id', games.game);
+app.post('/games/upload', games.upload);
+
 app.get('/scores', scores.list);
 app.get('/scores/:game', scores.game);
 app.post('/scores/upload', scores.upload);
@@ -67,34 +101,6 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
-var db = require('./db');
-require('./game_mappings/gameInfos'); //creates a variable "gameInfos"
-//on start up we load the games into the database for look up later
-//console.log(db.connectionString);
-
-var client = new pg.Client(db.connectionString);
-
-
-//
-for(i in gameInfos){
-    //console.log(gameInfos[i]);
-
-    client.query("INSERT INTO games (game_id, game_name, has_mapping) SELECT $1::varchar, $2::varchar, true WHERE NOT EXISTS (SELECT 1 FROM games WHERE game_id = $1)", 
-        [gameInfos[i].name, gameInfos[i].fullName], function(err, result){
-          //  done();
-            if(err) { console.log(err); }
-        });
-/*
-    query.on('end', function(result) {
-      
-    });
-  */  
-
-}
-
-client.connect();
-
 
 
 module.exports = app;
