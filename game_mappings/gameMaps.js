@@ -10,7 +10,7 @@ gameMaps = [
     "structure": {
       "blocks": 5,
       "fields": [
-        {"name": "score", "bytes": 8, "format": "bcd"},
+        {"name": "score", "bytes": 8, "format": "paddedAsIs"},
         {"name": "name", "bytes": 3, "format": "fromCharMap", "settings": {
             "charMap": "numericUpper",
             "special": {

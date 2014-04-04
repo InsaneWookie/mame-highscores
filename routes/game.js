@@ -1,4 +1,5 @@
 var db = require('../db');
+var fs = require('fs');
 
 
 var mongoose = require('mongoose');
@@ -59,7 +60,11 @@ exports.upload = function(req, res){
 	var scoreData = { hasMapping: false, scores: [] };
 	if(decodedScores != null){
 		scoreData = {hasMapping: true, scores: decodedScores[gameName]};
+	} else {
+		var fileBytes = fs.readFileSync(filePath);
+		scoreData = {hasMapping: false, $push: {  rawScores: { bytes: fileBytes.toString('hex') } } };
 	}
+
 
 	var Game = mongoose.model('Game');
 

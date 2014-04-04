@@ -117,7 +117,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 			value = this.decodeBcd(hexString, settings);
 			break;
 		case 'paddedAsIs':
-			value = this.decodeFromPaddedAsIs(hexString);
+			value = this.decodePaddedAsIs(hexString);
 			break;
 		case 'asIs':
 			value = this.decodeAsIs(hexString, settings);	
@@ -232,7 +232,7 @@ ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 //basicaly we just grab every second charater of the hex string,
 // build up a new string and conver it to decimal
 //probably just need to add skip bytes (or half bytes) to the mapping file??
-ScoreDecoder.prototype.decodeFromPaddedAsIs = function(hexString){
+ScoreDecoder.prototype.decodePaddedAsIs = function(hexString){
 	var decimalValue = '';
 	for(byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
 		decimalValue += hexString[byteCount];
