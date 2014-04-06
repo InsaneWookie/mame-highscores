@@ -14,7 +14,7 @@ exports.index = function(req, res){
 	});
 */
 	var Game = mongoose.model('Game');
-	Game.find().sort({ fullName: 1 }).exec(function(err, games){
+	Game.find({hasMapping: true}).sort({ fullName: 1 }).exec(function(err, games){
 		console.log(games);
 		res.render('index', 
 		{ 

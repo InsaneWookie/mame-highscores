@@ -3,7 +3,7 @@ extends layout
 block content	
 
 	each game in games	
-		h1 Scores for game #{game.name}
+		h1 #{game.fullName} (#{game.name})
 		if game.scores == null
 			p Unable to decode scores for game #{game.name}
 		else

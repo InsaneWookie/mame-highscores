@@ -22,6 +22,7 @@ var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores'
 // operations and release them when the connection is complete.
 mongoose.connect(uristring);
 var db = mongoose.connection;
+
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
     console.log("Connected to mongo db"); 
@@ -31,9 +32,12 @@ db.once('open', function callback () {
     //create any missing game records
     gameInfos.forEach(function(game){
         game.hasMapping = true;
-        db.collection('games').update({ name: game.name }, game, { upsert: true }, function(){});
+        db.collection('games').update({ name: game.name }, game, { upsert: true, multi: true }, function(){});
     });
+    
+
 });
+
 
 // Bootstrap models (this loads all the models for easy access, not that there is many) 
 fs.readdirSync(__dirname + '/models').forEach(function (file) {

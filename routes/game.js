@@ -6,12 +6,22 @@ var mongoose = require('mongoose');
 
 /* GET high scores listing. */
 exports.list = function(req, res){
+
+	//if there is a get param of game (eg ?game=[gamename])
+	//we want to redirect to the nice url for that game
 	if(req.query.game){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
 		sort = {name: 1};
-		query = req.query;
 
+		//this is probably really bad, but just pass through the query params to mongo
+		//query = req.query;
+		console.log(req.query);
+		query = {};
+		if(req.query.hasScores == 'true') { query.scores = { $exists: true } };
+		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
+		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
+		console.log(query);
 
 		var Game = mongoose.model('Game');
 		Game.find(query).sort(sort).lean().exec(function (err, docs) {
