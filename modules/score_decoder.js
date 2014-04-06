@@ -282,11 +282,11 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 		specialCharValue[0] = b;
 
 		if(b > charMap.length){
-			console.log('special chars');
+			//console.log('special chars');
 			var value = specialCharValue.toString('hex');
 			name += this.getSpecialChar(specialChars, value)
 		} else {
-			console.log('normal char');
+			//console.log('normal char');
 			name += charMap[b];
 		}
 
@@ -348,9 +348,9 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		var nameBytes = new Buffer(bytes.slice(currentNameByte, currentNameByte + 12));
 
 		var nameData = new Buffer([nameBytes[0], nameBytes[2], nameBytes[4]]);
-		console.log(nameData);
+		//console.log(nameData);
 		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
-		console.log(nameData);
+		//console.log(nameData);
 
 		scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
 		//scoreString = scoreString.substring(0, scoreString.length-1);

@@ -32,9 +32,10 @@ db.once('open', function callback () {
     //create any missing game records
     gameInfos.forEach(function(game){
         game.hasMapping = true;
-        db.collection('games').update({ name: game.name }, game, { upsert: true, multi: true }, function(){});
+        db.collection('games').update({ name: game.name }, { $set: game }, { upsert: true }, function(){});
     });
-    
+
+
 
 });
 
