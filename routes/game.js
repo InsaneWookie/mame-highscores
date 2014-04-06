@@ -28,6 +28,7 @@ exports.list = function(req, res){
 			if(req.accepts('json, html') == 'json'){
 				res.json(docs);
 			} else {
+				console.log(docs);
 				res.render('games', {games: docs});
 			}
 		});

@@ -4,9 +4,12 @@ block content
 
 	each game in games	
 		h1 #{game.fullName} (#{game.name})
-		if game.scores == null
-			p Unable to decode scores for game #{game.name}
-		else
+		if !game.hasMapping && game.rawScores != undefined
+			div No file decode mapping for this game. Here are the raw file bytes (in hex)
+			br
+			each rawScore in game.rawScores
+				div(style='width: 400px; word-wrap: break-word;') #{rawScore.createDate} -> #{rawScore.bytes}
+		else if game.scores != undefined
 			table
 				tr
 					td Name
