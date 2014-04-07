@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes');
 var users = require('./routes/user');
-var scores = require('./routes/score');
+//var scores = require('./routes/score');
 var games = require('./routes/game');
 
 var app = express();
@@ -68,15 +68,19 @@ app.use(app.router);
 
 
 app.get('/', routes.index);
-//app.get('/users', users.list);
+app.get('/users', users.list);
+app.get('/users/save', users.save);
+app.post('/users/save', users.save);
+app.get('/users/:username', users.user);
+
 
 app.get('/games', games.list);
 app.get('/games/:game_id', games.game);
 app.post('/games/upload', games.upload);
 
-app.get('/scores', scores.list);
-app.get('/scores/:game', scores.game);
-app.post('/scores/upload', scores.upload);
+//app.get('/scores', scores.list);
+//app.get('/scores/:game', scores.game);
+//app.post('/scores/upload', scores.upload);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

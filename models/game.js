@@ -11,6 +11,7 @@ var gameSchema = mongoose.Schema({
 
     scores: {
     	type: [{
+                userName: String,
     			name: String, 
     			score: String, 
     			createDate: { type: Date, default: Date.now }
