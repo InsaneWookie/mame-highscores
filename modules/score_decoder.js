@@ -20,7 +20,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	// array('game_name' => array('name' => 'ABC', 'score' => 1234))
 	var scoreData = {};
 	
-	structure = this.getGameMappingStructure(gameName);
+	var structure = this.getGameMappingStructure(gameName);
 
 	if(structure === null){
 		//no game mapping strucure found for this game
@@ -30,7 +30,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 
 	//see if we need to skip any bytes
 	if(structure['skip'] != undefined){
-		skipBuffer = new Buffer(structure['skip']);
+		var skipBuffer = new Buffer(structure['skip']);
 		fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
 	}
 
@@ -43,11 +43,11 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 
 	scoreData[gameName] = new Array();
 
-	for(scoreCount = 0; scoreCount < structure['blocks']; scoreCount++){
+	for(var scoreCount = 0; scoreCount < structure['blocks']; scoreCount++){
 		
 		var data = {};
 
-		for(fieldIndex in structure['fields']){
+		for(var fieldIndex in structure['fields']){
 			var field = structure['fields'][fieldIndex];
 
 			var byteCount = field['bytes'];
@@ -79,11 +79,11 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 //make a hash map of the games so we can look them up fast
 ScoreDecoder.prototype.getGameMappingStructure = function(gameName){
 	//console.log(this.gameSaveMappings);
-	for(gameMapping in this.gameSaveMappings){
+	for(var gameMapping in this.gameSaveMappings){
 		
 		var gameMappingNames = this.gameSaveMappings[gameMapping]['name']; 
 		
-		for(gameMappingName in gameMappingNames){
+		for(var gameMappingName in gameMappingNames){
 			if(gameName === gameMappingNames[gameMappingName]){
 
 				return this.gameSaveMappings[gameMapping]['structure'];
@@ -149,7 +149,7 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 	
 	var clean = bytes.toJSON();
 	var removedCount = 0;
-	if(settings.ignoreBytes != undefined){
+	if(settings.ignoreBytes !== undefined){
 		for(var i = 0; i < settings.ignoreBytes.length; i++){
 			//because we are editing in place we need to adjust for the elemtents removed
 			clean.splice(settings.ignoreBytes[i] - removedCount, 1); //remove the bytes we dont want
@@ -162,7 +162,7 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 
 ScoreDecoder.prototype.addOffset = function(bytes, settings){
 	//console.log(bytes.length);
-	if(settings.offset != undefined){
+	if(settings.offset !== undefined){
 		for(var i = 0; i < bytes.length; i++){
 			var b = new Buffer(1);
 			b[0] = bytes[i];
@@ -184,7 +184,7 @@ ScoreDecoder.prototype.postProcessValue = function(value, settings){
 }
 
 ScoreDecoder.prototype.appendChars = function(value, settings){
-	if(settings.append != undefined){
+	if(settings.append !== undefined){
 		value += settings.append
 	}
 	return value;
@@ -192,7 +192,7 @@ ScoreDecoder.prototype.appendChars = function(value, settings){
 
 ScoreDecoder.prototype.getSpecialChar = function(specialChars, specialCharKey){
 	specialCharKey = specialCharKey.toUpperCase();
-	return (specialChars[specialCharKey] == undefined) ? '[' + specialCharKey + ']' : specialChars[specialCharKey];
+	return (specialChars[specialCharKey] === undefined) ? '[' + specialCharKey + ']' : specialChars[specialCharKey];
 }
 
 ScoreDecoder.prototype.inSpecialChars = function(specialCharKey, settings){
@@ -208,7 +208,7 @@ ScoreDecoder.prototype.inSpecialChars = function(specialCharKey, settings){
 //TODO: handle "settings": { "ignoreBytes": [1, 3, 5, 7] }
 ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 
-	var specialChars = (settings.special == undefined) ? {} : settings.special ;
+	var specialChars = (settings.special === undefined) ? {} : settings.special ;
 	//Get special chars
 	var processedString = "";
 	for(var i = 0; i < byteArray.length; i++){
@@ -234,7 +234,7 @@ ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 //probably just need to add skip bytes (or half bytes) to the mapping file??
 ScoreDecoder.prototype.decodePaddedAsIs = function(hexString){
 	var decimalValue = '';
-	for(byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
+	for(var byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
 		decimalValue += hexString[byteCount];
 	}
 
@@ -255,12 +255,12 @@ ScoreDecoder.prototype.decodeAsIs = function(hexString, settings){
 ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, specialOptions){
 	//TODO: this should be read in form file
 	var charMaps = {
-	  "upper" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-	  "numericUpper" : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-	  "numericCharUpper" : "0123456789,’.!?- ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-	  "upperNumeric" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
+        "upper" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "numericUpper" : "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "numericCharUpper" : "0123456789,’.!?- ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "upperNumeric" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
 
-	charMap = charMaps[charMapType];
+	var charMap = charMaps[charMapType];
 	var specialChars = ('special' in specialOptions) ? specialOptions.special : {};
 
 	//console.log(specialChars);
@@ -269,7 +269,7 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	var name = "";
 	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
 		//skip over any bytes that have been flaged to ignore
-		if(specialOptions.ignoreBytes != undefined 
+		if(specialOptions.ignoreBytes !== undefined 
 			&&  specialOptions.ignoreBytes.indexOf(mapIndex) != -1){
 			continue;
 		}
@@ -352,7 +352,7 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
 		//console.log(nameData);
 
-		scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
+		var scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
 		//scoreString = scoreString.substring(0, scoreString.length-1);
 		scoreData.push({
 			name: this.decodeFromCharMap(nameData, "upper", 

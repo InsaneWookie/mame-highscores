@@ -12,13 +12,13 @@ exports.list = function(req, res){
 	if(req.query.game){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
-		sort = {name: 1};
+		var sort = {name: 1};
 
 		//this is probably really bad, but just pass through the query params to mongo
 		//query = req.query;
 		console.log(req.query);
-		query = {};
-		if(req.query.hasScores == 'true') { query.scores = { $exists: true } };
+		var query = {};
+		if(req.query.hasScores == 'true') { query.scores = { $exists: true }; }
 		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
 		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
 		console.log(query);
@@ -50,16 +50,16 @@ exports.game = function(req, res){
 
 exports.upload = function(req, res){
 
-	path = require('path');
-  	require('../game_mappings/gameMaps');
+	var path = require('path');
+	require('../game_mappings/gameMaps');
 
-  	decoder = require('../modules/score_decoder');
-  	
+    var decoder = require('../modules/score_decoder');
 
-  	var filePath = req.files.game.path;
-  	var gameName = req.body.gamename;
+
+    var filePath = req.files.game.path;
+    var gameName = req.body.gamename;
 	//invalid game so try and work it out from the file name
-	if(typeof gameName != 'string' || gameName.length == 0){
+	if(typeof gameName != 'string' || gameName.length === 0){
 		gameName = path.basename(req.files.game.name, '.hi');	
 	}
 
@@ -69,7 +69,7 @@ exports.upload = function(req, res){
 
 
 	var scoreData = { hasMapping: false, scores: [] };
-	if(decodedScores != null){
+	if(decodedScores !== null){
 		scoreData = {hasMapping: true, scores: decodedScores[gameName]};
 	} else {
 		var fileBytes = fs.readFileSync(filePath);
