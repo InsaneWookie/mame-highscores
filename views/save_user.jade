@@ -1,0 +1,17 @@
+extends layout
+
+block content	
+
+	h1 Create User
+
+	form(action='/users/save', method='post')
+		span User Name
+		input(type='text', name='userName')
+		br
+		span Email:
+		input(type='text', name='email')
+		br
+		span Aliases (comma seperated):
+		input(type='text', name='aliases') 
+		br
+		input(type='submit')
