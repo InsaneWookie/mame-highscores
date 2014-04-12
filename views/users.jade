@@ -1,0 +1,14 @@
+extends layout
+
+block content	
+
+	table.table.table-striped
+		tr
+			th User Name
+			th Email
+			th Aliases
+			each user in users	
+				tr
+					td= user.userName
+					td= user.email
+					td= user.aliases

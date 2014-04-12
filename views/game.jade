@@ -2,18 +2,22 @@ extends layout
 
 block content	
 
-	h1 Scores for game #{game.fullName} (#{game.name})
-	if !game.hasMapping
-		div No file decode mapping for this game. Here are the raw file bytes (in hex)
-		br
-		each rawScore in game.rawScores
-			div #{rawScore.createDate} -> #{rawScore.bytes}
+	if game === null
+		div No game found  
 	else
-		table
-			tr
-				td Name
-				td Score
-				each item in game.scores
-					tr
-						td= item.name
-						td= item.score
+
+		h1 Scores for game #{game.fullName} (#{game.name})
+		if !game.hasMapping
+			div No file decode mapping for this game. Here are the raw file bytes (in hex)
+			br
+			each rawScore in game.rawScores
+				div #{rawScore.createDate} -> #{rawScore.bytes}
+		else
+			table
+				tr
+					td Name
+					td Score
+					each item in game.scores
+						tr
+							td= item.name
+							td= item.score

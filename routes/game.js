@@ -11,10 +11,8 @@ exports.list = function(req, res){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
 		var sort = {name: 1};
-
-		//this is probably really bad, but just pass through the query params to mongo
-		//query = req.query;
-		console.log(req.query);
+		
+		//console.log(req.query);
 		var query = {};
 		if(req.query.hasScores == 'true') { query.scores = { $exists: true }; }
 		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
@@ -45,20 +43,39 @@ exports.game = function(req, res){
 	
 };
 
-
+//TODO: this function is getting a bit big, time to refactor
 exports.upload = function(req, res){
+
+
+	if(req.method === 'GET'){
+		res.render('upload');
+		return;
+	}
+
+
 
 	var path = require('path');
 	require('../game_mappings/gameMaps');
 
     var decoder = require('../modules/score_decoder');
 
+    //probably should error out if no high score file version supplied
+    //as it can mess up the decoding if we dont know what version the .hi file 
+    //was created with
+    var hiScoreVersion = ('version' in req.body) ? req.body.version.trim() : '';
+
+    if(hiScoreVersion === ''){
+    	res.json({ error: "no version provided"});
+    	return;
+    }
 
     //quick check for valid data
     if(!('game' in req.files) || !('path' in req.files.game)){
     	res.send("No or invalid file uploaded\n");
     	return;
     }
+
+
 
     var filePath = req.files.game.path;
     var gameName = req.body.gamename;
@@ -69,7 +86,7 @@ exports.upload = function(req, res){
 
 	//need to check if the game exists in the mapping file, 
 	//and if not then we add it to the database but flag it as missing
-	var decodedScores = decoder.decode(gameMaps, filePath, gameName);
+	var decodedScores = decoder.decode(gameMaps, filePath, gameName, hiScoreVersion);
 
 
 	var scoreData = { hasMapping: false, scores: [] };
@@ -113,11 +130,11 @@ exports.upload = function(req, res){
 
 		scoreData.scores = scores;
 
-		console.log(scoreData.scores);
+		//console.log(scoreData.scores);
 
 	} else {
 		var fileBytes = fs.readFileSync(filePath);
-		scoreData = {hasMapping: false, $push: {  rawScores: { bytes: fileBytes.toString('hex') } } };
+		scoreData = {hasMapping: false, $push: {  rawScores: { version: hiScoreVersion, bytes: fileBytes.toString('hex') } } };
 
 		var Game = mongoose.model('Game');
 

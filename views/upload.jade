@@ -1,0 +1,18 @@
+extends layout
+
+block content
+	h1 Upload A .hi File
+	
+	form(action='/game/upload', method='post', enctype='multipart/form-data')
+		input(type='file', name='game')
+		br
+		input(type='text', name='gamename', placeholder='Enter optional game name') 
+		span If the game name is different from the what the file is named, enter it here
+		br
+		input(type='text', name='version', placeholder='hiscore.dat version')
+		br
+		input(type='submit')
+	br
+
+
+

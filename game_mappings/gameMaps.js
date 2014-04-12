@@ -895,9 +895,26 @@ gameMaps = [
     }
   },
   {
+    "_comment": "for now uses a custom function, but need to turn into more generic version",
     "name": [
       "zerowing"
     ],
-    "structure": { "custom": true }
+    "version": "0.108",
+    "structure": { 
+      "custom": true,
+      "fields": [
+        {"name": "score", "bytes": "2-4", "format": "asIs"},
+        {"name": "score", "bytes": "6-8", "format": "asIs"},
+        {"name": "score", "bytes": "10-12", "format": "asIs"},
+        {"name": "score", "bytes": "2-4", "format": "asIs"},
+        {"name": "score", "bytes": "2-4", "format": "asIs"},
+
+        {"name": "name", "bytes": "2-4", "format": "asIs"},
+        {"name": "name", "bytes": "2-4", "format": "asIs"},
+        {"name": "name", "bytes": "2-4", "format": "asIs"},
+        {"name": "name", "bytes": "2-4", "format": "asIs"},
+        {"name": "name", "bytes": "2-4", "format": "asIs"},
+      ] 
+    }
   }
 ];

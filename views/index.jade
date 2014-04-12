@@ -1,16 +1,8 @@
 extends layout
 
 block content
-	h1= title
-	p Upload a hiscore file
-	form(action='/games/upload', method='post', enctype='multipart/form-data')
-		input(type='file', name='game')
-		br
-		input(type='text', name='gamename', placeholder='Enter optional game name') 
-		span If the game name is different from the what the file is named, enter it here
-		br
-		input(type='submit')
-	br
+	h1 Mame Highscores
+	
 	a(href='/games?hasScores=true') All Games
 	br
 	br

@@ -42,7 +42,7 @@ db.once('open', function callback () {
 
 // Bootstrap models (this loads all the models for easy access, not that there is many) 
 fs.readdirSync(__dirname + '/models').forEach(function (file) {
-  if (~file.indexOf('.js')) require(__dirname + '/models/' + file)
+  if (~file.indexOf('.js')) require(__dirname + '/models/' + file);
 });
  
 
@@ -68,15 +68,24 @@ app.use(app.router);
 
 
 app.get('/', routes.index);
+
+//user routes
 app.get('/users', users.list);
-app.get('/users/save', users.save);
-app.post('/users/save', users.save);
-app.get('/users/:username', users.user);
+app.get('/users/:id', users.user);
 
+app.get('/user/create', users.create);
+app.post('/user/create', users.create);
 
+app.get('/user/update/:id', users.update);
+app.post('/user/update/:id', users.update);
+
+//game routes
 app.get('/games', games.list);
 app.get('/games/:game_id', games.game);
-app.post('/games/upload', games.upload);
+
+app.get('/game/upload', games.upload);
+app.post('/game/upload', games.upload);
+
 
 //app.get('/scores', scores.list);
 //app.get('/scores/:game', scores.game);

@@ -1,5 +1,5 @@
 @ECHO off
 
 FOR %%X in ("%1\*.hi") DO (
-curl -F game=@%%X "%2"
+	curl --form game=@%%X --form version="%2" "%3"
 )

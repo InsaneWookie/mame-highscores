@@ -2,13 +2,14 @@
 //TODO: clean this up to follow node js module way
 var fs = require('fs');
 
-exports.decode = function(gameSaveMappings, filePath, gameName){
-	var decoder = new ScoreDecoder(gameSaveMappings);
+exports.decode = function(gameSaveMappings, filePath, gameName, mappingsVersion){
+	var decoder = new ScoreDecoder(gameSaveMappings, mappingsVersion);
 	return decoder.decode_internal(filePath, gameName);
-}
+};
 
-function ScoreDecoder(gameSaveMappings){
+function ScoreDecoder(gameSaveMappings, mappingsVersion) {
 	this.gameSaveMappings = gameSaveMappings;
+	this.mappingsVersion = mappingsVersion;
 }
 
 
@@ -29,7 +30,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	}
 
 	//see if we need to skip any bytes
-	if(structure['skip'] != undefined){
+	if(structure.skip !== undefined){
 		var skipBuffer = new Buffer(structure['skip']);
 		fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
 	}
@@ -41,7 +42,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 		return this.decodeCustom(buff, gameName);
 	}
 
-	scoreData[gameName] = new Array();
+	scoreData[gameName] = [];
 
 	for(var scoreCount = 0; scoreCount < structure['blocks']; scoreCount++){
 		
@@ -102,7 +103,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 
 	var hexString = bytes.toString('hex').replace(' ', '');
 
-	var specialSettings = (settings['special'] != undefined) ? settings['special'] : {};
+	var specialSettings = (settings.special !== undefined) ? settings.special : {};
 
 	var value = "";
 
@@ -111,7 +112,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 			value = this.decodeAscii(bytes, settings); 
 			break;
 		case 'fromCharMap':
-			value = this.decodeFromCharMap(bytes, settings['charMap'], settings);
+			value = this.decodeFromCharMap(bytes, settings.charMap, settings);
 			break;		
 		case 'bcd':
 			value = this.decodeBcd(hexString, settings);
@@ -181,26 +182,26 @@ ScoreDecoder.prototype.addOffset = function(bytes, settings){
 ScoreDecoder.prototype.postProcessValue = function(value, settings){
 	value = this.appendChars(value, settings);
 	return value;
-}
+};
 
 ScoreDecoder.prototype.appendChars = function(value, settings){
 	if(settings.append !== undefined){
-		value += settings.append
+		value += settings.append;
 	}
 	return value;
-}
+};
 
 ScoreDecoder.prototype.getSpecialChar = function(specialChars, specialCharKey){
 	specialCharKey = specialCharKey.toUpperCase();
 	return (specialChars[specialCharKey] === undefined) ? '[' + specialCharKey + ']' : specialChars[specialCharKey];
-}
+};
 
 ScoreDecoder.prototype.inSpecialChars = function(specialCharKey, settings){
 	if("special" in settings && specialCharKey.toUpperCase() in settings.special){
 		return true;
 	}
 	return false;
-}
+};
 
 
 
@@ -220,13 +221,13 @@ ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 		if(this.inSpecialChars(specialCharValue.toString('hex'), settings)){
 			processedString += this.getSpecialChar(specialChars, specialCharValue.toString('hex'));
 		} else {
-			processedString += specialCharValue.toString('ascii') 
+			processedString += specialCharValue.toString('ascii');
 		}
 
 	}
 	return processedString;
 	//return byteArray.toString('ascii');
-}
+};
 //not sure what this format is called but a score of 0x0000000200000000
 //equals 20,000 decimal
 //basicaly we just grab every second charater of the hex string,
@@ -239,17 +240,17 @@ ScoreDecoder.prototype.decodePaddedAsIs = function(hexString){
 	}
 
 	return parseInt(decimalValue, 10).toString().replace(/^0+/,'');
-}
+};
 
 ScoreDecoder.prototype.decodeBcd = function(hexString, settings){
 	return parseInt(hexString, 10).toString().replace(/^0+/,'');
-}
+};
 
 //TODO: handle "settings": {"append": "0"} 
 ScoreDecoder.prototype.decodeAsIs = function(hexString, settings){
 	//just remove leading zeros
 	return hexString.replace(/^0+/,'');
-}
+};
 
 //TODO: handle "offset": 1,
 ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, specialOptions){
@@ -263,44 +264,39 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	var charMap = charMaps[charMapType];
 	var specialChars = ('special' in specialOptions) ? specialOptions.special : {};
 
-	//console.log(specialChars);
-
 	//TODO: error handling if values do not exist
 	var name = "";
 	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
 		//skip over any bytes that have been flaged to ignore
-		if(specialOptions.ignoreBytes !== undefined 
-			&&  specialOptions.ignoreBytes.indexOf(mapIndex) != -1){
+		if(specialOptions.ignoreBytes !== undefined	&&
+			specialOptions.ignoreBytes.indexOf(mapIndex) != -1){
+
 			continue;
 		}
 
-
-		var b = byteArray[mapIndex];
-		//console.log(b.toString(10, 'utf8'));
-
 		var specialCharValue = new Buffer(1);
-		specialCharValue[0] = b;
+		specialCharValue[0] = byteArray[mapIndex];
 
-		if(b > charMap.length){
-			//console.log('special chars');
-			var value = specialCharValue.toString('hex');
-			name += this.getSpecialChar(specialChars, value)
+		var value = specialCharValue.toString('hex').toUpperCase();
+
+		if(value in specialChars){ //if its in the special char map always use that first
+			name += this.getSpecialChar(specialChars, value);
 		} else {
-			//console.log('normal char');
+			//TODO: better error handling if its out of range
 			name += charMap[b];
 		}
 
 	}
 
 	return name;
-}
+};
 
 
 
 
 ScoreDecoder.prototype.decodeHexToDecimal = function(hexString, specialSettings){
 	return parseInt(hexString, 16).toString().replace(/^0+/,'');
-}
+};
 
 ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSettings){
 	//work backwards and build a new reversed string
@@ -309,24 +305,24 @@ ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSetting
 		reversedString += hexString.substr(i - 2, 2);
 	}
 
-	return reversedString.replace(/^0+/,'')
-}
+	return reversedString.replace(/^0+/,'');
+};
 
 
 
 ScoreDecoder.prototype.decodeSpecialOnly = function(){
 	//TODO: probably not worth worring about this one at the moment
-}
+};
 
 
 
 ScoreDecoder.prototype.decodeCustom = function(bytes, gameName){
 	switch(gameName){
 		case "zerowing":
-		case "zerowing2":
+		//case "zerowing2":
 			return this.decodeZerowing(bytes);
 	}
-}
+};
 
 
 //TODO: files like this can probably be turned into a 1st scores = these bytes, 
@@ -337,6 +333,13 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 
 	var scoreStart = 5;
 	var nameStart = 25;
+
+	if(this.mappingsVersion <= '0.100') {
+		scoreStart = 1;
+		nameStart = 21;
+	}
+
+
 	//get scores and names
 	for(var i = 0; i < 5; i++){
 		var currentScoreByte = scoreStart + (i * 4);
@@ -361,10 +364,10 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		});
 	} 
 	var data = {};
-	data['zerowing'] = scoreData;
+	data.zerowing = scoreData;
 	return data;
 
-}
+};
 
 
 
