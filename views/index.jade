@@ -3,15 +3,13 @@ extends layout
 block content
 	h1 Mame Highscores
 	
-	a(href='/games?hasScores=true') All Games
-	br
-	br
 	form(action='/games', method='get')
 		div Select game to view scores
 		select(name='game')
 			each val in games
 				option(value='#{val.name}') #{val.fullName}
-		input(type='submit')
+		br
+		input(type='submit', value="Go")
 
 
 

@@ -1,14 +1,16 @@
 extends layout
 
 block content	
-
+	br
+	a(href="/user/create") New User
+	br
+	br
 	table.table.table-striped
 		tr
 			th User Name
-			th Email
 			th Aliases
 			each user in users	
 				tr
-					td= user.userName
-					td= user.email
+					td 
+						a(href="users/#{user._id}") #{user.userName}
 					td= user.aliases

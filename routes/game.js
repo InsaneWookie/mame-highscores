@@ -13,11 +13,11 @@ exports.list = function(req, res){
 		var sort = {name: 1};
 		
 		//console.log(req.query);
-		var query = {};
-		if(req.query.hasScores == 'true') { query.scores = { $exists: true }; }
+		var query = { scores : { $exists: true } };
+		if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
 		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
 		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
-		console.log(query);
+		//console.log(query);
 
 		var Game = mongoose.model('Game');
 		Game.find(query).sort(sort).lean().exec(function (err, docs) {

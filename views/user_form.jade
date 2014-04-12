@@ -2,16 +2,21 @@ extends layout
 
 block content	
 
-	h1 Create User
+	h2 Create User
 
-	form(action='/user/create', method='post')
-		span User Name
-		input(type='text', name='userName')
-		br
-		span Email:
-		input(type='text', name='email')
-		br
-		span Aliases (comma seperated):
-		input(type='text', name='aliases') 
-		br
-		input(type='submit')
+	form.form-horizontal(role="form", action='/user/create', method='post')
+		.form-group
+			label.col-sm-2.control-label User Name
+			.col-sm-10
+				input.form-control(type='text', name='userName')
+		.form-group
+			label.col-sm-2.control-label Email
+			.col-sm-10
+				input.form-control(type='text', name='email')
+		.form-group
+			label.col-sm-2.control-label Aliases (comma seperated)
+			.col-sm-10
+				input.form-control(type='text', name='aliases') 
+		.form-group
+			.col-sm-offset-2.col-sm-10
+				input.btn.btn-default(type='submit')

@@ -2,18 +2,18 @@ extends layout
 
 block content	
 
-	h1 Games with scores for #{user.userName} 
-	h3 Email: #{user.email}
-	h3 Aliases: #{user.aliases}
+	h2 Games with scores for #{user.userName} 
+	h4 Email: #{user.email}
+	h4 Aliases: #{user.aliases}
 
 	each game in games	
-		h1 #{game.fullName} (#{game.name})
+		h2 #{game.fullName} (#{game.name})
 
 		if game.scores != undefined
-			table
+			table.table.table-striped
 				tr
-					td Name
-					td Score
+					th Name
+					th Score
 					each score in game.scores
 						tr
 							td= score.name
