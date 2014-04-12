@@ -16,5 +16,11 @@ block content
 					th Score
 					each score in game.scores
 						tr
-							td= score.name
-							td= score.score
+							if (user.aliases.indexOf(score.name) != -1)
+								td.info
+									b= score.name
+								td.info
+									b= score.score
+							else
+								td= score.name
+								td= score.score
