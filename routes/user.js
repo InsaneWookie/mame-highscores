@@ -68,7 +68,7 @@ exports.create = function(req, res){
    				{ $set: { "scores.$.user_id": newUser._id }},
    				{ multi: true }, 
    				function(err, numberAffected, rawResponse){
-   					console.log(err, numberAffected);
+   					if(err) { console.log(err); }
    				});
 			});
 
