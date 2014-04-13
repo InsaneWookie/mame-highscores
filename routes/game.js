@@ -11,20 +11,19 @@ exports.list = function(req, res){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
 		var sort = {name: 1};
-		
-		//console.log(req.query);
 		var query = { scores : { $exists: true } };
+
 		if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
 		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
 		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
-		//console.log(query);
 
+		limitQuery = (req.query.allScores == 'true') ? {} : { scores: { $slice : 5} };
+		
 		var Game = mongoose.model('Game');
-		Game.find(query).sort(sort).lean().exec(function (err, docs) {
+		Game.find(query, limitQuery).sort(sort).lean().exec(function (err, docs) {
 			if(req.accepts('json, html') == 'json'){
 				res.json(docs);
 			} else {
-				console.log(docs);
 				res.render('games', {games: docs});
 			}
 		});
@@ -90,27 +89,34 @@ exports.upload = function(req, res){
 
 
 	var scoreData = { hasMapping: false, scores: [] };
+
 	if(decodedScores !== null){
+		//if we have some score data, process it
+
 		scoreData = {hasMapping: true, scores: decodedScores[gameName]};
 
 		//go through the scores and see if any of the uses have aliases for them
-		//this asumes that alaises are unique
+		//this asumes that alaises are unique (just finds the first user)
 		var User = mongoose.model('User');
 		//probably could do this with a reduce function??
 		var scores = scoreData.scores;
-
 		var scoreLength = scores.length;
+
+		//go through each score and see if we can find a user with and alias that matches
 		scores.forEach(function(score, index){
+
 			User.findOne({ aliases: { $in: [score.name] } }, function(err, user){
-				//console.log(user);
-				//console.log(score);
-				if(err){ console.log(err); } 
-				else if (user !== null) {
+		
+				scoreLength--;
+
+				if(err){ 
+					console.log(err);
+				} else if (user !== null) { //we found a user
 					scoreData.scores[index].userName = user.userName;
 				}
 
-				//not the most elegant wat to deal with the async nature of node
-				scoreLength--;
+				//once we have processed all the scores, need to update them 
+				//not the most elegant wat to deal with the async nature of node				
 				if(scoreLength === 0){
 					var Game = mongoose.model('Game');
 
@@ -128,11 +134,12 @@ exports.upload = function(req, res){
 			});
 		});
 
-		scoreData.scores = scores;
-
-		//console.log(scoreData.scores);
+		//scoreData.scores = scores;
 
 	} else {
+
+		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
+		
 		var fileBytes = fs.readFileSync(filePath);
 		scoreData = {hasMapping: false, $push: {  rawScores: { version: hiScoreVersion, bytes: fileBytes.toString('hex') } } };
 
@@ -148,13 +155,7 @@ exports.upload = function(req, res){
 				res.redirect('/games/' + gameName);
 			}
 		});
-
 	}
-
-
-	
-	
-
 	
 };
 

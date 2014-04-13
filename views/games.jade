@@ -1,6 +1,11 @@
 extends layout
 
 block content	
+	br
+	div 
+		| Notes that this only returns the first 5 scores for a game. click 
+		a(href="/games?allScores=true") here 
+		| to view all scores
 
 	each game in games	
 		h3 
