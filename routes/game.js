@@ -112,7 +112,7 @@ exports.upload = function(req, res){
 				if(err){ 
 					console.log(err);
 				} else if (user !== null) { //we found a user
-					scoreData.scores[index].userName = user.userName;
+					scoreData.scores[index].user_id = user._id;
 				}
 
 				//once we have processed all the scores, need to update them 
@@ -139,7 +139,7 @@ exports.upload = function(req, res){
 	} else {
 
 		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
-		
+
 		var fileBytes = fs.readFileSync(filePath);
 		scoreData = {hasMapping: false, $push: {  rawScores: { version: hiScoreVersion, bytes: fileBytes.toString('hex') } } };
 

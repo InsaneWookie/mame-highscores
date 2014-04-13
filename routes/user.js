@@ -16,7 +16,7 @@ exports.user = function(req, res){
 
 	User.findOne({ _id: req.params.id}, function (err, user){
 		if(err) { console.log(err); return;}
-		console.log(user);
+		//console.log(user);
 		//TODO: under stand what type the _id fields are and how to use them prperly (instead of doing a to string)
 		Game.find({ scores: { $elemMatch: { user_id: user._id }}}, function (err, games){
 			res.render('user', { user: user, games: games });

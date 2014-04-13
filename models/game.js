@@ -11,7 +11,7 @@ var gameSchema = mongoose.Schema({
 
     scores: {
     	type: [{
-                userName: String,
+                user_id: mongoose.Schema.Types.ObjectId,
     			name: String, 
     			score: String, 
     			createDate: { type: Date, default: Date.now }
