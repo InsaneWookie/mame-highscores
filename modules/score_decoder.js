@@ -283,7 +283,7 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 			name += this.getSpecialChar(specialChars, value);
 		} else {
 			//TODO: better error handling if its out of range
-			name += charMap[b];
+			name += charMap[specialCharValue[0]];
 		}
 
 	}
