@@ -74,7 +74,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	fs.closeSync(fileHandle);
 
 	return scoreData;
-} 
+} ;
 	
 //TODO: optimise this. scans through evey game 
 //make a hash map of the games so we can look them up fast
@@ -93,7 +93,7 @@ ScoreDecoder.prototype.getGameMappingStructure = function(gameName){
 	}
 
 	return null;
-}
+};
 
 
 ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
@@ -135,7 +135,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 	}
 
 	return this.postProcessValue(value, settings);
-}
+};
 
 
 ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
@@ -144,7 +144,7 @@ ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
 	bytes = this.removeIgnoreBytes(bytes, settings);
 	bytes = this.addOffset(bytes, settings);
 	return bytes;
-}
+};
 
 ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 	
@@ -158,7 +158,7 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 		}		
 	}
 	return new Buffer(clean);
-}
+};
 
 
 ScoreDecoder.prototype.addOffset = function(bytes, settings){
@@ -176,7 +176,7 @@ ScoreDecoder.prototype.addOffset = function(bytes, settings){
 	}
 
 	return bytes;
-}
+};
 
 
 ScoreDecoder.prototype.postProcessValue = function(value, settings){
@@ -321,6 +321,8 @@ ScoreDecoder.prototype.decodeCustom = function(bytes, gameName){
 		case "zerowing":
 		//case "zerowing2":
 			return this.decodeZerowing(bytes);
+		case "ddonpach":
+			return this.decodeDdonpach(bytes);
 	}
 };
 
@@ -351,12 +353,11 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		var nameBytes = new Buffer(bytes.slice(currentNameByte, currentNameByte + 12));
 
 		var nameData = new Buffer([nameBytes[0], nameBytes[2], nameBytes[4]]);
-		//console.log(nameData);
+		
 		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
-		//console.log(nameData);
-
+		
 		var scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
-		//scoreString = scoreString.substring(0, scoreString.length-1);
+		
 		scoreData.push({
 			name: this.decodeFromCharMap(nameData, "upper", 
 				{ special: {'24': "!", '25': ',', '26': '.', '27': '+'}}),
@@ -366,6 +367,45 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 	var data = {};
 	data.zerowing = scoreData;
 	return data;
+
+};
+
+ScoreDecoder.prototype.decodeDdonpach = function(bytes){
+
+	var specialChars = { special: {'38': "."} } ;
+
+	var scoreDecoder = this;
+
+	var getDdonName = function (bytes, start, end){
+
+		//the dodonpachi format is a bit weird
+		//the letters got up in multpules of 4 ed A = 0x84, B = 0x88, etc
+		//so we devide by 4 and minus 33 to get A = 0x00, B = 0x01, etc
+		//but we need to make sue we dont adjust special chars
+		nameData = scoreDecoder.preProcessBytes(bytes.slice(start, end), { ignoreBytes: [1,3]});
+
+		if(nameData[0] >= 0x84) { nameData[0] = (nameData[0] / 4) - 33; }
+		if(nameData[1] >= 0x84) { nameData[1] = (nameData[1] / 4) - 33; }
+		if(nameData[2] >= 0x84) { nameData[2] = (nameData[2] / 4) - 33; }
+
+		return scoreDecoder.decodeFromCharMap(nameData, "upper", specialChars);
+	};
+
+	var getDdonScore = function(bytes, start, end, last){
+		return scoreDecoder.decodeAsIs(bytes.slice(start, end).toString('hex') + 
+			bytes.slice(last, last+1).toString('hex')[1]);
+	};
+
+
+	var data = [
+		{ score: getDdonScore(bytes, 0, 4, 91), name: getDdonName(bytes, 21, 26) },
+		{ score: getDdonScore(bytes, 5, 8, 93), name: getDdonName(bytes, 27, 32) },
+		{ score: getDdonScore(bytes, 9, 12, 95), name: getDdonName(bytes, 33, 38) },
+		{ score: getDdonScore(bytes, 13, 16, 97), name: getDdonName(bytes, 39, 44) },
+		{ score: getDdonScore(bytes, 17, 20, 99), name: getDdonName(bytes, 45, 50) }
+	];
+
+	return { ddonpach: data };
 
 };
 

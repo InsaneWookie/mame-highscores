@@ -492,6 +492,16 @@ gameInfos = [
     }
   },
   {
+    "name": "ddonpach",
+    "fullName": "DoDonPachi (International, Master Ver. 97/02/05)",
+    "letter": "d",
+    "order": ["score", "name"],
+    "sort": {
+      "by": "score",
+      "order": "desc"
+    }
+  },
+  {
     "name": "dkong",
     "fullName": "Donkey Kong (US set 1)",
     "letter": "d",

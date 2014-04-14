@@ -234,6 +234,14 @@ gameMaps = [
   },
   {
     "name": [
+      "ddonpach"
+    ],
+    "structure": { 
+      "custom": true
+    }
+  },
+  {
+    "name": [
       "dino",
       "dinoj",
       "dinou",

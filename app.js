@@ -17,7 +17,7 @@ var app = express();
 
 var mongoose = require('mongoose');
 
-var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores'
+var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores';
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
 mongoose.connect(uristring);
@@ -68,6 +68,7 @@ app.use(app.router);
 
 
 app.get('/', routes.index);
+app.get('/notification', routes.notification);
 
 //user routes
 app.get('/users', users.list);
@@ -85,6 +86,8 @@ app.get('/games/:game_id', games.game);
 
 app.get('/game/upload', games.upload);
 app.post('/game/upload', games.upload);
+
+
 
 
 //app.get('/scores', scores.list);

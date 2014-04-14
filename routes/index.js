@@ -13,3 +13,7 @@ exports.index = function(req, res){
 
   
 };
+
+exports.notification = function(req, res){		
+		res.render('notification_test');
+};

@@ -1,0 +1,31 @@
+extends layout
+
+block content
+	h2 Notification Test
+
+	input(type='button' value='Enable Notifications', id='notifications') 
+	span  Click again to see notification
+
+	script.
+		jQuery('#notifications').click(function(){
+			Notification.requestPermission(function (status) {
+			// This allows to use Notification.permission with Chrome/Safari
+				if (Notification.permission !== status) {
+					Notification.permission = status;
+				}
+
+				var n = new Notification("Someone just beat your score", 
+					{ body: "Click here to view the new scores", icon: "/images/notification-icon.png"});
+				n.onclick = function() {
+					n.close();
+					location.href = "/games";
+
+				}
+
+				n.onshow = function () { 
+					setTimeout(function() { n.close() }, 5000); 
+				}
+
+			});
+		});
+		
