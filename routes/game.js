@@ -89,49 +89,90 @@ exports.upload = function(req, res){
 
 
 	var scoreData = { hasMapping: false, scores: [] };
+	var Game = mongoose.model('Game');
 
 	if(decodedScores !== null){
 		//if we have some score data, process it
 
-		scoreData = {hasMapping: true, scores: decodedScores[gameName]};
+		//scoreData = {hasMapping: true, scores: []};
+
 
 		//go through the scores and see if any of the uses have aliases for them
 		//this asumes that alaises are unique (just finds the first user)
 		var User = mongoose.model('User');
 		//probably could do this with a reduce function??
-		var scores = scoreData.scores;
-		var scoreLength = scores.length;
+		//var scores = scoreData.scores;
+		
+		var newScores = decodedScores[gameName];
+		//console.log(newScores);
 
 		//go through each score and see if we can find a user with and alias that matches
-		scores.forEach(function(score, index){
+		Game.findOne({name: gameName}, function(err, game){
 
-			User.findOne({ aliases: { $in: [score.name] } }, function(err, user){
+			
+			var filteredScores;
+
+			filteredScores = newScores.filter(function(newScore){
+				//if it doesnt exist then we want to add it to ther filtered scores list
+				return !game.scores.some(function(currentScore){
+					return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);	
+				});
+			});	
+
+			console.log(filteredScores);
+			//scoreData = { $push: { scores: { $each: filteredScores } } };
+			var scoreLength = filteredScores.length;
+
+			if(scoreLength === 0){
+				res.redirect('/games/' + gameName);
+				return;
+			}
+			//scores.forEach(function(score, index){
+
+			//see if it does not exist. 
+			//FIXME: There will be a much better way of doing this. At least need to add 
+			//indexing on scores name/score fields
+
+			//does this score exist already
+
+			//console.log(scoreData);
+				
+			filteredScores.forEach(function(score, index){
+
+				//console.log(score);
+
+				User.findOne({ aliases: { $in: [score.name] } }, function(err, user){
 		
-				scoreLength--;
+					scoreLength--;
 
-				if(err){ 
-					console.log(err);
-				} else if (user !== null) { //we found a user
-					scoreData.scores[index].user_id = user._id;
-				}
+					if(err){ 
+						console.log(err);
+					} else if (user !== null) { //we found a user
+						filteredScores.scores[index].user_id = user._id;
+					}
 
-				//once we have processed all the scores, need to update them 
-				//not the most elegant wat to deal with the async nature of node				
-				if(scoreLength === 0){
-					var Game = mongoose.model('Game');
+				
 
-					//TODO: add new scores to the list instead of over writing all scores
-					Game.findOneAndUpdate({name: gameName}, scoreData, { upsert: true }, function (err, saved) {
-						if(err) { console.log(err); }
+					//once we have processed all the scores, need to update them 
+					//not the most elegant way to deal with the async nature of node				
+					if(scoreLength === 0){
+						console.log(filteredScores);
+						//TODO: add new scores to the list instead of over writing all scores
+						Game.findOneAndUpdate({name: gameName}, 
+							{hasMapping: true, $push : { scores: { $each: filteredScores } } }, 
+							{ upsert: true }, function (err, saved) {
+							if(err) { console.log(err); }
 
-						if(req.accepts('json, html') == 'json'){
-							res.json(saved);		
-						} else {
-							res.redirect('/games/' + gameName);
-						}
-					});
-				}
+							if(req.accepts('json, html') == 'json'){
+								res.json(saved);		
+							} else {
+								res.redirect('/games/' + gameName);
+							}
+						});
+					}
+				});
 			});
+			//});
 		});
 
 		//scoreData.scores = scores;
@@ -143,7 +184,7 @@ exports.upload = function(req, res){
 		var fileBytes = fs.readFileSync(filePath);
 		scoreData = {hasMapping: false, $push: {  rawScores: { version: hiScoreVersion, bytes: fileBytes.toString('hex') } } };
 
-		var Game = mongoose.model('Game');
+		//var Game = mongoose.model('Game');
 
 		//TODO: add new scores to the list instead of over writing all scores
 		Game.findOneAndUpdate({name: gameName}, scoreData, { upsert: true }, function (err, saved) {

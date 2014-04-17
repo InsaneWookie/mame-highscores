@@ -7,9 +7,11 @@ block content
 		input(type='file', name='game')
 		br
 		input(type='text', name='gamename', placeholder='Enter optional game name') 
-		span If the game name is different from the what the file is named, enter it here
+		span  If the game name is different from the what the file is named, enter it here
 		br
-		input(type='text', name='version', placeholder='hiscore.dat version')
+		input(type='text', name='version', placeholder='hiscore.dat version' value='0.108') 
+		|  This is the latest version in your hiscore.dat file that the game high score file was created with. Currently only zero wing supports multiple versions. 
+		| Examples 0.108 or 0.100, etc
 		br
 		input(type='submit')
 	br
