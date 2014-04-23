@@ -20,7 +20,14 @@ exports.list = function(req, res){
 		limitQuery = (req.query.allScores == 'true') ? {} : { scores: { $slice : 5} };
 		
 		var Game = mongoose.model('Game');
-		Game.find(query, limitQuery).sort(sort).lean().exec(function (err, docs) {
+		Game.find(query, limitQuery).sort(sort).exec(function (err, docs) {
+
+			docs.forEach(function(g){
+				g.scores.sort(function(a, b){
+					return parseInt(b.score) - parseInt(a.score);
+				});
+			});
+
 			if(req.accepts('json, html') == 'json'){
 				res.json(docs);
 			} else {
@@ -33,6 +40,11 @@ exports.list = function(req, res){
 exports.game = function(req, res){
 	var Game = mongoose.model('Game');
 	Game.findOne({name: req.params.game_id}, function (err, game){
+
+		game.scores.sort(function(a, b){
+			return parseInt(b.score) - parseInt(a.score);
+		});
+
 		if(req.accepts('json, html') == 'json'){
 			res.json(game);
 		} else {

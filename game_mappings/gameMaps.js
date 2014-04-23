@@ -780,6 +780,20 @@ gameMaps = [
   },
   {
     "name": [
+      "tgm2"
+    ],
+    "structure": {
+      "blocks": 3,
+      "skip": 172,
+      "fields": [
+        {"name": "name", "bytes": 3, "format": "ascii"},
+        {"name": "trash", "bytes": 2},
+        {"name": "score", "bytes": 3, "format": "hexToDecimal"},
+      ]
+    }
+  },
+  {
+    "name": [
       "pc_trjan",
       "trojan",
       "trojanj",

@@ -1343,6 +1343,16 @@ gameInfos = [
     }
   },
   {
+    "name": "tgm2",
+    "fullName": "Tetris The Absolute The Grand Master 2",
+    "letter": "t",
+    "order": ["mode", "score", "name"],
+    "sort": {
+      "by": "score",
+      "order": "desc"
+    }
+  },
+  {
     "name": "trojan",
     "fullName": "Trojan (US)",
     "letter": "t",
