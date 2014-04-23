@@ -22,6 +22,7 @@ exports.list = function(req, res){
 		var Game = mongoose.model('Game');
 		Game.find(query, limitQuery).sort(sort).exec(function (err, docs) {
 
+			//need to sort at the application level as I cant't work out how to sort it in mongo
 			docs.forEach(function(g){
 				g.scores.sort(function(a, b){
 					return parseInt(b.score) - parseInt(a.score);
@@ -160,7 +161,7 @@ exports.upload = function(req, res){
 					if(err){ 
 						console.log(err);
 					} else if (user !== null) { //we found a user
-						filteredScores.scores[index].user_id = user._id;
+						filteredScores[index].user_id = user._id;
 					}
 
 				
