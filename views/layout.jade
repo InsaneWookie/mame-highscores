@@ -20,7 +20,8 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/') Mame High Scores
+          a.navbar-brand(href='/') Mame High Scores 
+            small(style='font-size: 0.5em') (v#{global.version})
         .navbar-collapse.collapse
           ul.nav.navbar-nav
             li
@@ -33,6 +34,8 @@ html
               a(href='/game/upload') Upload File
             li
               a(href='/notification') Notification Test
+            li
+              a(href='/admin') Admin
               
           form.navbar-form.navbar-right(role='search')
             .form-group

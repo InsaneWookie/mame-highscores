@@ -1,0 +1,8 @@
+extends layout
+
+block content
+	h2 Admin
+
+	form(action='/admin/process_new_scores', method='post')
+		input(type='submit', value='Process New Games', name='submit') 
+		span  This will check for new games that have had mappings added and process any raw scores that were uploaded

@@ -10,17 +10,4 @@ block content
 	each game in games	
 		h3 
 			a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
-		if !game.hasMapping && game.rawScores != undefined
-			div No file decode mapping for this game. Here are the raw file bytes (in hex)
-			br
-			each rawScore in game.rawScores
-				div(style='width: 400px; word-wrap: break-word;') #{rawScore.createDate} -> #{rawScore.bytes}
-		else if game.scores != undefined
-			table.table.table-striped
-				tr
-					th Name
-					th Score
-					each score in game.scores
-						tr
-							td= score.name
-							td= score.score
+		include _scores

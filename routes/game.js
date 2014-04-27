@@ -1,4 +1,4 @@
-//var db = require('../db');
+
 var fs = require('fs');
 var mongoose = require('mongoose');
 
@@ -17,17 +17,24 @@ exports.list = function(req, res){
 		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
 		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
 
-		limitQuery = (req.query.allScores == 'true') ? {} : { scores: { $slice : 5} };
+		//can't limit as we need to sort them first, and mongo sorting is crap
+		//limitQuery = (req.query.allScores == 'true') ? {} : { scores: { $slice : 5} };
 		
 		var Game = mongoose.model('Game');
-		Game.find(query, limitQuery).sort(sort).exec(function (err, docs) {
+		Game.find(query).sort(sort).exec(function (err, docs) {
 
 			//need to sort at the application level as I cant't work out how to sort it in mongo
 			docs.forEach(function(g){
 				g.scores.sort(function(a, b){
 					return parseInt(b.score) - parseInt(a.score);
 				});
+
+				if(req.query.allScores !== 'true'){
+					g.scores = g.scores.slice(0, 5);
+				}
 			});
+
+
 
 			if(req.accepts('json, html') == 'json'){
 				res.json(docs);
@@ -98,7 +105,7 @@ exports.upload = function(req, res){
 
 	//need to check if the game exists in the mapping file, 
 	//and if not then we add it to the database but flag it as missing
-	var decodedScores = decoder.decode(gameMaps, filePath, gameName, hiScoreVersion);
+	var decodedScores = decoder.decodeFromFile(gameMaps, filePath, gameName, hiScoreVersion);
 
 
 	var scoreData = { hasMapping: false, scores: [] };
@@ -122,74 +129,20 @@ exports.upload = function(req, res){
 		//go through each score and see if we can find a user with and alias that matches
 		Game.findOne({name: gameName}, function(err, game){
 
-			
-			var filteredScores;
+			if(err) { console.log(err); }
 
-			filteredScores = newScores.filter(function(newScore){
-				//if it doesnt exist then we want to add it to ther filtered scores list
-				return !game.scores.some(function(currentScore){
-					return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);	
-				});
-			});	
-
-			console.log(filteredScores);
-			//scoreData = { $push: { scores: { $each: filteredScores } } };
-			var scoreLength = filteredScores.length;
-
-			if(scoreLength === 0){
-				res.redirect('/games/' + gameName);
-				return;
-			}
-			//scores.forEach(function(score, index){
-
-			//see if it does not exist. 
-			//FIXME: There will be a much better way of doing this. At least need to add 
-			//indexing on scores name/score fields
-
-			//does this score exist already
-
-			//console.log(scoreData);
+			game.addScores(newScores, function(err, saved){
 				
-			filteredScores.forEach(function(score, index){
+				if(err) { console.log(err); }
 
-				//console.log(score);
-
-				User.findOne({ aliases: { $in: [score.name] } }, function(err, user){
-		
-					scoreLength--;
-
-					if(err){ 
-						console.log(err);
-					} else if (user !== null) { //we found a user
-						filteredScores[index].user_id = user._id;
-					}
-
-				
-
-					//once we have processed all the scores, need to update them 
-					//not the most elegant way to deal with the async nature of node				
-					if(scoreLength === 0){
-						console.log(filteredScores);
-						//TODO: add new scores to the list instead of over writing all scores
-						Game.findOneAndUpdate({name: gameName}, 
-							{hasMapping: true, $push : { scores: { $each: filteredScores } } }, 
-							{ upsert: true }, function (err, saved) {
-							if(err) { console.log(err); }
-
-							if(req.accepts('json, html') == 'json'){
-								res.json(saved);		
-							} else {
-								res.redirect('/games/' + gameName);
-							}
-						});
-					}
-				});
+				if(req.accepts('json, html') == 'json'){
+					res.json(saved);		
+				} else {
+					res.redirect('/games/' + gameName);
+				}
 			});
-			//});
 		});
-
-		//scoreData.scores = scores;
-
+			
 	} else {
 
 		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later

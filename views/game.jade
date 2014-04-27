@@ -5,19 +5,6 @@ block content
 	if game === null
 		div No game found  
 	else
-
 		h3 Scores for game #{game.fullName} (#{game.name})
-		if !game.hasMapping
-			div No file decode mapping for this game. Here are the raw file bytes (in hex)
-			br
-			each rawScore in game.rawScores
-				div #{rawScore.createDate} -> #{rawScore.bytes}
-		else
-			table.table.table-striped
-				tr
-					th Name
-					th Score
-					each score in game.scores
-						tr
-							td= score.name
-							td= score.score
+		include _scores
+				

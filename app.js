@@ -1,3 +1,8 @@
+
+var pkgJson = require('./package.json');
+global.version = pkgJson.version;
+console.log("App starting. Version: " + global.version);
+
 var express = require('express');
 var http = require('http');
 var path = require('path');
@@ -7,10 +12,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes');
+var routes = require('./routes/index');
 var users = require('./routes/user');
-//var scores = require('./routes/score');
 var games = require('./routes/game');
+var admin = require('./routes/admin');
+
 
 var app = express();
 
@@ -34,9 +40,6 @@ db.once('open', function callback () {
         game.hasMapping = true;
         db.collection('games').update({ name: game.name }, { $set: game }, { upsert: true }, function(){});
     });
-
-
-
 });
 
 
@@ -66,9 +69,9 @@ app.use(require('stylus').middleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
-
+//==================== Routes =======================
 app.get('/', routes.index);
-app.get('/notification', routes.notification);
+app.get('/notification', routes.notification); 
 
 //user routes
 app.get('/users', users.list);
@@ -88,11 +91,10 @@ app.get('/game/upload', games.upload);
 app.post('/game/upload', games.upload);
 
 
-
-
-//app.get('/scores', scores.list);
-//app.get('/scores/:game', scores.game);
-//app.post('/scores/upload', scores.upload);
+//admin routes
+app.get('/admin', admin.index);
+app.post('/admin/process_new_scores', admin.process_new_scores);
+//=====================================================
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {

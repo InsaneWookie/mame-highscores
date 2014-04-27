@@ -45,7 +45,7 @@ if(pathStat.isFile()){
 		gameName = process.argv[3];
 	}
 
-	result = decoder.decode(gameMaps, file, gameName);
+	result = decoder.decodeFromFile(gameMaps, file, gameName);
 
 	if(result !== null){
 		console.log(result);
@@ -68,7 +68,7 @@ if(pathStat.isFile()){
 
 		gameName = path.basename(file, '.hi');
 
-		result = decoder.decode(gameMaps, file, gameName);
+		result = decoder.decodeFromFile(gameMaps, file, gameName);
 
 		//console.log(gameName);
 

@@ -2,9 +2,15 @@
 //TODO: clean this up to follow node js module way
 var fs = require('fs');
 
-exports.decode = function(gameSaveMappings, filePath, gameName, mappingsVersion){
+exports.decode = function(gameSaveMappings, buffer, gameName, mappingsVersion){
 	var decoder = new ScoreDecoder(gameSaveMappings, mappingsVersion);
-	return decoder.decode_internal(filePath, gameName);
+	return decoder.decode_internal(buffer, gameName);
+};
+
+exports.decodeFromFile = function(gameSaveMappings, filePath, gameName, mappingsVersion){
+	var decoder = new ScoreDecoder(gameSaveMappings, mappingsVersion);
+	var buffer = fs.readFileSync(filePath);
+	return decoder.decode_internal(buffer, gameName);
 };
 
 function ScoreDecoder(gameSaveMappings, mappingsVersion) {
@@ -13,9 +19,9 @@ function ScoreDecoder(gameSaveMappings, mappingsVersion) {
 }
 
 
-ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
+ScoreDecoder.prototype.decode_internal = function(buffer, gameName){
 	
-	var fileHandle = fs.openSync(filePath, 'r');
+	//var fileHandle = fs.openSync(filePath, 'r');
 
 	//structure for storing the scores we read out
 	// array('game_name' => array('name' => 'ABC', 'score' => 1234))
@@ -25,45 +31,50 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 
 	if(structure === null){
 		//no game mapping strucure found for this game
-		fs.closeSync(fileHandle);
+		//fs.closeSync(fileHandle);
 		return null; 
 	}
 
 	//see if we need to skip any bytes
 	if(structure.skip !== undefined){
-		var skipBuffer = new Buffer(structure['skip']);
-		fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
+		//var skipBuffer = new Buffer(structure['skip']);
+		//fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
+		buffer = buffer.slice(structure.skip, buffer.length);
 	}
 
 	//use a custom functions for decoding this file
 	if('custom' in structure){
-		var buff = fs.readFileSync(filePath, {flag: 'r'});
+		//var buff = fs.readFileSync(filePath, {flag: 'r'});
 		//console.log(buff.toString('hex'));
-		return this.decodeCustom(buff, gameName);
+		return this.decodeCustom(buffer, gameName);
 	}
 
 	scoreData[gameName] = [];
 
-	for(var scoreCount = 0; scoreCount < structure['blocks']; scoreCount++){
+	//the structure.blocks defines bassically how many scores the game has
+	for(var scoreCount = 0; scoreCount < structure.blocks; scoreCount++){
 		
 		var data = {};
 
-		for(var fieldIndex in structure['fields']){
-			var field = structure['fields'][fieldIndex];
+		for(var fieldIndex in structure.fields){
+			var field = structure.fields[fieldIndex];
 
-			var byteCount = field['bytes'];
-			var bytes = new Buffer(byteCount);
-			fs.readSync(fileHandle, bytes, 0, byteCount);
+			var byteCount = field.bytes;
+			//var bytes = new Buffer(byteCount);
+			var bytes = buffer.slice(0, byteCount);
+			//remove the bytes we just slice from the full buffer so we dont read them nect time round
+			buffer = buffer.slice(byteCount, buffer.length);
+			//fs.readSync(fileHandle, bytes, 0, byteCount);
 
 		
 			//currently only store name and score, skip all other fields
-			if(field['name'] === 'name' || field['name'] === 'score'){
-				var format = field['format'];
-				var settings = (field['settings'] != undefined) ? field['settings'] : new Array(); //array or null, can't decide
+			if(field.name === 'name' || field.name === 'score'){
+				var format = field.format;
+				var settings = (field.settings !== undefined) ? field.settings : []; //array or null, can't decide
 
 				var decodedBytes = this.decodeBytes(bytes, format, settings);
 		
-				data[field['name']] = decodedBytes + ''; //make sure is a string
+				data[field.name] = decodedBytes + ''; //make sure is a string
 			}
 		}
 		
@@ -71,7 +82,7 @@ ScoreDecoder.prototype.decode_internal = function(filePath, gameName){
 	}
 
 	//TODO: need to catch any errors otherwise it will leave the file handle open (maybe its better if we dont open the file in this function?)
-	fs.closeSync(fileHandle);
+	//fs.closeSync(fileHandle);
 
 	return scoreData;
 } ;

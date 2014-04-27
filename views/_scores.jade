@@ -1,0 +1,16 @@
+if !game.hasMapping
+	div No file decode mapping for this game. Here are the raw file bytes (in hex)
+	br
+	each rawScore in game.rawScores
+		div #{rawScore.createDate} -> #{rawScore.bytes}
+else
+	table.table.table-striped
+		tr
+			th Name
+			th Score
+			th Date
+			each score in game.scores
+				tr
+					td= score.name
+					td= score.score
+					td= new Date(score.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
