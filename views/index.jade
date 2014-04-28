@@ -5,11 +5,26 @@ block content
 	
 	form(action='/games', method='get')
 		div Select game to view scores
-		select(name='game')
+		select(name='game') 
 			each val in games
 				option(value='#{val.name}') #{val.fullName}
-		br
-		input(type='submit', value="Go")
+		input(type='submit', value="Go" style='margin-left: 5px')
+
+	h3 Latest Scores
+
+	table.table.table-striped
+		tr
+			th Game Name
+			th Name
+			th Score
+			th Date
+			each score in latestScores
+				tr
+					td= score.gameName
+					td= score.name
+					td= score.score
+					td= new Date(score.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
+
 
 
 

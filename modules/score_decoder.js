@@ -2,20 +2,20 @@
 //TODO: clean this up to follow node js module way
 var fs = require('fs');
 
-exports.decode = function(gameSaveMappings, buffer, gameName, mappingsVersion){
-	var decoder = new ScoreDecoder(gameSaveMappings, mappingsVersion);
+exports.decode = function(gameSaveMappings, buffer, gameName){
+	var decoder = new ScoreDecoder(gameSaveMappings);
 	return decoder.decode_internal(buffer, gameName);
 };
 
-exports.decodeFromFile = function(gameSaveMappings, filePath, gameName, mappingsVersion){
-	var decoder = new ScoreDecoder(gameSaveMappings, mappingsVersion);
+exports.decodeFromFile = function(gameSaveMappings, filePath, gameName){
+	var decoder = new ScoreDecoder(gameSaveMappings);
 	var buffer = fs.readFileSync(filePath);
 	return decoder.decode_internal(buffer, gameName);
 };
 
-function ScoreDecoder(gameSaveMappings, mappingsVersion) {
+function ScoreDecoder(gameSaveMappings) {
 	this.gameSaveMappings = gameSaveMappings;
-	this.mappingsVersion = mappingsVersion;
+	//this.mappingsVersion = mappingsVersion;
 }
 
 
@@ -347,11 +347,12 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 	var scoreStart = 5;
 	var nameStart = 25;
 
+/*
 	if(this.mappingsVersion <= '0.100') {
 		scoreStart = 1;
 		nameStart = 21;
 	}
-
+*/
 
 	//get scores and names
 	for(var i = 0; i < 5; i++){

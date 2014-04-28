@@ -81,12 +81,12 @@ exports.upload = function(req, res){
     //probably should error out if no high score file version supplied
     //as it can mess up the decoding if we dont know what version the .hi file 
     //was created with
-    var hiScoreVersion = ('version' in req.body) ? req.body.version.trim() : '';
+    //var hiScoreVersion = ('version' in req.body) ? req.body.version.trim() : '';
 
-    if(hiScoreVersion === ''){
-    	res.json({ error: "no version provided"});
-    	return;
-    }
+    //if(hiScoreVersion === ''){
+    //	res.json({ error: "no version provided"});
+    //	return;
+    //}
 
     //quick check for valid data
     if(!('game' in req.files) || !('path' in req.files.game)){
@@ -100,12 +100,14 @@ exports.upload = function(req, res){
     var gameName = req.body.gamename;
 	//invalid game so try and work it out from the file name
 	if(typeof gameName != 'string' || gameName.length === 0){
-		gameName = path.basename(req.files.game.name, '.hi');	
+		//gameName = path.basename(req.files.game.name, '.hi');	
+		var fileName = req.files.game.name;
+    	gameName = fileName.substring(0, fileName.lastIndexOf('.'));
 	}
 
 	//need to check if the game exists in the mapping file, 
 	//and if not then we add it to the database but flag it as missing
-	var decodedScores = decoder.decodeFromFile(gameMaps, filePath, gameName, hiScoreVersion);
+	var decodedScores = decoder.decodeFromFile(gameMaps, filePath, gameName);
 
 
 	var scoreData = { hasMapping: false, scores: [] };
@@ -148,7 +150,7 @@ exports.upload = function(req, res){
 		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
 
 		var fileBytes = fs.readFileSync(filePath);
-		scoreData = {hasMapping: false, $push: {  rawScores: { version: hiScoreVersion, bytes: fileBytes.toString('hex') } } };
+		scoreData = {hasMapping: false, $push: {  rawScores: { bytes: fileBytes.toString('hex') } } };
 
 		//var Game = mongoose.model('Game');
 

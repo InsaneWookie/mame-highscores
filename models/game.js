@@ -22,7 +22,7 @@ var gameSchema = mongoose.Schema({
     //so we can process them later
     rawScores: [{  
     	bytes: String,
-        datVersion: { type: String, default: '0.108'}, //version of the hiscore.dat file these raw scores were created with
+        //datVersion: { type: String, default: '0.108'}, //version of the hiscore.dat file these raw scores were created with
     	createDate: { type: Date, default: Date.now }
     }]
 });

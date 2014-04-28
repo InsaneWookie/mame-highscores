@@ -31,7 +31,7 @@ exports.process_new_scores = function(req, res){
 
 					var buffer = new Buffer(rawScore.bytes, 'hex');
 
-					var decodedScores = scoreDecoder.decode(gameMaps, buffer, game.name, rawScore.datVersion);
+					var decodedScores = scoreDecoder.decode(gameMaps, buffer, game.name);
 
 					game.addScores(decodedScores[game.name], function(err, saved){
 						//TODO: need to remove any raw scores after we have processed them
