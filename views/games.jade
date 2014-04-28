@@ -1,13 +1,15 @@
 extends layout
 
-block content	
+block content
 	br
-	div 
-		| Notes that this only returns the first 5 scores for a game. click 
-		a(href="/games?allScores=true") here 
-		| to view all scores
+	div
+		| Notes that this only returns the first 5 scores for a game.
+		a(href="/games?allScores=true")  view all scores
 
-	each game in games	
-		h3 
-			a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
-		include _scores
+	each game in games
+
+		div
+			img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="position:absolute; margin-left:-280px;")
+			h3
+				a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
+			include _scores
