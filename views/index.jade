@@ -20,10 +20,10 @@ block content
 			th Date
 			each score in latestScores
 				tr
-					td= score.gameName
-					td= score.name
-					td= score.score
-					td= new Date(score.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
+					td= score.fullName
+					td= score.scores.name
+					td= score.scores.score
+					td= new Date(score.scores.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.scores.createDate).toLocaleTimeString('NZ-en')
 
 
 

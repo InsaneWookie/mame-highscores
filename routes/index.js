@@ -4,35 +4,18 @@ exports.index = function(req, res){
 	var Game = mongoose.model('Game');
 	Game.find({hasMapping: true}).sort({ fullName: 1 }).exec(function(err, games){
 		
-		var latestScores = [];
+		Game.collection.aggregate([{$unwind:'$scores'}, {$sort:{'scores.createDate':-1}}, { $limit: 10 }], function(err, result){
 
-		games.forEach(function(g){
-			//console.log(g.scores);
-			var scores = g.scores;
-			scores.forEach(function(s){
-				s.gameName = g.fullName;
+			res.render('index', 
+			{ 
+				title: 'Select file to upload',
+				games: games,
+				latestScores: result
 			});
-
-			latestScores = latestScores.concat(scores);
 		});
 
-		console.log(latestScores);
-
-		latestScores.sort(function(a, b){
-			return (b.createDate) - (a.createDate);
-		});
 
 		
-		latestScores = latestScores.slice(0, 10);
-		
-
-
-		res.render('index', 
-		{ 
-			title: 'Select file to upload',
-			games: games,
-			latestScores: latestScores
-		});
 	});
 
   
