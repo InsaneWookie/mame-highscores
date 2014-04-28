@@ -8,8 +8,9 @@ block content
 
 	each game in games
 
-		div
-			img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="position:absolute; margin-left:-280px;")
+		div(style="float:left; clear:left; margin-left:-280px; margin-top: 30px;")
+			img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="max-width:265px")
+		div(style="float:left;")
 			h3
 				a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
 			include _scores
