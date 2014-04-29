@@ -98,6 +98,7 @@ app.post('/admin/process_new_scores', admin.process_new_scores);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
+    console.log('error');
     var err = new Error('Not Found');
     err.status = 404;
     next(err);

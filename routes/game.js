@@ -13,9 +13,12 @@ exports.list = function(req, res){
 		var sort = {name: 1};
 		var query = { scores : { $exists: true } };
 
-		if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
-		if(req.query.hasRawScores == 'true') { query.rawScores = { $exists: true }; }
-		if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
+		//if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
+		if(req.query.hasRawScores == 'true') { 
+			query.rawScores = { $exists: true }; 
+			query.scores = { $exists: false };
+		}
+		//if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
 
 		//can't limit as we need to sort them first, and mongo sorting is crap
 		//limitQuery = (req.query.allScores == 'true') ? {} : { scores: { $slice : 5} };
@@ -34,8 +37,6 @@ exports.list = function(req, res){
 				}
 			});
 
-
-
 			if(req.accepts('json, html') == 'json'){
 				res.json(docs);
 			} else {
@@ -45,18 +46,27 @@ exports.list = function(req, res){
 	}
 };
 
-exports.game = function(req, res){
+exports.game = function(req, res, next){
 	var Game = mongoose.model('Game');
 	Game.findOne({name: req.params.game_id}, function (err, game){
 
-		game.scores.sort(function(a, b){
-			return parseInt(b.score) - parseInt(a.score);
-		});
-
-		if(req.accepts('json, html') == 'json'){
-			res.json(game);
+		if(err){
+			console.log(err);
+			next(err); //not sure if this will work
+		} else if(game === null){
+			res.status(404); //probably a better way of doing this
+			next(new Error('Game does not exist'));
 		} else {
-			res.render('game', {game: game});
+
+			game.scores.sort(function(a, b){
+				return parseInt(b.score) - parseInt(a.score);
+			});
+
+			if(req.accepts('json, html') == 'json'){
+				res.json(game);
+			} else {
+				res.render('game', {game: game});
+			}
 		}
 	});
 	
@@ -70,8 +80,6 @@ exports.upload = function(req, res){
 		res.render('upload');
 		return;
 	}
-
-
 
 	var path = require('path');
 	require('../game_mappings/gameMaps');

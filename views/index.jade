@@ -20,8 +20,13 @@ block content
 			th Date
 			each score in latestScores
 				tr
-					td= score.fullName
-					td= score.scores.name
+					td 
+						a(href='/games/#{score.name}') #{score.fullName}
+					td 
+						if (score.scores.user_id)
+							a(href='/users/#{score.scores.user_id}') #{score.scores.name}
+						else
+							span #{score.scores.name}
 					td= score.scores.score
 					td= new Date(score.scores.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.scores.createDate).toLocaleTimeString('NZ-en')
 

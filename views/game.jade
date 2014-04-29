@@ -5,8 +5,10 @@ block content
 	if game === null
 		div No game found
 	else
-		div(class="titleImg" style="position:absolute; margin-left:-280px; margin-top:30px;")
-			img(src="http://sifty.tk/hiscores/titles/#{game.name}.png")
-		div
-			h3 Scores for game #{game.fullName} (#{game.name})
-			include _scores
+		div.row
+			h2 #{game.fullName} (#{game.name})
+			div.col-md-4(class="titleImg" )
+				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
+			div.col-md-8
+				
+				include _scores

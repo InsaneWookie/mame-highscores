@@ -145,7 +145,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 			break;
 	}
 
-	return this.postProcessValue(value, settings);
+	return this.postProcessValue(value, settings).trim();
 };
 
 

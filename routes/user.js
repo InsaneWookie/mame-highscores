@@ -10,15 +10,22 @@ exports.list = function(req, res){
 	
 };
 
-exports.user = function(req, res){
+exports.user = function(req, res, next){
 	var User = mongoose.model('User');
 	var Game = mongoose.model('Game');
 
 	User.findOne({ _id: req.params.id}, function (err, user){
-		if(err) { console.log(err); return;}
+		if(err) { console.log(err); next(err); return; } //TODO: better error handling to invalid or bad user id
 		//console.log(user);
 		//TODO: under stand what type the _id fields are and how to use them prperly (instead of doing a to string)
 		Game.find({ scores: { $elemMatch: { user_id: user._id }}}, function (err, games){
+
+			games.forEach(function(game){
+				game.scores.sort(function(a, b){
+					return parseInt(b.score) - parseInt(a.score);
+				});
+			});
+
 			res.render('user', { user: user, games: games });
 		});
 	});

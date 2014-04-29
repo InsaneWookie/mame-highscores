@@ -901,7 +901,16 @@ gameInfos = [
       "order": "desc"
     }
   },
-
+  {
+    "name": "motos",
+    "fullName": "Motos",
+    "letter": "m",
+    "order": ["score", "name"],
+    "sort": {
+      "by": "score",
+      "order": "desc"
+    }
+  },
   {
     "name": "mslugx",
     "fullName": "Metal Slug X - Super Vehicle-001 (NGM-2500)(NGH-2500)",

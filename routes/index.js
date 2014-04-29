@@ -4,7 +4,7 @@ exports.index = function(req, res){
 	var Game = mongoose.model('Game');
 	Game.find({hasMapping: true}).sort({ fullName: 1 }).exec(function(err, games){
 		
-		Game.collection.aggregate([{$unwind:'$scores'}, {$sort:{'scores.createDate':-1}}, { $limit: 10 }], function(err, result){
+		Game.collection.aggregate([{$unwind:'$scores'}, {$sort:{'scores.createDate':-1, 'scores.score': -1}}, { $limit: 10 }], function(err, result){
 
 			res.render('index', 
 			{ 
@@ -13,12 +13,7 @@ exports.index = function(req, res){
 				latestScores: result
 			});
 		});
-
-
-		
 	});
-
-  
 };
 
 exports.notification = function(req, res){		

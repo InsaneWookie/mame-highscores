@@ -472,6 +472,21 @@ gameMaps = [
   },
   {
     "name": [
+      "motos"
+    ],
+    "structure": {
+      "skip": 5,
+      "blocks": 5,
+      "fields": [
+        {"name": "score", "bytes": 7, "format": "ascii"},        
+        {"name": "trash", "bytes": 6},
+        {"name": "name", "bytes": 8, "format": "ascii"},
+        {"name": "trash", "bytes": 11},
+      ]
+    }
+  },
+  {
+    "name": [
       "mmatrix",
       "mmatrixd",
       "mmatrixj"

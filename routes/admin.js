@@ -14,7 +14,7 @@ exports.process_new_scores = function(req, res){
 	//creates a variable gameMaps
 	require('../game_mappings/gameMaps');
 	
-	Game.find({ hasMapping : true, rawScores: { $exists: true}}, function(err, games){
+	Game.find({ hasMapping : true, rawScores: { $exists: true }}, function(err, games){
 
 		if(err) {
 			console.log(err);
@@ -33,9 +33,14 @@ exports.process_new_scores = function(req, res){
 
 					var decodedScores = scoreDecoder.decode(gameMaps, buffer, game.name);
 
-					game.addScores(decodedScores[game.name], function(err, saved){
-						//TODO: need to remove any raw scores after we have processed them
-					});
+					if(decodedScores === null){
+						console.log('Unable to decode scores for game' + game.name);
+					} else {
+
+						game.addScores(decodedScores[game.name], function(err, saved){
+							//TODO: need to remove any raw scores after we have processed them
+						});
+					}
 
 				});
 			});

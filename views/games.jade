@@ -5,12 +5,14 @@ block content
 	div
 		| Notes that this only returns the first 5 scores for a game.
 		a(href="/games?allScores=true")  view all scores
+		br
+		a(href="/games?hasRawScores=true")  view missing games with raw scores
 
 	each game in games
-
-		div(style="float:left; clear:left; margin-left:-280px; margin-top: 30px;")
-			img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="max-width:265px")
-		div(style="float:left;")
-			h3
-				a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
-			include _scores
+		div.row
+			div.col-md-4(style="margin-top: 21px;")
+				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
+			div.col-md-8
+				h3
+					a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
+				include _scores

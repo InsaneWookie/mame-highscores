@@ -11,6 +11,10 @@ else
 			th Date
 			each score in game.scores
 				tr
-					td= score.name
+					td
+						if (score.user_id)
+							a(href='/users/#{score.user_id}') #{score.name}
+						else
+							| #{score.name}
 					td= score.score
-					td= new Date(score.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
+					td= new Date(score.createDate).getDate() + '/' + new Date(score.createDate).getMonth() + '/' + new Date(score.createDate).getFullYear() + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
