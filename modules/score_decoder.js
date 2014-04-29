@@ -1,8 +1,9 @@
 
 //TODO: clean this up to follow node js module way
 var fs = require('fs');
+var path = require('path');
 
-exports.decode = function(gameSaveMappings, buffer, gameName){
+exports.decode = function(gameSaveMappings, buffer, gameName){ //TODO: need to pass the file type in, ie .hi or .nv
 	var decoder = new ScoreDecoder(gameSaveMappings);
 	return decoder.decode_internal(buffer, gameName);
 };
@@ -10,7 +11,39 @@ exports.decode = function(gameSaveMappings, buffer, gameName){
 exports.decodeFromFile = function(gameSaveMappings, filePath, gameName){
 	var decoder = new ScoreDecoder(gameSaveMappings);
 	var buffer = fs.readFileSync(filePath);
-	return decoder.decode_internal(buffer, gameName);
+
+	var fileType = path.extname(filePath).substring(1); //extname returns the extention with the dot so we need to remove it
+
+	//this is basically just structure part of the document from the gameMaps for this game
+	var gameMappingStructure = decoder.getGameMappingStructure(gameName, fileType);
+
+	return decoder.decode_internal(buffer, gameName, gameMappingStructure);
+};
+//TODO: really need to clean this up
+exports.getGameMappingStructure = function(gameSaveMappings, gameName, fileType){
+	//console.log(this.gameSaveMappings);
+	for(var gameMapping in gameSaveMappings){
+		
+		var gameMappingNames = gameSaveMappings[gameMapping].name; 
+		
+		for(var gameMappingName in gameMappingNames){
+			if(gameName === gameMappingNames[gameMappingName]){
+
+				//found a game but is it the right format
+				//if doesnt have a file type and the file we are decoding is a .hi then use this mapping
+				if(gameSaveMappings[gameMapping].fileType === undefined && fileType === 'hi'){
+					return gameSaveMappings[gameMapping].structure;
+
+				//else if the file types match use this mapping (probably could turn this into a single if statement)
+				} else if (gameSaveMappings[gameMapping].fileType === fileType){
+					return gameSaveMappings[gameMapping].structure;
+				}
+				//else keep looking
+			}
+		}
+	}
+
+	return null;
 };
 
 function ScoreDecoder(gameSaveMappings) {
@@ -18,8 +51,37 @@ function ScoreDecoder(gameSaveMappings) {
 	//this.mappingsVersion = mappingsVersion;
 }
 
+//TODO: optimise this. scans through evey game 
+//make a hash map of the games so we can look them up fast
+//fileType is the type of file uploaded ie .hi or .nv
+//if the game mapping does not have a file type defined then it is assumed to be using .hi
+ScoreDecoder.prototype.getGameMappingStructure = function(gameName, fileType){
+	//console.log(this.gameSaveMappings);
+	for(var gameMapping in this.gameSaveMappings){
+		
+		var gameMappingNames = this.gameSaveMappings[gameMapping].name; 
+		
+		for(var gameMappingName in gameMappingNames){
+			if(gameName === gameMappingNames[gameMappingName]){
 
-ScoreDecoder.prototype.decode_internal = function(buffer, gameName){
+				//found a game but is it the right format
+				//if doesnt have a file type and the file we are decoding is a .hi then use this mapping
+				if(this.gameSaveMappings[gameMapping].fileType === undefined && fileType === 'hi'){
+					return this.gameSaveMappings[gameMapping].structure;
+
+				//else if the file types match use this mapping (probably could turn this into a single if statement)
+				} else if (this.gameSaveMappings[gameMapping].fileType === fileType){
+					return this.gameSaveMappings[gameMapping].structure;
+				}
+				//else keep looking
+			}
+		}
+	}
+
+	return null;
+};
+
+ScoreDecoder.prototype.decode_internal = function(buffer, gameName, gameMappingStructure){
 	
 	//var fileHandle = fs.openSync(filePath, 'r');
 
@@ -27,7 +89,7 @@ ScoreDecoder.prototype.decode_internal = function(buffer, gameName){
 	// array('game_name' => array('name' => 'ABC', 'score' => 1234))
 	var scoreData = {};
 	
-	var structure = this.getGameMappingStructure(gameName);
+	var structure = gameMappingStructure;
 
 	if(structure === null){
 		//no game mapping strucure found for this game
@@ -87,24 +149,7 @@ ScoreDecoder.prototype.decode_internal = function(buffer, gameName){
 	return scoreData;
 } ;
 	
-//TODO: optimise this. scans through evey game 
-//make a hash map of the games so we can look them up fast
-ScoreDecoder.prototype.getGameMappingStructure = function(gameName){
-	//console.log(this.gameSaveMappings);
-	for(var gameMapping in this.gameSaveMappings){
-		
-		var gameMappingNames = this.gameSaveMappings[gameMapping]['name']; 
-		
-		for(var gameMappingName in gameMappingNames){
-			if(gameName === gameMappingNames[gameMappingName]){
 
-				return this.gameSaveMappings[gameMapping]['structure'];
-			}
-		}
-	}
-
-	return null;
-};
 
 
 ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){

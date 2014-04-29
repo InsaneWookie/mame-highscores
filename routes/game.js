@@ -155,6 +155,14 @@ exports.upload = function(req, res){
 			
 	} else {
 
+		//Its possible that the reson we couldn't decode the file is because its the wrong type. ie .nv instead of .hi
+		//so in this case we don't want to add the raw scores
+		if(decoder.getGameMappingStructure(gameMaps, gameName, 'hi') || decoder.getGameMappingStructure(gameMaps, gameName, 'nv')){
+			res.send("I have a mapping for this game but not for this file type.");
+			//TODO: better error handling
+			return;
+		} 
+
 		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
 
 		var fileBytes = fs.readFileSync(filePath);

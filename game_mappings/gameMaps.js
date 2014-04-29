@@ -236,6 +236,7 @@ gameMaps = [
     "name": [
       "ddonpach"
     ],
+    "fileType": "hi",
     "structure": { 
       "custom": true
     }
