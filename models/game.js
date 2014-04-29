@@ -6,6 +6,10 @@ var gameSchema = mongoose.Schema({
     fullName: {type: String, default: ''},
     hasMapping: {type: Boolean, default: true},
     letter: String,
+
+    playCount: { type: Number, default: 0 },
+    lastPlayed: { type: Date, default: Date.now },
+
     order: [{score: String, name: String}],
     sort: { by: String, order: String },
 
@@ -67,7 +71,21 @@ gameSchema.methods.addScores = function(decodedScores, callBack){
         //res.redirect('/games/' + gameName);
         //callBack({message: 'no scores to add'}); //whats the error format?
         //maybe just return the game object (ie no changes)
-        callBack(null, game);
+        //still want to update the playedCount and lastPLayed
+        Game.findOneAndUpdate(
+                    {name: gameName}, 
+                    {   
+                        hasMapping: true, 
+                        lastPlayed: new Date(),                        
+                        $inc: { playCount : 1 }
+                    }, 
+                    { upsert: true }, function (err, saved) {
+                        
+                        if(err) { console.log(err); }
+
+                        callBack(err, saved);
+                });
+
         return;
     }
     //scores.forEach(function(score, index){
@@ -99,7 +117,13 @@ gameSchema.methods.addScores = function(decodedScores, callBack){
                 //console.log(filteredScores);
                 //TODO: add new scores to the list instead of over writing all scores
                 Game.findOneAndUpdate({name: gameName}, 
-                    {hasMapping: true, $push : { scores: { $each: filteredScores } } }, 
+                    {   
+                        hasMapping: true, 
+                        lastPlayed: new Date(),
+                        $push : { scores: { $each: filteredScores } },
+                        
+                        $inc: { playCount : 1 }
+                    }, 
                     { upsert: true }, function (err, saved) {
                         
                     if(err) { console.log(err); }

@@ -10,6 +10,20 @@ block content
 				option(value='#{val.name}') #{val.fullName}
 		input(type='submit', value="Go" style='margin-left: 5px')
 
+	h3 5 Recently Played Games
+
+	table.table.table-striped
+		tr
+			th Game Name
+			th Play Count
+			th Date
+			each game in latestPlayed
+				tr
+					td 
+						a(href='/games/#{game.name}') #{game.fullName}
+					td= game.playCount
+					td= new Date(game.lastPlayed).toLocaleDateString('NZ-en') + ' ' + new Date(game.lastPlayed).toLocaleTimeString('NZ-en')
+
 	h3 Latest Scores
 
 	table.table.table-striped
