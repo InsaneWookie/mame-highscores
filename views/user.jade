@@ -23,9 +23,9 @@ block content
 								td.info
 									b= score.score
 							else
-								td= score.name
-								if (score.user_id)
-									td
+								td
+									if (score.user_id)									
 										a(href='/users/#{score.user_id}') #{score.name}
-								else
-									td= score.score
+									else
+										| #{score.name}
+								td= score.score
