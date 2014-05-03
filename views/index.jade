@@ -22,7 +22,7 @@ block content
 					td 
 						a(href='/games/#{game.name}') #{game.fullName}
 					td= game.playCount
-					td= new Date(game.lastPlayed).toLocaleDateString('NZ-en') + ' ' + new Date(game.lastPlayed).toLocaleTimeString('NZ-en')
+					td= formatDate(game.lastPlayed)
 
 	h3 Latest Scores
 
@@ -42,7 +42,7 @@ block content
 						else
 							span #{score.scores.name}
 					td= score.scores.score
-					td= new Date(score.scores.createDate).toLocaleDateString('NZ-en') + ' ' + new Date(score.scores.createDate).toLocaleTimeString('NZ-en')
+					td= formatDate(score.scores.createDate)
 
 
 

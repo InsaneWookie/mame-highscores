@@ -11,6 +11,7 @@ exports.index = function(req, res){
 
 				res.render('index', 
 				{ 
+					//moment: require('moment-timezone'),
 					title: 'Select file to upload',
 					games: games,
 					latestScores: result,

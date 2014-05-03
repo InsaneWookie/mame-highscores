@@ -17,4 +17,4 @@ else
 						else
 							| #{score.name}
 					td= score.score
-					td= new Date(score.createDate).getDate() + '/' + new Date(score.createDate).getMonth() + '/' + new Date(score.createDate).getFullYear() + ' ' + new Date(score.createDate).toLocaleTimeString('NZ-en')
+					td= formatDate(score.createDate)

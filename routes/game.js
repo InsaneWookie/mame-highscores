@@ -165,12 +165,15 @@ exports.upload = function(req, res){
 
 		//no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
 
+		//may aswell record the play count and the last played even if there isnt a mapping
 		var fileBytes = fs.readFileSync(filePath);
-		scoreData = {hasMapping: false, $push: {  rawScores: { bytes: fileBytes.toString('hex') } } };
-
-		//var Game = mongoose.model('Game');
-
-		//TODO: add new scores to the list instead of over writing all scores
+		scoreData = {
+			hasMapping: false,
+			$inc: { playCount : 1 },
+			lastPlayed: new Date(), 
+			$push: {  rawScores: { bytes: fileBytes.toString('hex') } } 
+		};
+		
 		Game.findOneAndUpdate({name: gameName}, scoreData, { upsert: true }, function (err, saved) {
 			if(err) { console.log(err); }
 

@@ -20,6 +20,23 @@ var admin = require('./routes/admin');
 
 var app = express();
 
+//create some common data that is avaiable to all views
+var moment = require('moment-timezone');
+moment.lang('en-AU'); //make sure the dates are formatted in nz time. Dont support nz so use AU . TODO: make this configurable
+moment.defaultFormat = 'LLL';
+app.locals.moment = moment;//nice date/timezone formatting
+app.locals.defaultTZ = 'Pacific/Auckland'; //moment doesn't suppot a global default timezone
+
+//helper function for formatting time
+//takes valid date time value that moment support and an optional format string that moment supports
+app.locals.formatDate = function(dateTime, formatOverride){
+
+    if(formatOverride === undefined){
+        formatOverride = null;
+    }
+    return app.locals.moment(dateTime).tz(app.locals.defaultTZ).format(formatOverride);
+};
+
 
 var mongoose = require('mongoose');
 
