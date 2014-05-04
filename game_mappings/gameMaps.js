@@ -29,6 +29,24 @@ gameMaps = [
     }
   },
   {
+    "name":[
+      "airbustr",
+      "airbustrb",
+      "airbustrj",
+      "airbusb",
+      "airbustj"
+    ],
+    "fileType":"hi",
+    "structure":{
+      "blocks":8,
+      "fields":[
+        {"name": "score", "bytes": 3, "format": "asIs" },
+        {"name": "name", "bytes": 4, "format": "ascii" },
+        {"name": "phase", "bytes": 1, "format": "asIs" }
+      ]
+    }
+  },
+  {
     "name": [
       "altbeast",
       "altbeast2",

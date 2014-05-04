@@ -3,6 +3,9 @@ path = require('path');
 
 
 var gameSaveMappings = require('../game_mappings/gameMaps');
+//var gameMaps = require('./out.json');
+//console.log(gameMaps);
+
 var decoder = require('../modules/score_decoder');
 
 
@@ -67,6 +70,9 @@ if(pathStat.isFile()){
 		}
 
 		gameName = path.basename(file, '.hi');
+
+		
+		file = process.argv[2] + "/" + file;
 
 		result = decoder.decodeFromFile(gameMaps, file, gameName);
 

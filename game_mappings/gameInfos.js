@@ -52,6 +52,16 @@ gameInfos = [
     }
   },
   {
+    "name": "airbustr",
+    "fullName": "Air Buster: Trouble Specialty Raid Unit (World)",
+    "letter": "a",
+    "order": ["score", "name", "phase"],
+    "sort": {
+      "by": "score",
+      "order": "desc"
+    }
+  },
+  {
     "name": "altbeast",
     "fullName": "Altered Beast (set 8, 8751 317-0078)",
     "letter": "a",
