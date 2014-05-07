@@ -82,7 +82,7 @@ exports.upload = function(req, res){
 	}
 
 	var path = require('path');
-	require('../game_mappings/gameMaps');
+	var gameMaps = require('../game_mappings/gameMaps.json');
 
     var decoder = require('../modules/score_decoder');
 
@@ -141,16 +141,22 @@ exports.upload = function(req, res){
 
 			if(err) { console.log(err); }
 
-			game.addScores(newScores, function(err, saved){
-				
-				if(err) { console.log(err); }
+			if(game === null){
+				//no game found so we want to send a 404
+				res.send("Error: Game not found");
+			} else {
 
-				if(req.accepts('json, html') == 'json'){
-					res.json(saved);		
-				} else {
-					res.redirect('/games/' + gameName);
-				}
-			});
+				game.addScores(newScores, function(err, saved){
+					
+					if(err) { console.log(err); }
+
+					if(req.accepts('json, html') == 'json'){
+						res.json(saved);		
+					} else {
+						res.redirect('/games/' + gameName);
+					}
+				});
+			}	
 		});
 			
 	} else {

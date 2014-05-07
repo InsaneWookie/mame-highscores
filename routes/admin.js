@@ -10,9 +10,8 @@ exports.process_new_scores = function(req, res){
 	//got through all the games and see if they have raw scores and a mapping
 	//and if so process the raw scores
 	var Game = mongoose.model('Game');
-
-	//creates a variable gameMaps
-	require('../game_mappings/gameMaps');
+	
+	var gameMaps = require('../game_mappings/gameMaps.json');
 	
 	Game.find({ hasMapping : true, rawScores: { $exists: true }}, function(err, games){
 

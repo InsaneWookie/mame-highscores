@@ -9,15 +9,24 @@ var hiToTextFile = process.argv[2];
 //mapps HiToText format type to our types
 var formatMapping = {
 	//'CannedDisplay.AscendingFrom1' : '???', //this is used for the rank poition. prob not neaded
-	'Reversed': 'reverseDecimal',
-	'Name': 'ascii',
-	'Standard': 'asIs',
-	'Switch': 'switch', //not implmented //used to look up list of values (ie charater used)
+	'REVERSED': 'reverseDecimal',
+	//'Name': 'ascii',
+	'STANDARD': 'asIs',
+	//'Switch': 'switch', //not implmented //used to look up list of values (ie charater used)
 	'BCD': 'bcd',
-	'BCDReversed': 'reversedBcd', //not implemented
-	'Hex': 'hexToDecimal',
-	'HexReversed': 'reversedHexToDecimal', //not implemented yet
-	'TwoToThreeEncoding(32)': '???', //no idea
+	'BCDREVERSED': 'reversedBcd', //not implemented
+	'HEX': 'hexToDecimal',
+	'HEXREVERSED': 'reversedHexToDecimal', //not implemented yet
+	//'TwoToThreeEncoding(32)': '???', //no idea
+
+	'ASCIISTANDARD': 'ascii', //not sure what this should be
+	'ASCIIUPPER': 'upper', 
+	'ASCIINUMBERS': 'upperNumeric',
+
+	//kind of hacking way to convert multiple formats
+	'ASCIIUPPERASCIINUMBERS': 'upperNumeric',
+	'ASCIINUMBERSASCIIUPPER': 'numericUpper'
+
 	//'_1944',
 	//'_8ballact',
 	//'actionhw',
@@ -99,57 +108,33 @@ function convertHiToTextFile(entries){
 			//
 			convertedStructure.blocks = parseInt(scoreNameMapping.$.NumberOfBlocks);
 
-			convertedStructure.fields = [];
+			convertedEntry.name = gameNames;
 
-			//l(scoreNameMapping);
+			var extenstion = '.hi';
+			extenstion = gameEntry.Header[0].Extensions[0].Name[0];
+			if(typeof(extenstion) === 'string'){
+				convertedEntry.fileType = extenstion.substring(1); //remove the dot
+			}
+
+			convertedEntry.structure = convertedStructure;
+
+			convertedStructure.fields = [];
 
 			scoreNameMapping.Entry.forEach(function(entry){
 
-				convertedField = { name: entry.$.Name.toLowerCase(), bytes: parseInt(entry.$.Length) }; //the format is fetched later from the header
+				convertedField = { 
+					name: entry.$.Name.toLowerCase(), 
+					bytes: parseInt(entry.$.Length) 
+				}; 
+				
+				formatParts = getSettings(gameEntry, entry.$.Name);
+				//if()
+				convertedField.format = formatParts.format;
+				convertedField.settings = formatParts.settings;
 
 				convertedStructure.fields.push(convertedField);
 			});
 
-
-			
-
-			var extenstion = '.hi';
-			//TODO: detect if the extenstion is not set
-			extenstion = gameEntry.Header[0].Extensions[0].Name[0];
-
-
-			//now go through the display structure and work out what format the fields are
-			gameEntry.DisplayStructure[0].FieldName.forEach(function(field){
-
-				var name = field.$.Name.toLowerCase();
-				var format = field.$.ConversionType;
-
-				var operator = field.$.Operator; //TODO: work out how to convert the operator
-
-				//need to go through the already processed fields and add the format
-				//for(var i = 0; i < convertedStructure.fields.length;
-
-				convertedStructure.fields.forEach(function(f){
-					if(f.name === name){
-					
-						f.format = (formatMapping[format] !== undefined) ? formatMapping[format] : 'unknown';
-					}
-				});
-
-
-			});
-
-
-			convertedEntry.name = gameNames;
-			if(typeof(extenstion) === 'string'){
-				
-				convertedEntry.fileType = extenstion.substring(1); //remove the dot
-			}
-			convertedEntry.structure = convertedStructure;
-
-
-
-			//l(convertedEntry);
 			converted.push(convertedEntry);
 		}
 
@@ -159,9 +144,113 @@ function convertHiToTextFile(entries){
 	});
 
 	//l(converted);
-	console.log(JSON.stringify(converted));
+	console.log(JSON.stringify(converted, null, 2));
 
 }
+
+
+
+//this returns the format and settings part of the mapping 
+//eg for the following returns and object with the format and settings part
+/*
+{"name": "name", "bytes": 3, "format": "fromCharMap", "settings": {
+            "charMap": "upper",
+            "offset": "01", //in hex
+            "special": {
+              "1B": "."
+            }
+          }
+        }
+*/
+function getSettings(gameEntry, name){
+	//need to work out the format 
+	var format = "<unknown>";
+	var settings = {};
+
+	gameEntry.DisplayStructure[0].FieldName.forEach(function(field){
+
+		if(field.$.Name == name){
+
+			if(field.$.Name == 'Name' && field.$.ConversionType == 'Name'){
+			//need to look up the formats for the name
+			//need to work out the special mappings
+
+			//if(gameEntry.Header[0].TextParameters !== undefined){
+
+				var formats = gameEntry.Header[0].TextParameters[0].Formats[0].Name;
+
+				var specialFormats = "";
+
+				var builtFormat = "";
+
+				formats.forEach(function(f){
+
+					if(f == 'NeedsSpecialMapping'){
+						//look up the special mapping
+						var specialMapping = gameEntry.Header[0].TextParameters[0].SpecialMapping[0].Map;
+
+						format = 'fromCharMap';
+						settings = { charMap: "" };
+
+						//see of there is any offset we need to apply
+						if(gameEntry.Header[0].TextParameters[0].Offsets){
+							//just apply the first offset
+							//going to have to hand fix the one that aren't right
+							var offset = gameEntry.Header[0].TextParameters[0].Offsets[0].Offset[0].substring(2).toUpperCase();
+							settings.offset = parseInt(offset.$.StartByte, 16);
+						}
+
+						settings.special = {};
+
+						specialMapping.forEach(function(map){
+							//need to remove the first 2 chars as its in the format 0xFF and we want FF
+							settings.special[map.$.Byte.substring(2).toUpperCase()] = map.$.Char;
+						});
+
+
+
+					} else {
+						//as there can be more than one type in the hi to text format just add them 
+						//together so we can hand fix it later
+						builtFormat = builtFormat + f;
+						//settings.charMap = settings.charMap + formatMapping[f]; 
+					}
+
+					
+				});
+
+				if(builtFormat == 'ASCIIStandard'){
+					format = 'ascii';
+					delete settings.charMap;
+				} else {
+
+					settings.charMap = (formatMapping[builtFormat.toUpperCase()] !== undefined) ? formatMapping[builtFormat.toUpperCase()] : '<unknown:' + builtFormat + '>';
+				}
+
+			} else if(field.$.Name !== 'Rank'){
+			
+				//var name = field.$.Name.toLowerCase();
+				var conversionType = field.$.ConversionType;
+
+				//var operator = field.$.Operator; //TODO: work out how to convert the operator
+
+				format = (formatMapping[conversionType.toUpperCase()] !== undefined) ? formatMapping[conversionType.toUpperCase()] : '<unknown:' + conversionType + '>';
+				
+			}
+		}
+	});
+
+	if(Object.keys(settings).length === 0){
+		if(format == "<unknown>"){
+			return {};
+		} else {
+			return {format: format};
+		}
+	} else {
+		return {format: format, settings: settings};
+	}
+}
+
 
 function getFileStructureMapping(mappings){
 

@@ -49,14 +49,6 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
     console.log("Connected to mongo db"); 
-
-    require('./game_mappings/gameInfos'); //creates a variable "gameInfos"
-
-    //create any missing game records
-    gameInfos.forEach(function(game){
-        game.hasMapping = true;
-        db.collection('games').update({ name: game.name }, { $set: game }, { upsert: true }, function(){});
-    });
 });
 
 

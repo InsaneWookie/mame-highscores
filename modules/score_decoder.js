@@ -185,6 +185,10 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 		case 'hexToDecimal': 
 			value = this.decodeHexToDecimal(hexString, specialSettings);
 			break;
+		case 'reversedHexToDecimal': 
+		case 'reverseHexToDecimal':
+			value = this.decodeReverseHexToDecimal(hexString, specialSettings);
+			break;
 		default:
 			console.log('unknown format type ' + format + ' \n');
 			break;
@@ -318,6 +322,12 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
         "upperNumeric" : "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"};
 
 	var charMap = charMaps[charMapType];
+
+	if(charMap === undefined){
+		console.log("charMap not found: " + charMapType);
+		return "<error:" + charMapType + ">";
+	}
+
 	var specialChars = ('special' in specialOptions) ? specialOptions.special : {};
 
 	//TODO: error handling if values do not exist
@@ -352,6 +362,17 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 
 ScoreDecoder.prototype.decodeHexToDecimal = function(hexString, specialSettings){
 	return parseInt(hexString, 16).toString().replace(/^0+/,'');
+};
+
+ScoreDecoder.prototype.decodeReverseHexToDecimal = function(hexString, specialSettings){
+
+	var reversedString = "";
+	for(var i = hexString.length; i > 0; i = i - 2){ //TODO: convert this into a function
+		reversedString += hexString.substr(i - 2, 2);
+	}
+
+	return this.decodeHexToDecimal(reversedString, specialSettings)
+	//parseInt(hexString, 16).toString().replace(/^0+/,'');
 };
 
 ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSettings){

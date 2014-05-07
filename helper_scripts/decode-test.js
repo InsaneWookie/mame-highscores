@@ -2,7 +2,7 @@ fs = require('fs');
 path = require('path');
 
 
-var gameSaveMappings = require('../game_mappings/gameMaps');
+var gameMaps = require('../game_mappings/gameMaps.json');
 //var gameMaps = require('./out.json');
 //console.log(gameMaps);
 
@@ -70,6 +70,11 @@ if(pathStat.isFile()){
 		}
 
 		gameName = path.basename(file, '.hi');
+
+		if(gameName == ""){ //try nv ram
+			gameName = path.basename(file, '.nv');
+		}
+
 
 		
 		file = process.argv[2] + "/" + file;
