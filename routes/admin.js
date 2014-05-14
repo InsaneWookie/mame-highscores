@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var scoreDecoder = require('../modules/score_decoder');
+var async = require('async');
 
 exports.index = function(req, res){
 	//TODO: add acces around admin actions
@@ -20,24 +21,30 @@ exports.process_new_scores = function(req, res){
 			res.send(err);
 		} else {
 
-			updatedGames = [];
+			var updatedGames = [];
 
 			games.forEach(function(game){
 
-				updatedGames.push(game.name);
+				var gameName = game.name;
+
+				updatedGames.push(gameName);
 
 				game.rawScores.forEach(function(rawScore){
 
 					var buffer = new Buffer(rawScore.bytes, 'hex');
 
-					var decodedScores = scoreDecoder.decode(gameMaps, buffer, game.name);
+					var decodedScores = scoreDecoder.decode(gameMaps, buffer, gameName);
 
 					if(decodedScores === null){
-						console.log('Unable to decode scores for game' + game.name);
+						console.log('Unable to decode scores for game' + gameName);
 					} else {
 
-						game.addScores(decodedScores[game.name], function(err, saved){
-							//TODO: need to remove any raw scores after we have processed them
+						game.addScores(decodedScores[gameName], function(err, saved){
+							if(err){
+								console.log(err);
+							} else {
+								game.collection.update({name: gameName}, { $unset: { rawScores: "" } }, function(){});
+							}
 						});
 					}
 
@@ -48,6 +55,5 @@ exports.process_new_scores = function(req, res){
 			res.send('updated ' + updatedGames);
 		}
 	});
-
 };
 

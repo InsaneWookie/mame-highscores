@@ -3,9 +3,15 @@
 var fs = require('fs');
 var path = require('path');
 
-exports.decode = function(gameSaveMappings, buffer, gameName){ //TODO: need to pass the file type in, ie .hi or .nv
+exports.decode = function(gameSaveMappings, buffer, gameName, fileType){ //TODO: need to pass the file type in, ie .hi or .nv
 	var decoder = new ScoreDecoder(gameSaveMappings);
-	return decoder.decode_internal(buffer, gameName);
+
+	if(!fileType){
+		fileType = 'hi';
+	}
+	var gameMappingStructure = decoder.getGameMappingStructure(gameName, fileType);
+
+	return decoder.decode_internal(buffer, gameName, gameMappingStructure);
 };
 
 exports.decodeFromFile = function(gameSaveMappings, filePath, gameName){
@@ -333,12 +339,6 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	//TODO: error handling if values do not exist
 	var name = "";
 	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
-		//skip over any bytes that have been flaged to ignore
-		if(specialOptions.ignoreBytes !== undefined	&&
-			specialOptions.ignoreBytes.indexOf(mapIndex) != -1){
-
-			continue;
-		}
 
 		var specialCharValue = new Buffer(1);
 		specialCharValue[0] = byteArray[mapIndex];

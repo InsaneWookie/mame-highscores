@@ -3743,6 +3743,47 @@
   },
   {
     "name": [
+      "rodland"
+    ],
+    "fileType": "hi",
+    "structure": {
+      "blocks": 25,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "asIs"
+        },
+        {
+          "name": "name",
+          "bytes": 16,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "E1",
+            "ignoreBytes": [0,2,4,6,8,10,12,14],
+            "special": {
+              "20": " ",
+              "62": "!",
+              "63": "?",
+              "2D": "-",
+              "2E": ".",
+              "2F": "/",
+              "A8": "♀",
+              "A9": "♂",
+              "AA": "♥",
+              "AB": "★",
+              "DE": "☺",
+              "DF": "☻"
+            }
+          }
+        },
+        {"name": "scene", "bytes": 2, "format": "asIs"}
+      ]
+    }
+  },
+  {
+    "name": [
       "redclash",
       "redclsha",
       "redclshk"

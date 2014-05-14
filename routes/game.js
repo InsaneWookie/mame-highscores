@@ -173,11 +173,14 @@ exports.upload = function(req, res){
 
 		//may aswell record the play count and the last played even if there isnt a mapping
 		var fileBytes = fs.readFileSync(filePath);
+		var fileType = path.extname(filePath).substring(1);
 		scoreData = {
 			hasMapping: false,
 			$inc: { playCount : 1 },
 			lastPlayed: new Date(), 
-			$push: {  rawScores: { bytes: fileBytes.toString('hex') } } 
+			$push: {  rawScores: { 
+							fileType: fileType,
+							bytes: fileBytes.toString('hex') } } 
 		};
 		
 		Game.findOneAndUpdate({name: gameName}, scoreData, { upsert: true }, function (err, saved) {

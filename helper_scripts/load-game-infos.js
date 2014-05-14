@@ -34,6 +34,7 @@ gameMappings.forEach(function(map){
     });
 });
 
+//console.log(gameNames);
 //we want to insert/update any we have mappings for, but only update ones we don't have mappings for
 
 
@@ -46,34 +47,47 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
     console.log("Connected to mongo db (" + uristring + ")"); 
     console.log("Updating game infos (count: " + gameInfos.length + ")"); 
-});
 
-//create any missing game records
-var progress = 0;
-var count = 0;
-gameInfos.forEach(function(game){
+    //create any missing game records
+    var progress = 0;
+    var count = 0;
+    gameInfos.forEach(function(game){
 
-    game.hasMapping = (gameNames[game.name] !== undefined);
-    //need to look up in the mappings to see if it has one 
+        game.hasMapping = (gameNames[game.name] !== undefined);
+        //need to look up in the mappings to see if it has one 
 
-    db.collection('games').update(
-      { name: game.name }, 
-      { $set: game }, 
-      { upsert: game.hasMapping }, //replace this line with the following to insert everthing
-      //{ upsert: true }, //add this line to insert if no match is found
-      function(){
 
-        count++;
-        progress = Math.round(((count/gameInfos.length)*100));
-        if(count % 1000 == 0){
-          console.log(progress + "%"); 
+        if(game.hasMapping){
+          console.log(game);
         }
 
-        if(count === gameInfos.length){
-          console.log("Finished updating game infos");
-          db.close();
-        }
+        db.collection('games').update(
+          { name: game.name }, 
+          { $set: game }, 
+          { upsert: game.hasMapping }, //replace this line with the following to insert everthing
+          //{ upsert: true }, //add this line to insert if no match is found
+          function(err){
 
-      });
+            if(err) {
+              console.log(err);
+            } else {
+
+              count++;
+              progress = Math.round(((count/gameInfos.length)*100));
+              if(count % 1000 == 0){
+                console.log(progress + "%"); 
+              }
+
+              if(count === gameInfos.length){
+                console.log("Finished updating game infos");
+                db.close();
+              }
+
+            }
+
+          });
+    });
 });
+
+
 

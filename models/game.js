@@ -25,6 +25,7 @@ var gameSchema = mongoose.Schema({
     //if we dont have a mapping then just save the raw bytes from the file
     //so we can process them later
     rawScores: [{  
+        fileType: String,
     	bytes: String,
         //datVersion: { type: String, default: '0.108'}, //version of the hiscore.dat file these raw scores were created with
     	createDate: { type: Date, default: Date.now }
@@ -50,8 +51,10 @@ gameSchema.methods.addScores = function(decodedScores, callBack){
     //go through each score and see if we can find a user with and alias that matches
     //Game.findOne({name: gameName}, function(err, game){
 
-    game = this;
-    gameName = game.name;
+    var game = this;
+    var gameName = game.name;
+
+
     
     var filteredScores;
 
