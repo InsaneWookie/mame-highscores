@@ -1,18 +1,27 @@
 extends layout
 
 block content
+	h3
+		a(href="/games?allGames=true") View All Games
 	br
-	div
-		| Notes that this only returns the first 5 scores for a game.
-		a(href="/games?allScores=true")  view all scores
-		br
-		a(href="/games?hasRawScores=true")  view missing games with raw scores
-
-	each game in games
-		div.row
-			div.col-md-4(style="margin-top: 21px;")
-				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
-			div.col-md-8
-				h3
-					a(href="/games/#{game.name}") #{game.fullName} (#{game.name})
-				include _scores
+	table.table.table-striped
+		tr
+			th Game
+			th Top Name
+			th Top Score
+			th Set
+		each game in games
+			tr
+				td		
+					a(href="/games/#{game.name}") #{game.fullName}
+				if (game.scores !== undefined && game.scores.length > 0)
+					td				
+						if(game.scores[0].user_id)
+							a(href='/users/#{game.scores[0].user_id}') #{game.scores[0].name}
+						else
+							| #{game.scores[0].name}
+					td= game.scores[0].score
+					td= formatDate(game.scores[0].createDate)
+				else
+					td
+					td

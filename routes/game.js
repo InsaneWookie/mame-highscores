@@ -13,11 +13,16 @@ exports.list = function(req, res){
 		var sort = {name: 1};
 		var query = { scores : { $exists: true } };
 
-		//if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
-		if(req.query.hasRawScores == 'true') { 
-			query.rawScores = { $exists: true }; 
-			query.scores = { $exists: false };
+		if(req.query.allGames == 'true'){
+			query =  { hasMapping: true };
 		}
+
+		//if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }
+		// if(req.query.hasRawScores == 'true') { 
+		// 	query.rawScores = { $exists: true }; 
+		// 	query.scores = { $exists: false };
+		// }
+
 		//if(req.query.hasMapping == 'true') { query.hasMapping = { hasMapping: true }; }
 
 		//can't limit as we need to sort them first, and mongo sorting is crap

@@ -34,13 +34,13 @@ app.locals.formatDate = function(dateTime, formatOverride){
     if(formatOverride === undefined){
         formatOverride = null;
     }
-    return app.locals.moment(dateTime).tz(app.locals.defaultTZ).format(formatOverride);
+    return app.locals.moment(dateTime).tz(app.locals.defaultTZ).fromNow(formatOverride);
 };
 
 
 var mongoose = require('mongoose');
 
-var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores';
+var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores-backup';
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
 mongoose.connect(uristring);

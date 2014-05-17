@@ -58,7 +58,7 @@ db.once('open', function callback () {
 
 
         if(game.hasMapping){
-          console.log(game);
+          //console.log(game);
         }
 
         db.collection('games').update(

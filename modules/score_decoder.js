@@ -477,10 +477,10 @@ ScoreDecoder.prototype.decodeDdonpach = function(bytes){
 
 	var data = [
 		{ score: getDdonScore(bytes, 0, 4, 91), name: getDdonName(bytes, 21, 26) },
-		{ score: getDdonScore(bytes, 5, 8, 93), name: getDdonName(bytes, 27, 32) },
-		{ score: getDdonScore(bytes, 9, 12, 95), name: getDdonName(bytes, 33, 38) },
-		{ score: getDdonScore(bytes, 13, 16, 97), name: getDdonName(bytes, 39, 44) },
-		{ score: getDdonScore(bytes, 17, 20, 99), name: getDdonName(bytes, 45, 50) }
+		{ score: getDdonScore(bytes, 4, 8, 93), name: getDdonName(bytes, 27, 32) },
+		{ score: getDdonScore(bytes, 8, 12, 95), name: getDdonName(bytes, 33, 38) },
+		{ score: getDdonScore(bytes, 12, 16, 97), name: getDdonName(bytes, 39, 44) },
+		{ score: getDdonScore(bytes, 16, 20, 99), name: getDdonName(bytes, 45, 50) }
 	];
 
 	return { ddonpach: data };

@@ -7,8 +7,8 @@ else
 	table.table.table-striped
 		tr
 			th Name
-			th Score
-			th Date
+			th(style='text-align:right') Score
+			th(style='text-align:right') When set
 			each score in game.scores
 				tr
 					td
@@ -16,5 +16,5 @@ else
 							a(href='/users/#{score.user_id}') #{score.name}
 						else
 							| #{score.name}
-					td= score.score
-					td= formatDate(score.createDate)
+					td(style='text-align:right')= score.score
+					td(style='text-align:right')= formatDate(score.createDate)
