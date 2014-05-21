@@ -40,7 +40,7 @@ app.locals.formatDate = function(dateTime, formatOverride){
 
 var mongoose = require('mongoose');
 
-var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores-backup';
+var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores';
 // Makes connection asynchronously.  Mongoose will queue up database
 // operations and release them when the connection is complete.
 mongoose.connect(uristring);
