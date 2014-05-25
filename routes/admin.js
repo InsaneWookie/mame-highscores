@@ -7,7 +7,7 @@ exports.index = function(req, res){
 	res.render('admin', {});
 };
 
-//FIXME: this is buggy, it may create duplicate scores
+//FIXME: this is buggy, it may create duplicate scores 
 exports.process_new_scores = function(req, res){
 	//got through all the games and see if they have raw scores and a mapping
 	//and if so process the raw scores

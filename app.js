@@ -95,9 +95,12 @@ app.post('/user/update/:id', users.update);
 //game routes
 app.get('/games', games.list);
 app.get('/games/:game_id', games.game);
+app.post('/games/:game_id', games.game);
 
 app.get('/game/upload', games.upload);
 app.post('/game/upload', games.upload);
+
+//app.post('/game/test_mapping', games.test_mapping);
 
 
 //admin routes

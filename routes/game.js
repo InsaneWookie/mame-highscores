@@ -1,5 +1,6 @@
 
 var fs = require('fs');
+var path = require('path');
 var mongoose = require('mongoose');
 
 /* GET high scores listing. */
@@ -52,28 +53,60 @@ exports.list = function(req, res){
 };
 
 exports.game = function(req, res, next){
+
 	var Game = mongoose.model('Game');
+
+	console.log(req.params);
+
 	Game.findOne({name: req.params.game_id}, function (err, game){
 
-		if(err){
-			console.log(err);
-			next(err); //not sure if this will work
-		} else if(game === null){
-			res.status(404); //probably a better way of doing this
-			next(new Error('Game does not exist'));
-		} else {
 
-			game.scores.sort(function(a, b){
-				return parseInt(b.score) - parseInt(a.score);
-			});
+		
+		if(req.method === 'POST'){
 
-			if(req.accepts('json, html') == 'json'){
-				res.json(game);
+			console.log(req.body); 
+
+			//need to wrap it up in an array as the decoder expects an array of mappings to search through
+			var testMapping = [JSON.parse(req.body.game_mapping)];
+			var gameName = req.body.game_name;
+			var rawScore = new Buffer(req.body.raw_score, 'hex');
+
+
+			var gameMaps = require('../game_mappings/gameMaps.json');
+		    var decoder = require('../modules/score_decoder');
+
+			console.log(testMapping); 
+		    var decodedScores = decoder.decode(testMapping, rawScore, gameName);
+		    console.log(decodedScores);
+		    //var decodedScores = { bla: 'test'};
+
+		    res.render('game', {game: game, testMapping: req.body.game_mapping, decodedScores: JSON.stringify(decodedScores, null, 2)});
+
+		} else{
+
+			if(err){
+				console.log(err);
+				next(err); //not sure if this will work
+			} else if(game === null){
+				res.status(404); //probably a better way of doing this
+				next(new Error('Game does not exist'));
 			} else {
-				res.render('game', {game: game});
+
+				game.scores.sort(function(a, b){
+					return parseInt(b.score) - parseInt(a.score);
+				});
+
+				if(req.accepts('json, html') == 'json'){
+					res.json(game);
+				} else {
+					res.render('game', {game: game});
+				}
 			}
+
 		}
 	});
+
+	
 	
 };
 
@@ -86,7 +119,6 @@ exports.upload = function(req, res){
 		return;
 	}
 
-	var path = require('path');
 	var gameMaps = require('../game_mappings/gameMaps.json');
 
     var decoder = require('../modules/score_decoder');
@@ -202,4 +234,12 @@ exports.upload = function(req, res){
 };
 
 
+exports.test_mapping = function(req, res){
 
+
+
+
+
+
+
+};

@@ -4,7 +4,7 @@ block content
 
 	if game === null
 		div No game found
-	else
+	else if game.hasMapping
 		div.row
 			h2 #{game.fullName} (#{game.name})
 			div.col-md-4(class="titleImg" )
@@ -12,3 +12,19 @@ block content
 			div.col-md-8
 				
 				include _scores
+	else
+		div mapping edit
+		//each rawScore in game.rawScores
+		- var rawScore = game.rawScores[0];
+		- var asciiBytes = new Buffer(rawScore.bytes, 'hex')
+		div #{rawScore.createDate}
+		pre #{rawScore.bytes.match(/.{1,32}/g).join('\n')}
+		pre= asciiBytes.toString('ascii')
+		pre= decodedScores
+		form(action='/games/#{game.name}' method='POST')
+			input(type='hidden' name='game_name' value='#{game.name}')
+			input(type='hidden' name='raw_score' value='#{rawScore.bytes}')
+			button.btn.btn-default(type='submit') Test Mapping
+			br
+			textarea(name='game_mapping' style='width: 50%; height: 500px')= testMapping
+			
