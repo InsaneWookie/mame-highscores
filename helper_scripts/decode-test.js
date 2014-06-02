@@ -94,12 +94,12 @@ if(pathStat.isFile()){
 	}
 
 	if(file.length > 1) {
-		console.log("===Found Games===");
-		console.log(foundGames);
+		// console.log("===Found Games===");
+		// console.log(foundGames);
 
 
-		console.log("===Missing Games===");
-		console.log(missingGames);
+		// console.log("===Missing Games===");
+		// console.log(missingGames);
 	}
 }
 

@@ -9,7 +9,7 @@
     "structure": {
       "blocks": 5,
       "fields": [
-        {"name": "score", "bytes": 8, "format": "paddedAsIs"},
+        {"name": "score", "bytes": 8, "format": "bcd"},
         {"name": "name", "bytes": 3, "format": "fromCharMap", "settings": {
             "charMap": "numericUpper",
             "special": {
@@ -321,6 +321,7 @@
             "charMap": "upper",
             "offset": "11",
             "special": {
+              "10": " ",
               "2B": ".",
               "2C": ":"
             }
@@ -416,6 +417,7 @@
     }
   },
   {
+    "_comment": "this has a werid format where it doesnt replace the default scores, it add new items, so this wont work with the existing decoder",
     "name": [
       "inthunt",
       "inthuntu",
@@ -437,7 +439,7 @@
           }
         },
         {"name": "trash", "bytes": 1},
-        {"name": "name", "bytes": 5, "format": "ascii", "settings": {"ignoreBytes": [1, 3]}},
+        {"name": "name", "bytes": 5, "format": "ascii", "settings": { "ignoreBytes": [1, 3] }},
         {"name": "trash", "bytes": 3}
       ]
     }
@@ -1741,7 +1743,7 @@
     ],
     "fileType": "hi",
     "structure": {
-      "blocks": 4,
+      "blocks": 5,
       "fields": [
         {
           "name": "score",
@@ -2111,6 +2113,7 @@
           "settings": {
             "charMap": "upper",
             "_comment": "this needs the character to be divided by 4",
+            "divideBy": 4,
             "ignoreBytes": [0,2,4],
             "special": {
               "68": ".",
@@ -2632,6 +2635,7 @@
     "fileType": "hi",
     "structure": {
       "blocks": 5,
+      "skip": 2,
       "fields": [
         {
           "name": "rank",
@@ -2732,6 +2736,11 @@
       "blocks": 5,
       "fields": [
         {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        },
+        {
           "name": "name",
           "bytes": 3,
           "format": "ascii",
@@ -2740,30 +2749,23 @@
               "40": " "
             }
           }
-        },
-        {
-          "name": "score",
-          "bytes": 3,
-          "format": "asIs"
-        }
+        }        
       ]
     }
   },
   {
     "name": [
-      "daioh"
+      "daioh",
+      "daioha"
     ],
     "fileType": "hi",
     "structure": {
+      "skip": 4,
       "blocks": 10,
       "fields": [
         {
           "name": "unused",
-          "bytes": 4
-        },
-        {
-          "name": "unknowna",
-          "bytes": 2
+          "bytes": 6
         },
         {
           "name": "score",
@@ -3019,7 +3021,7 @@
     ],
     "fileType": "hi",
     "structure": {
-      "blocks": 1,
+      "blocks": 5,
       "fields": [
         {
           "name": "unuseda",
@@ -3049,17 +3051,9 @@
           }
         },
         {
-          "name": "unusedc",
-          "bytes": 7
-        },
-        {
-          "name": "shortscore",
-          "bytes": 3
-        },
-        {
-          "name": "unusedd",
-          "bytes": 2
-        }
+          "name": "skip",
+          "bytes": 17
+        }        
       ]
     }
   },
@@ -3169,6 +3163,7 @@
     "fileType": "hi",
     "structure": {
       "blocks": 5,
+      "skip": 4,
       "fields": [
         {
           "name": "score",
@@ -3299,6 +3294,7 @@
   {
     "name": [
       "exprraid",
+      "exprraidu",
       "wexpress",
       "wexpressb",
       "wexpressb2",
@@ -3308,6 +3304,7 @@
     "fileType": "hi",
     "structure": {
       "blocks": 10,
+      "skip": 3,
       "fields": [
         {
           "name": "rank",
@@ -3455,15 +3452,15 @@
         {
           "name": "score",
           "bytes": 3,
-          "format": "asIs"
+          "format": "asIs",
+          "settings": { "append": "0" }
         },
         {
           "name": "name",
           "bytes": 3,
           "format": "fromCharMap",
           "settings": {
-            "charMap": "upperNumeric",
-            "offset": "0B",
+            "charMap": "numericUpper",
             "special": {
               "25": ".",
               "26": ":",
@@ -4011,12 +4008,14 @@
   {
     "name": [
       "xsleena",
+      "xsleenaj",
       "xsleenab",
       "solarwar"
     ],
     "fileType": "hi",
     "structure": {
       "blocks": 10,
+      "skip": 3,
       "fields": [
         {
           "name": "score",

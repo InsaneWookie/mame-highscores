@@ -179,11 +179,9 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 		case 'bcd':
 			value = this.decodeBcd(hexString, settings);
 			break;
-		case 'paddedAsIs':
-			value = this.decodePaddedAsIs(hexString);
-			break;
-		case 'asIs':
-			value = this.decodeAsIs(hexString, settings);	
+		case 'asIs': //asIs is actually packed bcd (keep it until the mapping is fixed)
+		case 'packedBcd':
+			value = this.decodePackedBcd(hexString);
 			break;
 		case 'reverseDecimal':
 			value = this.decodeReverseDecimal(hexString, specialSettings);
@@ -209,6 +207,7 @@ ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
 	//console.log('pre processing');
 	bytes = this.removeIgnoreBytes(bytes, settings);
 	bytes = this.addOffset(bytes, settings);
+	bytes = this.addDivider(bytes, settings);
 	return bytes;
 };
 
@@ -235,7 +234,6 @@ ScoreDecoder.prototype.addOffset = function(bytes, settings){
 			b[0] = bytes[i];
 
 			if(!this.inSpecialChars(b.toString('hex'), settings)){
-				//console.log('converting');
 				bytes[i] -= parseInt(settings.offset, 16);
 			}
 		}
@@ -243,6 +241,27 @@ ScoreDecoder.prototype.addOffset = function(bytes, settings){
 
 	return bytes;
 };
+
+// Some score names are encoded as a char map with every letter every 4 numbers 
+// eg A = 1, B = 4, C = 8, D = 12, ... Z = 104
+// So we support a divider to bring it down to A = 1, B = 2, C = 3, etc 
+ScoreDecoder.prototype.addDivider = function(bytes, settings){
+
+	if(settings.divideBy !== undefined){
+		for(var i = 0; i < bytes.length; i++){
+
+			var b = new Buffer(1);
+			b[0] = bytes[i];
+
+			//skip of any bytes that are in the special chars array as we decode them later
+			if(!this.inSpecialChars(b.toString('hex'), settings)){
+				bytes[i] = bytes[i] / settings.divideBy;
+			}
+		}
+	}
+
+	return bytes;
+}
 
 
 ScoreDecoder.prototype.postProcessValue = function(value, settings){
@@ -270,9 +289,6 @@ ScoreDecoder.prototype.inSpecialChars = function(specialCharKey, settings){
 };
 
 
-
-
-//TODO: handle "settings": { "ignoreBytes": [1, 3, 5, 7] }
 ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 
 	var specialChars = (settings.special === undefined) ? {} : settings.special ;
@@ -292,14 +308,11 @@ ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 
 	}
 	return processedString;
-	//return byteArray.toString('ascii');
+	
 };
-//not sure what this format is called but a score of 0x0000000200000000
-//equals 20,000 decimal
-//basicaly we just grab every second charater of the hex string,
-// build up a new string and conver it to decimal
-//probably just need to add skip bytes (or half bytes) to the mapping file??
-ScoreDecoder.prototype.decodePaddedAsIs = function(hexString){
+
+
+ScoreDecoder.prototype.decodeBcd = function(hexString){
 	var decimalValue = '';
 	for(var byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
 		decimalValue += hexString[byteCount];
@@ -308,17 +321,10 @@ ScoreDecoder.prototype.decodePaddedAsIs = function(hexString){
 	return parseInt(decimalValue, 10).toString().replace(/^0+/,'');
 };
 
-ScoreDecoder.prototype.decodeBcd = function(hexString, settings){
+ScoreDecoder.prototype.decodePackedBcd = function(hexString, settings){
 	return parseInt(hexString, 10).toString().replace(/^0+/,'');
 };
 
-//TODO: handle "settings": {"append": "0"} 
-ScoreDecoder.prototype.decodeAsIs = function(hexString, settings){
-	//just remove leading zeros
-	return hexString.replace(/^0+/,'');
-};
-
-//TODO: handle "offset": 1,
 ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, specialOptions){
 	//TODO: this should be read in form file
 	var charMaps = {
@@ -345,11 +351,16 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 
 		var value = specialCharValue.toString('hex').toUpperCase();
 
+
 		if(value in specialChars){ //if its in the special char map always use that first
 			name += this.getSpecialChar(specialChars, value);
 		} else {
-			//TODO: better error handling if its out of range
-			name += charMap[specialCharValue[0]];
+			
+			if(charMap[specialCharValue[0]] === undefined){
+				name += "[" + value + "]"; //just print the orginal byte from the file (this may have been offset tho)
+			} else {
+				name += charMap[specialCharValue[0]];
+			}
 		}
 
 	}
@@ -434,7 +445,7 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		
 		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
 		
-		var scoreString = this.decodeAsIs(scoreBytes.toString('hex')).slice(0,-1);
+		var scoreString = this.decodePackedBcd(scoreBytes.toString('hex')).slice(0,-1);
 		
 		scoreData.push({
 			name: this.decodeFromCharMap(nameData, "upper", 
@@ -470,7 +481,7 @@ ScoreDecoder.prototype.decodeDdonpach = function(bytes){
 	};
 
 	var getDdonScore = function(bytes, start, end, last){
-		return scoreDecoder.decodeAsIs(bytes.slice(start, end).toString('hex') + 
+		return scoreDecoder.decodePackedBcd(bytes.slice(start, end).toString('hex') + 
 			bytes.slice(last, last+1).toString('hex')[1]);
 	};
 
