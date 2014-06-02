@@ -11,11 +11,14 @@ exports.list = function(req, res){
 	if(req.query.game){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
-		var sort = {name: 1};
-		var query = { scores : { $not: { $size : 0 }  } };
+		var sort = {fullName: 1};
+		var query = { fullName: { $exists: true}, hasMapping: true,  scores : { $not: { $size : 0 }  } };
 
-		if(req.query.allGames == 'true'){
-			query =  { hasMapping: true };
+		
+		if(req.query.allGames !== undefined){
+			console.log(req.query);
+			delete query.hasMapping;
+			delete query.scores;
 		}
 
 		//if(req.query.hasScores == 'false') { query.scores = { $exists: false }; }

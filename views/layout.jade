@@ -67,7 +67,7 @@ html
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         limit: 10,
         prefetch: { //note this is cached in local storage for 1 day
-          url: '/games',
+          url: '/games?allGames=true',
         }
       });
        

@@ -10,11 +10,10 @@ block content
 			div.col-md-4(class="titleImg" )
 				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
 			div.col-md-8
-				
 				include _scores
 	else
 		div mapping edit
-		//each rawScore in game.rawScores
+
 		- var rawScore = game.rawScores[0];
 		- var asciiBytes = new Buffer(rawScore.bytes, 'hex')
 		div #{rawScore.createDate}
