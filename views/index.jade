@@ -2,47 +2,62 @@ extends layout
 
 block content
 	h1 Mame Highscores
-	
-	form(action='/games', method='get')
-		div Select game to view scores
-		select(name='game') 
-			each val in games
-				option(value='#{val.name}') #{val.fullName}
-		input(type='submit', value="Go" style='margin-left: 5px')
 
-	h3 5 Recently Played Games
+	div.row
+		form(action='/games', method='get')
+			div Select game to view scores
+			select(name='game') 
+				each val in games
+					option(value='#{val.name}') #{val.fullName}
+			input(type='submit', value="Go" style='margin-left: 5px')
 
-	table.table.table-striped
-		tr
-			th Game Name
-			th Play Count
-			th Date
-			each game in latestPlayed
+	div.row
+		dvi.col-md-6
+			h3 5 Recently Played Games
+
+			table.table.table-striped
 				tr
-					td 
-						a(href='/games/#{game.name}') #{game.fullName}
-					td= game.playCount
-					td= formatDate(game.lastPlayed)
+					th Game Name
+					th Play Count
+					th Date
+					each game in latestPlayed
+						tr
+							td 
+								a(href='/games/#{game.name}') #{game.fullName}
+							td= game.playCount
+							td= formatDate(game.lastPlayed)
+		dvi.col-md-6
+			h3 Top 5 Players
 
-	h3 Latest Scores
-
-	table.table.table-striped
-		tr
-			th Game Name
-			th Name
-			th Score
-			th Date
-			each score in latestScores
+			table.table.table-striped
 				tr
-					td 
-						a(href='/games/#{score.name}') #{score.fullName}
-					td 
-						if (score.scores.user_id)
-							a(href='/users/#{score.scores.user_id}') #{score.scores.name}
-						else
-							span #{score.scores.name}
-					td= score.scores.score
-					td= formatDate(score.scores.createDate)
+					th User
+					th Total Scores Set
+					each user in topPlayers
+						tr
+							td 
+								a(href='/users/#{user._id}') #{user.userName}
+							td= user.size
+	div.row
+		h3 Latest Scores
+
+		table.table.table-striped
+			tr
+				th Game Name
+				th Name
+				th Score
+				th Date
+				each score in latestScores
+					tr
+						td 
+							a(href='/games/#{score.name}') #{score.fullName}
+						td 
+							if (score.scores.user_id)
+								a(href='/users/#{score.scores.user_id}') #{score.scores.name}
+							else
+								span #{score.scores.name}
+						td= score.scores.score
+						td= formatDate(score.scores.createDate)
 
 
 
