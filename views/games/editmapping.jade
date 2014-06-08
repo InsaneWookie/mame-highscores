@@ -1,0 +1,32 @@
+extends /layout
+
+block content
+	if game.hasMapping
+		div current mapping
+		pre= JSON.stringify(gameMapping, null, 2)
+	else
+		- var rawScore = game.rawScores[0];
+		- var asciiBytes = new Buffer(rawScore.bytes, 'hex');
+		- for(var i = 0; i < asciiBytes.length; i++){
+		-	if(asciiBytes[i] < 32 || asciiBytes[i] > 126 ){
+		-		asciiBytes[i] = 46;
+		-	}
+		- }
+		//div #{rawScore.createDate}
+
+		div.row
+			div.col-md-6
+				pre #{rawScore.bytes.match(/.{1,32}/g).join('\n')}
+			div.col-md-6
+				pre= asciiBytes.toString('ascii').match(/.{1,16}/g).join('\n')
+		div.row
+			div.col-md-6
+				form(action='/games/#{game.name}/editmapping' method='POST')
+					input(type='hidden' name='game_name' value='#{game.name}')
+					input(type='hidden' name='raw_score' value='#{rawScore.bytes}')
+					
+					- var mappingData = (testMapping) ? testMapping : exampleMapping;
+					textarea(name='game_mapping' style='width: 100%; height: 500px')= mappingData
+					button.btn.btn-default(type='submit') Test Mapping
+			div.col-md-6
+				pre= decodedScores
