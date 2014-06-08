@@ -59,6 +59,7 @@ fs.readdirSync(__dirname + '/models').forEach(function (file) {
  
 
 // view engine setup
+app.locals.basedir = path.join(__dirname, 'views');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
@@ -95,7 +96,8 @@ app.post('/user/update/:id', users.update);
 //game routes
 app.get('/games', games.list);
 app.get('/games/:game_id', games.game);
-app.post('/games/:game_id', games.game);
+app.get('/games/:game_id/editmapping', games.editmapping);
+app.post('/games/:game_id/editmapping', games.editmapping);
 
 app.get('/game/upload', games.upload);
 app.post('/game/upload', games.upload);

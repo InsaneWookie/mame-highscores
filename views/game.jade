@@ -6,24 +6,16 @@ block content
 		div No game found
 	else if game.hasMapping
 		div.row
-			h2 #{game.fullName} (#{game.name})
+			h2 #{game.fullName} (#{game.name}) 
+				a.small(href='/games/#{game.name}/editmapping') Edit Mapping
+
 			div.col-md-4(class="titleImg" )
 				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
 			div.col-md-8
 				include _scores
 	else
-		div mapping edit
+		h2 #{game.fullName} (#{game.name}) 
+			a.small(href='/games/#{game.name}/editmapping') Edit Mapping
+		div No mapping found
 
-		- var rawScore = game.rawScores[0];
-		- var asciiBytes = new Buffer(rawScore.bytes, 'hex')
-		div #{rawScore.createDate}
-		pre #{rawScore.bytes.match(/.{1,32}/g).join('\n')}
-		pre= asciiBytes.toString('ascii')
-		pre= decodedScores
-		form(action='/games/#{game.name}' method='POST')
-			input(type='hidden' name='game_name' value='#{game.name}')
-			input(type='hidden' name='raw_score' value='#{rawScore.bytes}')
-			button.btn.btn-default(type='submit') Test Mapping
-			br
-			textarea(name='game_mapping' style='width: 50%; height: 500px')= testMapping
 			

@@ -67,23 +67,6 @@ exports.game = function(req, res, next){
 		
 		if(req.method === 'POST'){
 
-			console.log(req.body); 
-
-			//need to wrap it up in an array as the decoder expects an array of mappings to search through
-			var testMapping = [JSON.parse(req.body.game_mapping)];
-			var gameName = req.body.game_name;
-			var rawScore = new Buffer(req.body.raw_score, 'hex');
-
-
-			var gameMaps = require('../game_mappings/gameMaps.json');
-		    var decoder = require('../modules/score_decoder');
-
-			console.log(testMapping); 
-		    var decodedScores = decoder.decode(testMapping, rawScore, gameName);
-		    console.log(decodedScores);
-		    //var decodedScores = { bla: 'test'};
-
-		    res.render('game', {game: game, testMapping: req.body.game_mapping, decodedScores: JSON.stringify(decodedScores, null, 2)});
 
 		} else{
 
@@ -237,12 +220,61 @@ exports.upload = function(req, res){
 };
 
 
-exports.test_mapping = function(req, res){
+exports.editmapping = function(req, res){
 
+	var gameName = req.params.game_id;
 
+	var Game = mongoose.model('Game');
+	var gameMaps = require('../game_mappings/gameMaps.json');
+    var decoder = require('../modules/score_decoder');
 
+    var exampleMapping = {
+    	name: [ gameName ],
+    	fileType: "hi",
+    	structure: {
+	      	blocks: 10,
+	      	fields: [
+		        {
+		          name: "score",
+		          bytes: 3,
+		          format: "asIs"
+		        },
+		        {
+		          name: "name",
+		          bytes: 3,
+		          format: "ascii"
+		        }
+	      	]
+    	}
+ 	};
 
+	Game.findOne({name: gameName}, function (err, game){
 
+		var structure = decoder.getGameMappingStructure(gameMaps, gameName);
 
+		if(req.method === 'GET'){
+			res.render('games/editmapping', {game: game, gameMapping: structure, exampleMapping: JSON.stringify(exampleMapping, null, 2)});
+			return;
+		} else if (req.method === 'POST'){
 
+			console.log(req.body); 
+
+			//need to wrap it up in an array as the decoder expects an array of mappings to search through
+			try{
+				var testMapping = [JSON.parse(req.body.game_mapping)];
+				var gameName = req.body.game_name;
+				var rawScore = new Buffer(req.body.raw_score, 'hex');
+
+				console.log(testMapping); 
+			    var decodedScores = decoder.decode(testMapping, rawScore, gameName);
+			    console.log(decodedScores);
+		    //var decodedScores = { bla: 'test'};
+			} catch (ex) {
+				console.log(ex.message);
+				decodedScores =  { error: ex.message};
+			}
+		    res.render('games/editmapping', {game: game, testMapping: req.body.game_mapping, decodedScores: JSON.stringify(decodedScores, null, 2)});
+		}
+
+	});
 };

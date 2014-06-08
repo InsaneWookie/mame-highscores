@@ -43,6 +43,9 @@ exports.getGameMappingStructure = function(gameSaveMappings, gameName, fileType)
 				//else if the file types match use this mapping (probably could turn this into a single if statement)
 				} else if (gameSaveMappings[gameMapping].fileType === fileType){
 					return gameSaveMappings[gameMapping].structure;
+				} else if(fileType === undefined){
+					//if no file type provided just return any
+					return gameSaveMappings[gameMapping].structure;
 				}
 				//else keep looking
 			}

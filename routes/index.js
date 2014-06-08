@@ -35,10 +35,8 @@ exports.index = function(req, res){
 					console.log(topPlayers);
 					async.eachSeries(topPlayers, function(player, topPlayersCallback){
 						User.findById(player._id, function(err, user){
-							console.log(err, user);
 							if(!err){
 								if(user !== null){
-								
 									player.userName = user.userName;
 								}
 							}
@@ -47,21 +45,14 @@ exports.index = function(req, res){
 					},
 					function(){
 						//finished the fetch of the users so we can finaly return the top level async
-						console.log(topPlayers)
 						callback(err, topPlayers);						
 					});
 			});
 		}
 	},
-	// optional callback
 	function(err, results){
-	// the results array will equal ['one','two'] even though
-	// the second function had a shorter timeout.
-
 		res.render('index', 
 		{ 
-			//moment: require('moment-timezone'),
-			title: 'Select file to upload',
 			games: results.games,
 			latestScores: results.latestScores,
 			latestPlayed: results.latestPlayed,
