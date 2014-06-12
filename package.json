@@ -1,6 +1,6 @@
 {
   "name": "mame-highscores",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "engines": {
     "node": "0.10.x"
@@ -21,6 +21,7 @@
     "mongoose": "~3.8.8",
     "moment": "~2.6.0",
     "moment-timezone": "0.0.6",
-    "async": "~0.8.0"
+    "async": "~0.8.0",
+    "socket.io": "~1.0.4"
   }
 }

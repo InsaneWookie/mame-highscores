@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var async = require('async');
 
+
 exports.index = function(req, res){
 	var Game = mongoose.model('Game');
 	var User = mongoose.model('User');
@@ -65,6 +66,9 @@ exports.index = function(req, res){
 	
 };
 
-exports.notification = function(req, res){		
-		res.render('notification_test');
+exports.settings = function(req, res){	
+	//console.log("notification request");	
+	//io.emit('notification', { game: 'test' });
+	res.render('settings');
+
 };

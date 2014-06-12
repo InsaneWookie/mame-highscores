@@ -38,7 +38,7 @@ html
             li 
               a(href='/game/upload') Upload File
             li
-              a(href='/notification') Notification Test
+              a(href='/settings') Notification Test
             li
               a(href='/admin') Admin
               
@@ -58,7 +58,26 @@ html
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
     script(src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js")
 
+    script(src='/socket.io/socket.io.js')
+
     script.
+      var socket = io();
+
+      socket.on('notification', function(msg){
+        var notificationText = msg.topScore.name + " just set a new high score of " + msg.topScore.score + " on " + msg.game.fullName;
+        var n = new Notification(notificationText, 
+          { body: "Click here to view the new scores", icon: "/images/notification-icon.png"});
+        n.onclick = function() {
+          n.close();
+          location.href = "/game/" + msg.game.name;
+        }
+
+        n.onshow = function () { 
+          setTimeout(function() { n.close() }, 5000); 
+        }
+      });
+
+    
       //TODO: move this out of here/wrap up in own function
       var gamesAdapter = new Bloodhound({
         datumTokenizer: function(d) {
@@ -94,3 +113,5 @@ html
       //super hack to remove the stupid extra styling that typeahead adds
       $('.typeahead').css('vertical-align', '');
       $('.typeahead').css('background-color', '');
+
+

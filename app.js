@@ -4,7 +4,7 @@ global.version = pkgJson.version;
 console.log("App starting. Version: " + global.version);
 
 var express = require('express');
-var http = require('http');
+io = require('socket.io');
 var path = require('path');
 var fs = require('fs');
 var favicon = require('static-favicon');
@@ -19,6 +19,10 @@ var admin = require('./routes/admin');
 
 
 var app = express();
+//app.set('server', io);
+
+//yes, yes, globals are bad
+//app.locals.io = io;
 
 //create some common data that is avaiable to all views
 var moment = require('moment-timezone');
@@ -81,7 +85,7 @@ app.use(app.router);
 
 //==================== Routes =======================
 app.get('/', routes.index);
-app.get('/notification', routes.notification); 
+app.get('/settings', routes.settings); 
 
 //user routes
 app.get('/users', users.list);
@@ -112,7 +116,7 @@ app.post('/admin/process_new_scores', admin.process_new_scores);
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
-    console.log('error');
+    console.log('404 error: ', req.url);
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -139,6 +143,7 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
 
 
 module.exports = app;

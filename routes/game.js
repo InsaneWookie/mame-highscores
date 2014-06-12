@@ -159,6 +159,8 @@ exports.upload = function(req, res){
 		var newScores = decodedScores[gameName];
 		//console.log(newScores);
 
+
+
 		//go through each score and see if we can find a user with and alias that matches
 		Game.findOne({name: gameName}, function(err, game){
 
@@ -169,9 +171,28 @@ exports.upload = function(req, res){
 				res.send("Error: Game not found");
 			} else {
 
+				//before we save work out if the top score has been set
+				var sortedNewScores = newScores;
+				sortedNewScores.sort(function(a, b){
+					return parseInt(b.score) - parseInt(a.score);
+				});
+
+				foundTopScore = game.scores.some(function(score){
+					return (sortedNewScores[0].score === score.score 
+						&& sortedNewScores[0].name === score.name
+						&& score.user_id);
+				});
+
 				game.addScores(newScores, function(err, saved){
 					
-					if(err) { console.log(err); }
+					if(err) { console.log(err); return; }
+
+					//once we have save the game we need to see if any of the scores were beaten so
+					//we can real time notify people
+					
+					if(!foundTopScore){
+						io.emit('notification', { game: saved, topScore: sortedNewScores[0]});
+					}
 
 					if(req.accepts('json, html') == 'json'){
 						res.json(saved);		

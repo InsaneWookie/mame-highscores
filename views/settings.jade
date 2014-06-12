@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+  h1 Settings
+
+  div.row
+    button(type="button" id="enable-notifications" class="btn btn-default") Enable Notifications
+
+  script.
+    $('#enable-notifications').click(function(){
+      Notification.requestPermission(function (status) {
+        // This allows to use Notification.permission with Chrome/Safari
+        if (Notification.permission !== status) {
+          Notification.permission = status;
+        }
+      });
+    })
+    
+
+
+      
