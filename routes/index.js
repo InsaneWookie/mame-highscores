@@ -8,7 +8,7 @@ exports.index = function(req, res){
 
 	async.parallel({
 		games: function(callback){
-			Game.find({hasMapping: true}).sort({ fullName: 1 }).exec(
+			Game.find({hasMapping: true, cloneOf : { $exists: false }}).sort({ fullName: 1 }).exec(
 				function(err, games){
 					callback(err, games);
 			});

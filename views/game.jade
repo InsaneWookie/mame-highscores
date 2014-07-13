@@ -13,6 +13,10 @@ block content
 				img(src="http://sifty.tk/hiscores/titles/#{game.name}.png" style="width:100%")
 			div.col-md-8
 				include _scores
+
+				each game in clones 
+					h2 #{game.fullName} (#{game.name})
+					include _scores
 	else
 		h2 #{game.fullName} (#{game.name}) 
 			a.small(href='/games/#{game.name}/editmapping') Edit Mapping

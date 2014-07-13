@@ -40,13 +40,19 @@ fs.readFile(hiToTextFile, function(err, data) {
 			gameInfo.name = game.$.name;
 			gameInfo.fullName = game.description[0];
 
+			if(game.$.cloneof !== undefined){
+				gameInfo.cloneOf = game.$.cloneof;
+			}
+
 			if(game.year !== undefined && game.year.length > 0){
 		  		gameInfo.year = game.year[0];
 			}
 
-			if(validGames[gameInfo.name]){ 
+
+
+			//if(validGames[gameInfo.name]){ 
 		  		gameInfos.push(gameInfo);
-		  	}
+		  	//}
 
         });
 

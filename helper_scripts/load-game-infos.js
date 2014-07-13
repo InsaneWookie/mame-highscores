@@ -20,6 +20,7 @@
 
 var fs = require('fs');
 var mongoose = require('mongoose');
+var async = require('async');
 
 var gameInfos = JSON.parse(fs.readFileSync(process.argv[2], {encoding: 'utf-8'})); //require('./game_mappings/gameInfos.json'); 
 var uristring = process.argv[3]; //process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores';
@@ -44,6 +45,7 @@ mongoose.connect(uristring);
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
+
 db.once('open', function callback () {
     console.log("Connected to mongo db (" + uristring + ")"); 
     console.log("Updating game infos (count: " + gameInfos.length + ")"); 
@@ -51,42 +53,71 @@ db.once('open', function callback () {
     //create any missing game records
     var progress = 0;
     var count = 0;
-    gameInfos.forEach(function(game){
+
+    async.eachLimit(gameInfos, 1, 
+
+      function(game, callback){
 
         game.hasMapping = (gameNames[game.name] !== undefined);
         //need to look up in the mappings to see if it has one 
 
-
-        if(game.hasMapping){
-          //console.log(game);
-        }
-
         db.collection('games').update(
           { name: game.name }, 
           { $set: game }, 
-          { upsert: game.hasMapping }, //replace this line with the following to insert everthing
-          //{ upsert: true }, //add this line to insert if no match is found
+          //{ upsert: game.hasMapping }, //replace this line with the following to insert everthing
+          { upsert: true }, //add this line to insert if no match is found
           function(err){
-
-            if(err) {
-              console.log(err);
-            } else {
-
-              count++;
-              progress = Math.round(((count/gameInfos.length)*100));
-              if(count % 1000 == 0){
-                console.log(progress + "%"); 
-              }
-
-              if(count === gameInfos.length){
-                console.log("Finished updating game infos");
-                db.close();
-              }
-
+            progress++;
+            if(progress % 1000 == 0){
+              console.log("Progress: " + progress);
             }
-
+            callback(err);
           });
+      }, 
+      function(err){
+      // if any of the saves produced an error, err would equal that error
+        console.log("Finished updating game infos");
+        console.log("Updated: " + progress);
+        db.close();
     });
+
+
+    // gameInfos.forEach(function(game){
+
+    //     game.hasMapping = (gameNames[game.name] !== undefined);
+    //     //need to look up in the mappings to see if it has one 
+
+
+    //     if(game.hasMapping){
+    //       //console.log(game);
+    //     }
+
+    //     db.collection('games').update(
+    //       { name: game.name }, 
+    //       { $set: game }, 
+    //       //{ upsert: game.hasMapping }, //replace this line with the following to insert everthing
+    //       { upsert: true }, //add this line to insert if no match is found
+    //       function(err){
+
+    //         if(err) {
+    //           console.log(err);
+    //         } else {
+
+    //           count++;
+    //           progress = Math.round(((count/gameInfos.length)*100));
+    //           if(count % 1000 == 0){
+    //             console.log(progress + "%"); 
+    //           }
+
+    //           if(count === gameInfos.length){
+    //             console.log("Finished updating game infos");
+    //             db.close();
+    //           }
+
+    //         }
+
+    //       });
+    // });
 });
 
 

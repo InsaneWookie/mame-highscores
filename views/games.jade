@@ -12,8 +12,11 @@ block content
 			th Set
 		each game in games
 			tr
-				td		
-					a(href="/games/#{game.name}") #{game.fullName}
+				td
+					if(game.cloneOf)
+						a(href="/games/#{game.cloneOf}") #{game.fullName}
+					else		
+						a(href="/games/#{game.name}") #{game.fullName}
 				if (game.scores !== undefined && game.scores.length > 0)
 					td				
 						if(game.scores[0].user_id)

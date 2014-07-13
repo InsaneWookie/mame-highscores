@@ -11,8 +11,8 @@ exports.list = function(req, res){
 	if(req.query.game){
 		res.redirect('/games/' + req.query.game); //this url building feel so wrong
 	} else {
-		var sort = {fullName: 1};
-		var query = { fullName: { $exists: true}, hasMapping: true,  scores : { $not: { $size : 0 }  } };
+		var sort = { fullName: 1 };
+		var query = { fullName: { $exists: true }, hasMapping: true,  scores : { $not: { $size : 0 }  } };
 
 		
 		if(req.query.allGames !== undefined){
@@ -62,8 +62,6 @@ exports.game = function(req, res, next){
 	console.log(req.params);
 
 	Game.findOne({name: req.params.game_id}, function (err, game){
-
-
 		
 		if(req.method === 'POST'){
 
@@ -82,11 +80,32 @@ exports.game = function(req, res, next){
 					return parseInt(b.score) - parseInt(a.score);
 				});
 
-				if(req.accepts('json, html') == 'json'){
-					res.json(game);
-				} else {
-					res.render('game', {game: game});
-				}
+
+				Game.find({cloneOf: game.name},function(err, clones){
+
+					if(err) { 
+						console.log(err);
+						next(err); //not sure if this will work
+					} else {
+
+						clones.forEach(function(clone){
+							clone.scores.sort(function(a, b){
+								return parseInt(b.score) - parseInt(a.score);
+							});
+						})
+
+						if(req.accepts('json, html') == 'json'){
+							res.json(game);
+						} else {
+							res.render('game', {game: game, clones: clones});
+						}
+						
+					}
+
+				});
+
+
+				
 			}
 
 		}

@@ -10,6 +10,8 @@ var gameSchema = mongoose.Schema({
     playCount: { type: Number, default: 0 },
     lastPlayed: { type: Date, default: Date.now },
 
+    cloneOf: String,
+
     order: [{score: String, name: String}],
     sort: { by: String, order: String },
 
