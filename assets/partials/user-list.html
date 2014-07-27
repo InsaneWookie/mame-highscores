@@ -1,0 +1,14 @@
+<br>
+<a href="#/create-user">New User</a>
+<br>
+<br>
+<table class="table table-striped">
+	<tr>
+		<th>User Name</th>
+		<th>Aliases</th>
+	</tr>
+	<tr ng-repeat="user in users">
+		<td><a href="#/users/{{user.id}}">{{user.username}}</a></td>
+		<td><span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></td>
+	</tr>
+</table>

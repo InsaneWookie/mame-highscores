@@ -1,149 +1,53 @@
+/**
+ * app.js
+ *
+ * Use `app.js` to run your app without `sails lift`.
+ * To start the server, run: `node app.js`.
+ * 
+ * This is handy in situations where the sails CLI is not relevant or useful.
+ *
+ * For example:
+ *   => `node app.js`
+ *   => `forever start app.js`
+ *   => `node debug app.js`
+ *   => `modulus deploy`
+ *   => `heroku scale`
+ * 
+ *
+ * The same command-line arguments are supported, e.g.:
+ * `node app.js --silent --port=80 --prod`
+ */
 
-var pkgJson = require('./package.json');
-global.version = pkgJson.version;
-console.log("App starting. Version: " + global.version);
-
-var express = require('express');
-io = require('socket.io');
-var path = require('path');
-var fs = require('fs');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-
-var routes = require('./routes/index');
-var users = require('./routes/user');
-var games = require('./routes/game');
-var admin = require('./routes/admin');
-
-
-var app = express();
-//app.set('server', io);
-
-//yes, yes, globals are bad
-//app.locals.io = io;
-
-//create some common data that is avaiable to all views
-var moment = require('moment-timezone');
-moment.lang('en-AU'); //make sure the dates are formatted in nz time. Dont support nz so use AU . TODO: make this configurable
-moment.defaultFormat = 'LLL';
-app.locals.moment = moment;//nice date/timezone formatting
-app.locals.defaultTZ = 'Pacific/Auckland'; //moment doesn't suppot a global default timezone
-
-//helper function for formatting time
-//takes valid date time value that moment support and an optional format string that moment supports
-app.locals.formatDate = function(dateTime, formatOverride){
-
-    if(formatOverride === undefined){
-        formatOverride = null;
-    }
-    return app.locals.moment(dateTime).tz(app.locals.defaultTZ).fromNow(formatOverride);
-};
-
-
-var mongoose = require('mongoose');
-
-var uristring = process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores-backup';
-// Makes connection asynchronously.  Mongoose will queue up database
-// operations and release them when the connection is complete.
-mongoose.connect(uristring);
-var db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-    console.log("Connected to mongo db"); 
-});
-
-
-// Bootstrap models (this loads all the models for easy access, not that there is many) 
-fs.readdirSync(__dirname + '/models').forEach(function (file) {
-  if (~file.indexOf('.js')) require(__dirname + '/models/' + file);
-});
- 
-
-// view engine setup
-app.locals.basedir = path.join(__dirname, 'views');
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
-app.use(favicon());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
-//app.use(express.multipart());
-
-//needed for file uploads
-app.use(express.methodOverride());
-app.use(express.bodyParser({keepExtensions: true, uploadDir: '/tmp'}));
-app.use(express.limit('1mb')); //max upload size (NOTE: this has been deprecated)
-
-app.use(cookieParser());
-app.use(require('stylus').middleware(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(app.router);
-
-//==================== Routes =======================
-app.get('/', routes.index);
-app.get('/settings', routes.settings); 
-
-//user routes
-app.get('/users', users.list);
-app.get('/users/:id', users.user);
-
-app.get('/user/create', users.create);
-app.post('/user/create', users.create);
-
-app.get('/user/update/:id', users.update);
-app.post('/user/update/:id', users.update);
-
-//game routes
-app.get('/games', games.list);
-app.get('/games/:game_id', games.game);
-app.get('/games/:game_id/editmapping', games.editmapping);
-app.post('/games/:game_id/editmapping', games.editmapping);
-
-app.get('/game/upload', games.upload);
-app.post('/game/upload', games.upload);
-
-//app.post('/game/test_mapping', games.test_mapping);
-
-
-//admin routes
-app.get('/admin', admin.index);
-app.post('/admin/process_new_scores', admin.process_new_scores);
-//=====================================================
-
-/// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
-    console.log('404 error: ', req.url);
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
-/// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
+// Ensure a "sails" can be located:
+var sails;
+try {
+	sails = require('sails');
+} catch (e) {
+	console.error('To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.');
+	console.error('To do that, run `npm install sails`');
+	console.error('');
+	console.error('Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.');
+	console.error('When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,');
+	console.error('but if it doesn\'t, the app will run with the global sails instead!');
+	return;
 }
 
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
-});
+// Try to get `rc` dependency
+var rc;
+try {
+	rc = require('rc');
+} catch (e0) {
+	try {
+		rc = require('sails/node_modules/rc');
+	} catch (e1) {
+		console.error('Could not find dependency: `rc`.');
+		console.error('Your `.sailsrc` file(s) will be ignored.');
+		console.error('To resolve this, run:');
+		console.error('npm install rc --save');
+		rc = function () { return {}; };
+	}
+}
 
 
-
-module.exports = app;
+// Start server
+sails.lift(rc('sails'));
