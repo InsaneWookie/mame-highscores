@@ -4,6 +4,9 @@
   "version": "0.8.0",
   "description": "Mame high score tracking",
   "keywords": [],
+  "engines": {
+    "node": "0.10.x"
+  },
   "dependencies": {
     "sails": "~0.10.0-rc8",
     "sails-disk": "~0.10.0",
@@ -24,8 +27,7 @@
     "grunt-contrib-coffee": "~0.10.1",
     "jade": "~1.4.2",
     "sails-postgresql": "~0.10.0-rc4",
-    "gake": "~0.1.2",
-    "sails-migrations": "~0.1.0"
+    "gake": "~0.1.2"
   },
   "scripts": {
     "start": "node app.js",
