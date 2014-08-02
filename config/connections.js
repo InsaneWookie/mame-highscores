@@ -66,7 +66,7 @@ module.exports.connections = {
   //
   postgresqlServer: {
     adapter: 'sails-postgresql',
-    url: process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/mame-highscores',
+    url: process.env.DATABASE_URL || process.env.OPENSHIFT_POSTGRESQL_DB_URL || 'postgres://postgres:postgres@localhost:5432/mame-highscores',
     //host: 'localhost',
     //user: '',
     //password: '',
