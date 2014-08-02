@@ -30,6 +30,7 @@
     "gake": "~0.1.2"
   },
   "scripts": {
+    "postinstall": "export HOME=/var/lib/openshift/53d73a6550044601bc0001dd/app-root/runtime/repo; ./node_modules/bower/bin/bower install",
     "start": "node app.js",
     "debug": "node debug app.js"
   },
