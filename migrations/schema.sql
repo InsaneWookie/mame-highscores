@@ -83,6 +83,10 @@ CREATE TABLE mapping (
 );
 
 
-
-
-
+CREATE TABLE gameplayed (
+  id serial PRIMARY KEY,
+  game_id integer NOT NULL REFERENCES game (id),
+  date_time timestamp without time zone NOT NULL DEFAULT NOW(),
+  "createdAt" timestamp without time zone,
+  "updatedAt" timestamp without time zone
+);
