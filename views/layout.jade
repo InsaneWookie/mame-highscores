@@ -5,9 +5,9 @@ html(lang='en', ng-app='myApp')
     meta(name="viewport" content="width=device-width, initial-scale=1")
     
 
-    <!-- Latest compiled and minified CSS -->
+    //<!-- Latest compiled and minified CSS -->
     link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
-    <!-- Optional theme -->
+    //<!-- Optional theme -->
     link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css")
 
     //link(rel="stylesheet" href="/stylesheets/typeahead.css")
@@ -52,10 +52,6 @@ html(lang='en', ng-app='myApp')
         block body
 
 
-    <!-- Latest compiled and minified JavaScript -->
-    
-    
-
     //
       In production use:
     //script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js")
@@ -78,6 +74,27 @@ html(lang='en', ng-app='myApp')
     script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
     //script(src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js")
     //script(src='/socket.io/socket.io.js')
+
+    script.
+      //io.socket.get("/score", function() {});
+
+      io.socket.on("score", function (message) {
+        console.log('**got score message**');
+        console.log(message);
+        if (message.verb === "created") {
+          var notificationText = message.data.name + " just set a new high score of " + message.data.score + " on " + message.data.game.full_name;
+          var n = new Notification(notificationText,
+            { body: "Click here to view the new scores", icon: "/images/notification-icon.png"});
+          n.onclick = function() {
+            n.close();
+            location.href = "/#games/" + message.data.game.id;
+          }
+
+          n.onshow = function () {
+            setTimeout(function() { n.close() }, 10000);
+          }
+        }
+      });
 
     //
       script.

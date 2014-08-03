@@ -119,24 +119,24 @@ angular.module('myApp.controllers', [])
       });
 
 
-      $sails.on("game", function (message) {
-        console.log('got game detail message');
-        console.log(message);
-
-        if (message.verb === "updated") {
-
-          angular.extend($scope.game, message.data);
-        
-        } else if (message.verb === 'addedTo') {
-          //for now just refetch the game TODO: just fetch the score that was added
-          $sails.get("/game/" + message.id).success(function (data) {
-            $scope.game = data;
-          })
-          .error(function (data) {
-            alert('Houston, we got a problem!');
-          });
-        }
-      });
+//      $sails.on("game", function (message) {
+//        console.log('got game detail message');
+//        console.log(message);
+//
+//        if (message.verb === "updated") {
+//
+//          angular.extend($scope.game, message.data);
+//
+//        } else if (message.verb === 'addedTo') {
+//          //for now just refetch the game TODO: just fetch the score that was added
+//          $sails.get("/game/" + message.id).success(function (data) {
+//            $scope.game = data;
+//          })
+//          .error(function (data) {
+//            alert('Houston, we got a problem!');
+//          });
+//        }
+//      });
 
 
       $sails.get("/score?sort=score DESC&game=" + $routeParams.id).success(function (data) {
@@ -150,12 +150,13 @@ angular.module('myApp.controllers', [])
       });
 
 
-      $sails.on("score?game=" + $routeParams.id, function (message) {
+      $sails.on("score", function (message) {
         console.log('got score detail message');
         console.log(message);
 
         if (message.verb === "created") {
-          angular.extend($scope.scores, message.data);
+          //angular.extend($scope.scores, message.data);
+          $scope.scores.push(message.data);
         }
       });
 

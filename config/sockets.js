@@ -18,7 +18,8 @@ module.exports.sockets = {
   // mixes in socket.io events for your routes and blueprints automatically.
   onConnect: function(session, socket) {
 
-    // By default, do nothing.
+    //everyone gets subscribed to score events
+    Score.subscribe( socket )
 
   },
 

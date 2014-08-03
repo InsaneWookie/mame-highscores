@@ -62,7 +62,7 @@ module.exports = {
 
       if (err) return res.serverError(err);
 
-      var file = files[0]; //hopefaully only one file
+      var file = files[0]; //hopefully only one file
 
 
       var filePath = './.tmp/uploads/' + file.filename;
@@ -88,7 +88,7 @@ module.exports = {
         
         Game.findOneByName(gameName).exec(function(err, game){
 
-          if(err) { 
+          if(err) {
             console.log(err);
             return res.serverError(err);
           }
@@ -97,6 +97,14 @@ module.exports = {
             return res.notFound("Game not found");
           } else {
             game.addScores(newScores, function(createdScores){
+
+              if(createdScores.length > 0){
+                console.log("**** created scores***");
+                Score.findOneById(createdScores[0].id).populate('game').exec(function(err, notifyScore){
+                  Score.publishCreate(notifyScore);
+                });
+              }
+
               res.ok(createdScores, '/#/games/' + game.id);
             });
           } 
@@ -142,5 +150,5 @@ module.exports = {
 
 
     
-}
+};
 

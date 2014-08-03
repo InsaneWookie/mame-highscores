@@ -64,14 +64,26 @@ module.exports = {
 
         //now insert the new scores
 
-        Score.createEach(filteredScores).exec(function (err, result){
-          if(err) { console.log(err); } else {
+        Score.createEach(filteredScores).exec(function (err, createdScores){
+          if(err) {
+            console.log(err);
+            callback(err);
+          } else {
             
             //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
             Score.query("UPDATE score SET alias_id = a.id FROM alias a WHERE lower(score.name) = lower(a.name) AND score.game_id = $1",
               [thisGameId],
               function(err, result){
-                callback(result); //callback with the newlly created scores
+                if(err) {
+                  callback(err);
+                } else {
+
+                  createdScores.sort(function(a, b){
+                    return parseInt(b.score) - parseInt(a.score);
+                  });
+
+                  callback(createdScores); //callback with the newly created scores
+                }
               });
           }
         });
