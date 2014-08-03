@@ -12,6 +12,7 @@
     "angular-mocks": "~1.2.x",
     "angular-socket-io": "~0.6.0",
     "angular-animate": "~1.2.21",
-    "angular-sails": "~1.0.4"
+    "angular-sails": "~1.0.4",
+    "angular-moment": "~0.8.0"
   }
 }

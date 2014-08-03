@@ -73,8 +73,8 @@ db.once('open', function callback () {
     });
 
 
-    
-    db.collection('games').find().sort({name: 1}).toArray(function (eer, games){
+    //non clones first
+    db.collection('games').find().sort({cloneOf: 1, name: 1,}).toArray(function (eer, games){
 
       async.eachSeries(games, function(g, callback) {
 
@@ -92,7 +92,9 @@ db.once('open', function callback () {
         insertCount++;
         console.log('*** count ***: ' + insertCount);
 
-        client.query('INSERT INTO game (name, full_name, has_mapping, letter, play_count, last_played, clone_of, "order", sort, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6::timestamp without time zone, $7, $8, $9, $6::timestamp without time zone, $6::timestamp without time zone) RETURNING id',
+
+        client.query('INSERT INTO game (name, full_name, has_mapping, letter, play_count, last_played, clone_of, clone_of_name, "order", sort, "createdAt", "updatedAt") VALUES \
+          ($1, $2, $3, $4, $5, $6::timestamp without time zone, (SELECT id FROM game WHERE name = $7), $7, $8, $9, $6::timestamp without time zone, $6::timestamp without time zone) RETURNING id',
          [g.name, g.fullName, g.hasMapping, g.letter, g.playCount, lastPlayed, g.cloneOf, g.order, g.sort], 
          function(err, result) {
           console.log("inserted game");
@@ -106,14 +108,15 @@ db.once('open', function callback () {
           var gameId = result.rows[0].id; 
           console.log(gameId);
           
-          console.log(g.scores);
+          //console.log(g.scores);
+
           if(g.scores && g.scores.length > 0){
             g.scores.forEach(function(s){
               //created the game so now create the scores
 
               var createDate = new Date(s.createDate);
-              console.log(s);
               createDate = createDate.toISOString();
+              console.log(createDate);
 
               client.query('INSERT INTO score ("game_id", "name", "score", "createdAt", "updatedAt") VALUES ($1::integer, $2::text, $3::text, $4::timestamp without time zone, $4::timestamp without time zone) RETURNING id',
                 [gameId, encode_utf8(s.name), encode_utf8(s.score), createDate],

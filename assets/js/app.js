@@ -5,6 +5,8 @@ angular.module('myApp', [
   'ngRoute',
   'ngAnimate',
   //'ngSailsBind',
+  'angularMoment',
+
   'ngSails',
   'myApp.filters',
   'myApp.services',

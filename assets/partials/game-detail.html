@@ -6,7 +6,7 @@
 		<a class="small" href='/game/#{game.name}/editmapping'>Edit Mapping</a>
 
 		<div class="col-md-4 titleImg">
-				<img src="http://sifty.tk/hiscores/titles/{{game.name}}.png" style="width:100%" />
+				<img ng-src="http://sifty.tk/hiscores/titles/{{game.name}}.png" style="width:100%" />
 		</div>
 		<div class="col-md-8">
 			<table class="table table-striped">
@@ -21,7 +21,7 @@
 						<span ng-if="score.alias == null">{{score.name}}</span>
 					</td>
 					<td style='text-align:right'>{{score.score}}</td>
-					<td style='text-align:right'>{{score.createdAt}}</td>
+					<td style='text-align:right'><span am-time-ago="score.createdAt"></td>
 				</tr>
 			</table>
 		</div>
@@ -43,7 +43,7 @@
 						<span ng-if="score.alias == null">{{score.name}}</span>
 					</td>
 					<td style='text-align:right'>{{score.score}}</td>
-					<td style='text-align:right'>{{score.createdAt}}</td>
+					<td style='text-align:right'><span am-time-ago="score.createdAt"></td>
 				</tr>
 			</table>
 		</div>

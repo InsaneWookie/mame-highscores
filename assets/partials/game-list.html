@@ -17,7 +17,7 @@
 				<div ng-if="!game.scores[0].user"> {{game.scores[0].name}} </div>
 		</td >
 		<td ng-if="game.scores.length > 0">{{game.scores[0].score}}</td>
-		<td ng-if="game.scores.length > 0">{{game.scores[0].createdAt}}</td>
+		<td ng-if="game.scores.length > 0"><span am-time-ago="game.scores[0].createdAt"></td>
 	</tr>
 </table>
 

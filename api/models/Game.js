@@ -12,7 +12,7 @@ module.exports = {
   	full_name: 'STRING',
   	has_mapping: 'boolean',
     play_count: 'integer',
-  	clone_of: 'string',
+  	clone_of: 'integer',
   	last_played: 'datetime',
     letter: 'string',
     order: 'string',

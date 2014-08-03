@@ -82,7 +82,7 @@ angular.module('myApp.controllers', [])
       $sails.get("/game/" + $routeParams.id).success(function (data) {
         $scope.game = data;
 
-        $sails.get('/game?clone_of=' + data.name, function(clones){
+        $sails.get('/game?clone_of=' + data.id, function(clones){
 
           //$scope.clones = clones;
 
