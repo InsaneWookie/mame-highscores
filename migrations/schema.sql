@@ -21,6 +21,7 @@ SET search_path = public, pg_catalog;
 
 SET default_with_oids = false;
 
+DROP TABLE IF EXISTS "user" CASCADE;
 CREATE TABLE "user" (
     id serial PRIMARY KEY,
     username text,
@@ -30,6 +31,7 @@ CREATE TABLE "user" (
     "updatedAt" timestamp without time zone
 );
 
+DROP TABLE IF EXISTS alias CASCADE;
 CREATE TABLE alias (
     id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES "user" (id),
@@ -38,7 +40,7 @@ CREATE TABLE alias (
     "updatedAt" timestamp without time zone
 );
 
-
+DROP TABLE IF EXISTS game CASCADE;
 CREATE TABLE game (
     id serial PRIMARY KEY,
     name text NOT NULL UNIQUE,
@@ -51,11 +53,12 @@ CREATE TABLE game (
     letter text,
     "order" text,
     sort text,
+    year text,
     "createdAt" timestamp without time zone,
     "updatedAt" timestamp without time zone
 );
 
-
+DROP TABLE IF EXISTS rawscore CASCADE;
 CREATE TABLE rawscore (
     id serial PRIMARY KEY,
     game_id integer NOT NULL REFERENCES game (id),
@@ -64,7 +67,7 @@ CREATE TABLE rawscore (
     "updatedAt" timestamp without time zone
 );
 
-
+DROP TABLE IF EXISTS score CASCADE;
 CREATE TABLE score (
     id serial PRIMARY KEY,
     game_id integer NOT NULL REFERENCES game (id),
@@ -75,6 +78,7 @@ CREATE TABLE score (
     "updatedAt" timestamp without time zone
 );
 
+DROP TABLE IF EXISTS mapping CASCADE;
 CREATE TABLE mapping (
     id serial PRIMARY KEY,
     game_id integer NOT NULL REFERENCES game (id),
@@ -83,7 +87,7 @@ CREATE TABLE mapping (
     "updatedAt" timestamp without time zone
 );
 
-
+DROP TABLE IF EXISTS gameplayed CASCADE;
 CREATE TABLE gameplayed (
   id serial PRIMARY KEY,
   game_id integer NOT NULL REFERENCES game (id),
