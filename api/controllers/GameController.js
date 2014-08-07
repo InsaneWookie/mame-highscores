@@ -5,6 +5,9 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
+var fs = require('fs');
+var path = require('path');
+
 module.exports = {
 
   scores: function(req, res) {
@@ -49,6 +52,7 @@ module.exports = {
     })
   },
 
+
   upload: function(req, res) {
 
     console.log("*** decoding ***");
@@ -62,15 +66,19 @@ module.exports = {
 
       if (err) return res.serverError(err);
 
+      console.log(files);
+
       var file = files[0]; //hopefully only one file
 
 
-      var filePath = './.tmp/uploads/' + file.filename;
+
+      //TODO: we need to remove the file (can we just read it from memory?)
+      var filePath = file.fd;
+      var fileName = file.filename;
       var gameName = req.body.gamename;
 
       //invalid game so try and work it out from the file name
       if(typeof gameName != 'string' || gameName.length === 0){
-        var fileName = file.filename;
         gameName = fileName.substring(0, fileName.lastIndexOf('.'));
       }
 
@@ -110,40 +118,48 @@ module.exports = {
           } 
         });
       } else {
+         //Its possible that the reson we couldn't decode the file is because its the wrong type. ie .nv instead of .hi
+         //so in this case we don't want to add the raw scores
+         if(ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'hi') || ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'nv')){
+           res.notFound("I have a mapping for this game but not for this file type.");
+           //TODO: better error handling
+           return;
+         }
 
-        //   //Its possible that the reson we couldn't decode the file is because its the wrong type. ie .nv instead of .hi
-        //   //so in this case we don't want to add the raw scores
-        //   if(decoder.getGameMappingStructure(gameMaps, gameName, 'hi') || decoder.getGameMappingStructure(gameMaps, gameName, 'nv')){
-        //     res.send("I have a mapping for this game but not for this file type.");
-        //     //TODO: better error handling
-        //     return;
-        //   } 
+         //no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
 
-        //   //no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
+         //may as well record the play count and the last played even if there isnt a mapping
+         var fileBytes = fs.readFileSync(filePath);
+         var fileType = path.extname(fileName).substring(1);
 
-        //   //may aswell record the play count and the last played even if there isnt a mapping
-        //   var fileBytes = fs.readFileSync(filePath);
-        //   var fileType = path.extname(filePath).substring(1);
-        //   scoreData = {
-        //     hasMapping: false,
-        //     $inc: { playCount : 1 },
-        //     lastPlayed: new Date(), 
-        //     $push: {  rawScores: { 
-        //             fileType: fileType,
-        //             bytes: fileBytes.toString('hex') } } 
-        //   };
-          
-        //   Game.findOneAndUpdate({name: gameName}, scoreData, { upsert: true }, function (err, saved) {
-        //     if(err) { console.log(err); }
+        var createRawScore = function addRawScores(g, bytes, callBack){
+          RawScore.create({game_id: g.id, bytes: bytes.toString('hex')}).exec(function(err, newRawScore){
+            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [g.id],
+              function(err, result){
+                callBack(err, newRawScore);
+              });
+          });
+        };
 
-        //     if(req.accepts('json, html') == 'json'){
-        //       res.json(saved);    
-        //     } else {
-        //       res.redirect('/games/' + gameName);
-        //     }
-        //   });
-        // }
+        Game.findOneByName(gameName).exec(function(err, game){
+          if(!game){
+              //no game we want to create a empty game and store the raw score against it
+              var gameData = {
+                  name: gameName
+              }
+              Game.create(gameData).exec(function(err, newGame){
+                createRawScore(newGame, fileBytes, function(err, newRawScore){
+                  res.redirect('#/games/' + newGame.id);
+                });
+              });
+          } else {
+            createRawScore(game, fileBytes, function(err, newRawScore){
+              res.redirect('#/games/' + newGame.id);
+            });
 
+
+          }
+        });
       }
     });
   }

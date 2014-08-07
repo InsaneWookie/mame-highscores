@@ -62,6 +62,7 @@ DROP TABLE IF EXISTS rawscore CASCADE;
 CREATE TABLE rawscore (
     id serial PRIMARY KEY,
     game_id integer NOT NULL REFERENCES game (id),
+    file_type text,
     bytes text,
     "createdAt" timestamp without time zone,
     "updatedAt" timestamp without time zone

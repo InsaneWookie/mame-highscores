@@ -11,9 +11,9 @@ module.exports = {
   	name: 'string',
   	score: 'string',
 
-  	 game: { 
+  	 game: {
   	 	model: 'Game',
-  	 	columnName: 'game_id'
+        columnName: 'game_id'
   	 },
 
   	 alias: { 
@@ -29,7 +29,7 @@ module.exports = {
 	    //delete obj.user;
 	    return obj;
     }
-  },
+  }
 
   
   
