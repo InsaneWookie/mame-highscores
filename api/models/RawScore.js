@@ -9,6 +9,7 @@ module.exports = {
 
   attributes: {
     bytes: 'string',
+    file_type: 'string',
 
     game: { 
       model: 'Game',

@@ -46,7 +46,7 @@ CREATE TABLE game (
     name text NOT NULL UNIQUE,
     full_name text,
     has_mapping boolean DEFAULT FALSE,
-    play_count integer DEFAULT 0,
+    play_count integer NOT NULL DEFAULT 0,
     clone_of integer REFERENCES game (id),
     clone_of_name text,
     last_played timestamp without time zone,

@@ -72,7 +72,6 @@ module.exports = {
 
       var file = files[0]; //hopefully only one file
 
-
       //TODO: we need to remove the file (can we just read it from memory?)
       var filePath = file.fd;
       var fileName = file.filename;
@@ -87,16 +86,12 @@ module.exports = {
       //and if not then we add it to the database but flag it as missing
       var decodedScores = ScoreDecoder.decodeFromFile(gameMaps, filePath, gameName);
 
-
-      //var scoreData = { hasMapping: false, scores: [] };
-
       //if we have some score data, process it
       if (decodedScores !== null) {
 
         var newScores = decodedScores[gameName];
 
         Game.findOneByName(gameName).exec(function (err, game) {
-
           if (err) {
             console.log(err);
             return res.serverError(err);
@@ -105,8 +100,15 @@ module.exports = {
           if (!game) {
             return res.notFound("Game not found");
           } else {
+
+            //add a played record
+            GamePlayed.create({game_id: game.id}).exec(function(err, newGamePLayed){});
+            //dont technically need to do this as it can be inferred from the gameplayed table
+            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id], function (err, result) {});
+
             game.addScores(newScores, function (createdScores) {
 
+              //not sure if this should be here or in the model
               if (createdScores.length > 0) {
                 console.log("**** created scores***");
                 Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
@@ -128,37 +130,29 @@ module.exports = {
         }
 
         //no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
-
-        //may as well record the play count and the last played even if there isnt a mapping
         var fileBytes = fs.readFileSync(filePath);
         var fileType = path.extname(fileName).substring(1);
-
-        var createRawScore = function addRawScores(g, bytes, callBack) {
-          RawScore.create({game_id: g.id, bytes: bytes.toString('hex')}).exec(function (err, newRawScore) {
-            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [g.id],
-              function (err, result) {
-                callBack(err, newRawScore);
-              });
-          });
-        };
 
         Game.findOneByName(gameName).exec(function (err, game) {
           if (!game) {
             //no game we want to create a empty game and store the raw score against it
-            var gameData = {
-              name: gameName
-            }
-            Game.create(gameData).exec(function (err, newGame) {
-              createRawScore(newGame, fileBytes, function (err, newRawScore) {
-                res.redirect('#/games/' + newGame.id);
+            Game.create({name: gameName}).exec(function (err, newGame) {
+              GamePlayed.create({game_id: newGame.id}).exec(function(err, newGamePLayed){});
+              //dont technically need to do this as it can be inferred from the gameplayed table
+              Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [newGame.id], function (err, result) {});
+
+              game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
+                res.redirect('/#/games/' + newGame.id);
               });
             });
           } else {
-            createRawScore(game, fileBytes, function (err, newRawScore) {
-              res.redirect('#/games/' + newGame.id);
+            GamePlayed.create({game_id: game.id}).exec(function(err, newGamePLayed){});
+            //dont technically need to do this as it can be inferred from the gameplayed table
+            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id], function (err, result) {});
+
+            game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
+              res.redirect('/#/games/' + game.id);
             });
-
-
           }
         });
       }

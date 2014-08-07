@@ -29,22 +29,9 @@ module.exports = {
 
       var thisGameId = this.id;
       //before we save work out if the top score has been set
-      var sortedNewScores = newScores;
-
-      sortedNewScores.sort(function(a, b){
+      newScores.sort(function(a, b){
         return parseInt(b.score) - parseInt(a.score);
       });
-
-      // foundTopScore = game.scores.some(function(score){
-      //   return (sortedNewScores[0].score === score.score 
-      //     && sortedNewScores[0].name === score.name
-      //     && score.user_id);
-      // });
-
-
-      // if(!foundTopScore){
-      //     io.emit('notification', { game: saved, topScore: sortedNewScores[0]});
-      // }
 
       var filteredScores = [];
       //work out was scores do not exist in the scores that we have been given compared to whats in the database
@@ -52,7 +39,7 @@ module.exports = {
       Score.find({game_id: thisGameId}).exec(function (err, scores){
         //go through the scores and see if it exists in the ones being uploaded and if so remove it from the list
         filteredScores = newScores.filter(function (newScore){
-          //if it doesnt exist then we want to add it to ther filtered scores list
+          //if it doesn't exist then we want to add it to the filtered scores list
           return !scores.some(function (currentScore){
               return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);    
           });
@@ -63,13 +50,11 @@ module.exports = {
         });
 
         //now insert the new scores
-
         Score.createEach(filteredScores).exec(function (err, createdScores){
           if(err) {
             console.log(err);
             callback(err);
           } else {
-            
             //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
             Score.query("UPDATE score SET alias_id = a.id FROM alias a WHERE lower(score.name) = lower(a.name) AND score.game_id = $1",
               [thisGameId],
@@ -77,7 +62,6 @@ module.exports = {
                 if(err) {
                   callback(err);
                 } else {
-
                   createdScores.sort(function(a, b){
                     return parseInt(b.score) - parseInt(a.score);
                   });
@@ -88,9 +72,16 @@ module.exports = {
           }
         });
       });
+    },
+
+    addRawScores: function(rawScoreBytesSting, fileType, callback){
+      var thisGameId = this.id;
+      RawScore.create({game_id: thisGameId, file_type: fileType, bytes: rawScoreBytesSting}).exec(function (err, newRawScore) {
+        callback(err, newRawScore);
+      });
     }
 
-  },
+  }
 
 
   
