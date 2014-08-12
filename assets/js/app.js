@@ -6,6 +6,7 @@ angular.module('myApp', [
   'ngAnimate',
   //'ngSailsBind',
   'angularMoment',
+  'ui.bootstrap',
 
   'ngSails',
   'myApp.filters',

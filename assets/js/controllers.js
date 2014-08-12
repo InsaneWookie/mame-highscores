@@ -185,7 +185,7 @@ angular.module('myApp.controllers', [])
       alert('Houston, we got a problem!');
     });
 
-    $sails.get('/game?sort=last_played DESC&limit=5&where={"last_played": {"!": null}, "has_mapping": true}&populate=[]').success(function (data){
+    $sails.get('/game?sort=last_played DESC&limit=5&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
       $scope.lastPlayedGames = data;
     });
 
@@ -276,5 +276,24 @@ angular.module('myApp.controllers', [])
       .error(function (data) {
         alert('Houston, we got a problem!');
       });
+
+  }])
+  .controller('SearchCtrl', ['$scope', '$sails', '$http', '$location', function($scope, $sails, $http, $location) {
+
+    $scope.selected = null;
+
+    $scope.onSelected = function($item, $model, $label){
+      $location.path('/games/' + $item.id );
+      $scope.selected = null;
+    };
+
+    $scope.games = [];
+    //sails socket io not working (probably hasn't conneted when this is called)
+    $http.get("/game?populate=[]&limit=20000").success(function (data) {
+      $scope.games = data;
+    })
+    .error(function (data) {
+      alert('Houston, we got a problem!');
+    });
 
   }]);

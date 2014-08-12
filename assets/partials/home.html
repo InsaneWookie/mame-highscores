@@ -78,7 +78,7 @@
            <tr ng-repeat='score in lastestScores'>
              <td> <a href='#/games/{{score.game.id}}'> {{score.game.full_name}}</a></td>
              <td> 
-               <a ng-if="score.alias" href='#/user/{{score.alias.user}}'>{{score.name}}</a>
+               <a ng-if="score.alias" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
                <span ng-if="!score.alias">{{score.name}}</span>
              </td>
              <td>{{score.score}}</td>

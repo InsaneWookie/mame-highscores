@@ -3,7 +3,7 @@ html(lang='en', ng-app='myApp')
   head
     title Mame High Scores
     meta(name="viewport" content="width=device-width, initial-scale=1")
-    
+
 
     //<!-- Latest compiled and minified CSS -->
     link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
@@ -12,8 +12,26 @@ html(lang='en', ng-app='myApp')
 
     //link(rel="stylesheet" href="/stylesheets/typeahead.css")
     script(src="//code.jquery.com/jquery-2.1.0.min.js")
-    
+
     link(rel='stylesheet' href='/css/app.css')
+
+    script(src='js/dependencies/sails.io.js')
+    script(src='js/dependencies/angular.js')
+    script(src='js/dependencies/angular-route.js')
+    script(src='js/dependencies/angular-animate.js')
+    script(src='js/dependencies/angular-sails.js')
+    script(src='js/dependencies/moment.js')
+    script(src='js/dependencies/angular-moment.js')
+    script(src='js/dependencies/ui-bootstrap.js')
+    script(src='js/dependencies/ui-bootstrap-tpls.js')
+    script(src='js/app.js')
+    script(src='js/services.js')
+    script(src='js/controllers.js')
+    script(src='js/filters.js')
+    script(src='js/directives.js')
+    script(src='//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js')
+
+
   body
 
     .navbar.navbar-default.navbar-fixed-top(role='navigation')
@@ -25,7 +43,7 @@ html(lang='en', ng-app='myApp')
             span.icon-bar
             span.icon-bar
           a.navbar-brand(href='/') Mame High Scores 
-            small(style='font-size: 0.5em') (v#{global.version})
+            small(style='font-size: 0.5em') (v#{sails.config.globals.version})
         .navbar-collapse.collapse
           ul.nav.navbar-nav
             li
@@ -42,8 +60,8 @@ html(lang='en', ng-app='myApp')
               a(href='#/admin') Admin
               
           form.navbar-form.navbar-right(role='search')
-            .form-group
-              input.form-control.typeahead(type='text', placeholder='Search')
+            .form-group(ng-controller="SearchCtrl")
+              input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")
               button.btn.btn-default(type='submit') Submit
 
         // /.nav-collapse
@@ -55,23 +73,7 @@ html(lang='en', ng-app='myApp')
     //
       In production use:
     //script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js")
-    script(src='js/dependencies/sails.io.js')
-    script(src='js/dependencies/angular.js')
-    script(src='js/dependencies/angular-route.js')
-    script(src='js/dependencies/angular-animate.js')
-    script(src='js/dependencies/angular-sails.js')
 
-    script(src='js/dependencies/moment.js')
-    script(src='js/dependencies/angular-moment.js')
-
-    script(src='js/app.js')
-    script(src='js/services.js')
-    script(src='js/controllers.js')
-    script(src='js/filters.js')
-    script(src='js/directives.js')
-
-
-    script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
     //script(src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js")
     //script(src='/socket.io/socket.io.js')
 

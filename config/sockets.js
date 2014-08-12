@@ -37,8 +37,8 @@ module.exports.sockets = {
   // The flashsocket transport is disabled by default
   // You can enable flashsockets by adding 'flashsocket' to this list:
   transports: [
-    'websocket',
-    'htmlfile',
+    //'websocket', //for now disable websockets as openshift needs them run on a different port
+    //'htmlfile',
     'xhr-polling',
     'jsonp-polling'
   ],
