@@ -19,6 +19,12 @@ module.exports = {
     //    });
   },
 
+  search_list: function(req, res){
+    Game.query('SELECT id, name, full_name FROM game', function(err, results){
+      res.json(results.rows);
+    });
+  },
+
   top_players: function (req, res) {
 
     var query =

@@ -288,8 +288,8 @@ angular.module('myApp.controllers', [])
     };
 
     $scope.games = [];
-    //sails socket io not working (probably hasn't conneted when this is called)
-    $http.get("/game?populate=[]&limit=20000").success(function (data) {
+    //sails socket io not working (probably hasn't connected when this is called)
+    $http.get("/game/search_list").success(function (data) {
       $scope.games = data;
     })
     .error(function (data) {
