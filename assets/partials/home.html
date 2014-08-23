@@ -5,7 +5,7 @@
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-body text-center">
-        <form class="form-inline" action='/games', method='get' role='form'>
+        <form class="form-inline" action='/games' method='get' role='form'>
           <div class="form-group">
             <select class="form-control" name='game' ng-model="selectedGame" ng-options="game.full_name for game in games">
             </select>
@@ -18,7 +18,7 @@
 
 <div class="row">
 
- <dvi class="col-md-6">
+ <div class="col-md-6">
    <div class="panel panel-default">
      <div class="panel-heading">
        <h3 class="panel-title">5 Recently Played Games</h3>
@@ -29,19 +29,17 @@
            <th>Game Name</th>
            <th>Play Count</th>
            <th>Date</th>
-           
-           <tr ng-repeat="game in lastPlayedGames">
-             <td> <a href='#/games/{{game.id}}'>{{game.full_name}} </a></td>
-             <td>{{game.play_count}}</td>
-             <td><span am-time-ago="game.last_played"></span></td>
-           </tr>
-           
+         </tr>
+         <tr ng-repeat="game in lastPlayedGames">
+           <td> <a href='#/games/{{game.id}}'>{{game.full_name}} </a></td>
+           <td>{{game.play_count}}</td>
+           <td><span am-time-ago="game.last_played"></span></td>
          </tr>
        </table>
      </div>
    </div>
- </dvi>
- <dvi class="col-md-6">
+ </div>
+ <div class="col-md-6">
    <div class="panel panel-default">
      <div class="panel-heading">
        <h3 class="panel-title">Top 5 Players</h3>
@@ -59,10 +57,10 @@
        </table>
      </div>
    </div>
- </dvi>
+ </div>
 </div>
 <div class="row">
- <dvi class="col-md-12">
+ <div class="col-md-12">
    <div class="panel panel-default">
      <div class="panel-heading">
        <h3 class="panel-title strong">Latest Scores</h3>
@@ -74,19 +72,18 @@
            <th>Name</th>
            <th>Score</th>
            <th>Date</th>
-           
-           <tr ng-repeat='score in lastestScores'>
-             <td> <a href='#/games/{{score.game.id}}'> {{score.game.full_name}}</a></td>
-             <td> 
-               <a ng-if="score.alias" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
-               <span ng-if="!score.alias">{{score.name}}</span>
-             </td>
-             <td>{{score.score}}</td>
-             <td><span am-time-ago="score.createdAt"></td>
-           </tr>
+         </tr>
+         <tr ng-repeat='score in lastestScores'>
+           <td> <a href='#/games/{{score.game.id}}'> {{score.game.full_name}}</a></td>
+           <td>
+             <a ng-if="score.alias" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
+             <span ng-if="!score.alias">{{score.name}}</span>
+           </td>
+           <td>{{score.score}}</td>
+           <td><span am-time-ago="score.createdAt"></span></td>
          </tr>
        </table>
      </div>
    </div>
- </dvi>
+ </div>
 </div>

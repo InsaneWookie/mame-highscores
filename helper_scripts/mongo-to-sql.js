@@ -1,22 +1,4 @@
-//this is used to load all the game info into the database
-//use convert-mamexml.js to create the game info file 
-//format of a game info record should be
-/*
-{
-    "name": "005",
-    "fullName": "005",
-    "year": "1981",
-    "order": [
-      "score",
-      "name"
-    ],
-    "sort": {
-      "by": "score",
-      "order": "desc"
-    }
-  },
 
-*/
 
 function encode_utf8(s) {
   var j = JSON.stringify(s);
@@ -89,13 +71,17 @@ db.once('open', function callback () {
           //console.log(lastPlayed);
         }
 
+        if(g.playCount == null) {
+          g.playCount = 0;
+        }
+
         insertCount++;
         console.log('*** count ***: ' + insertCount);
 
 
-        client.query('INSERT INTO game (name, full_name, has_mapping, letter, play_count, last_played, clone_of, clone_of_name, "order", sort, "createdAt", "updatedAt") VALUES \
-          ($1, $2, $3, $4, $5, $6::timestamp without time zone, (SELECT id FROM game WHERE name = $7), $7, $8, $9, $6::timestamp without time zone, $6::timestamp without time zone) RETURNING id',
-         [g.name, g.fullName, g.hasMapping, g.letter, g.playCount, lastPlayed, g.cloneOf, g.order, g.sort], 
+        client.query('INSERT INTO game (name, full_name, has_mapping, letter, play_count, last_played, clone_of, clone_of_name, "order", sort, year, "createdAt", "updatedAt") VALUES \
+          ($1, $2, $3, $4, $5, $6::timestamp with time zone, (SELECT id FROM game WHERE name = $7), $7, $8, $9, $10, $6::timestamp with time zone, $6::timestamp with time zone) RETURNING id',
+         [g.name, g.fullName, g.hasMapping, g.letter, g.playCount, lastPlayed, g.cloneOf, g.order, g.sort, g.year],
          function(err, result) {
           console.log("inserted game");
 
@@ -118,7 +104,7 @@ db.once('open', function callback () {
               createDate = createDate.toISOString();
               console.log(createDate);
 
-              client.query('INSERT INTO score ("game_id", "name", "score", "createdAt", "updatedAt") VALUES ($1::integer, $2::text, $3::text, $4::timestamp without time zone, $4::timestamp without time zone) RETURNING id',
+              client.query('INSERT INTO score ("game_id", "name", "score", "createdAt", "updatedAt") VALUES ($1::integer, $2::text, $3::text, $4::timestamp with time zone, $4::timestamp with time zone) RETURNING id',
                 [gameId, encode_utf8(s.name), encode_utf8(s.score), createDate],
                 function(scoreErr, scoreResult){
                   //scoreDone();
@@ -144,7 +130,7 @@ db.once('open', function callback () {
               
               createDate = createDate.toISOString();
 
-              client.query('INSERT INTO rawscore ("game_id", "bytes", "createdAt", "updatedAt") VALUES ($1::integer, $2::text, $3::timestamp without time zone, $3::timestamp without time zone) RETURNING id',
+              client.query('INSERT INTO rawscore ("game_id", "bytes", "createdAt", "updatedAt") VALUES ($1::integer, $2::text, $3::timestamp with time zone, $3::timestamp with time zone) RETURNING id',
                 [gameId, rawScore.bytes, createDate],
                 function(rawScoreErr, rawScoreResult){
                   //scoreDone();
@@ -177,11 +163,7 @@ db.once('open', function callback () {
         }
 
         //once thats done lest insert the users then link everything up
-
-
-
-
-
+        //UPDATE score as s SET alias_id = a.id FROM alias as a WHERE a.name = s.name
 
         //client.end();
         //db.close();
@@ -190,41 +172,6 @@ db.once('open', function callback () {
   });
 
 
-
-    //   db.collection('users').find().toArray(function (err, users){
-        
-    //     console.log(err);
-
-        
-    //     var userId = 1;
-
-    //     users.forEach(function(user){
-    //       //console.log("INSERT INTO users (id, username, email) VALUES (" + userId + ", '" + user.userName + "', '" + user.email + "');");
-
-    //       //user.aliases.forEach(function(alias){
-    //       //  console.log("INSERT INTO alias (name, user) VALUES ('" + alias + "', " + userId +");");  
-    //       //});
-    //       //userId++;
-    //     });
-
-        
-    //     db.close();
-    //   });
-
-    //   client.query('SELECT $1::int AS number', ['1'], function(err, result) {
-    //     //call `done()` to release the client back to the pool
-    //     done();
-
-    //     if(err) {
-    //       return console.error('error running query', err);
-    //     }
-    //     console.log(result.rows[0].number);
-    //     //output: 1
-    //   });
-    // });
-    
-
-    // var users = [];
 
     
 });

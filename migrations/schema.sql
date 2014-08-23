@@ -27,8 +27,8 @@ CREATE TABLE "user" (
     username text,
     password text,
     email text,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS alias CASCADE;
@@ -36,8 +36,8 @@ CREATE TABLE alias (
     id serial PRIMARY KEY,
     user_id integer NOT NULL REFERENCES "user" (id),
     name text,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS game CASCADE;
@@ -49,13 +49,13 @@ CREATE TABLE game (
     play_count integer NOT NULL DEFAULT 0,
     clone_of integer REFERENCES game (id),
     clone_of_name text,
-    last_played timestamp without time zone,
+    last_played timestamp with time zone,
     letter text,
     "order" text,
     sort text,
     year text,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS rawscore CASCADE;
@@ -64,8 +64,8 @@ CREATE TABLE rawscore (
     game_id integer NOT NULL REFERENCES game (id),
     file_type text,
     bytes text,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS score CASCADE;
@@ -75,8 +75,8 @@ CREATE TABLE score (
     alias_id integer REFERENCES "alias" (id),
     name text,
     score text,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS mapping CASCADE;
@@ -84,15 +84,15 @@ CREATE TABLE mapping (
     id serial PRIMARY KEY,
     game_id integer NOT NULL REFERENCES game (id),
     decoding json,
-    "createdAt" timestamp without time zone,
-    "updatedAt" timestamp without time zone
+    "createdAt" timestamp with time zone,
+    "updatedAt" timestamp with time zone
 );
 
 DROP TABLE IF EXISTS gameplayed CASCADE;
 CREATE TABLE gameplayed (
   id serial PRIMARY KEY,
   game_id integer NOT NULL REFERENCES game (id),
-  date_time timestamp without time zone NOT NULL DEFAULT NOW(),
-  "createdAt" timestamp without time zone,
-  "updatedAt" timestamp without time zone
+  date_time timestamp with time zone NOT NULL DEFAULT NOW(),
+  "createdAt" timestamp with time zone,
+  "updatedAt" timestamp with time zone
 );
