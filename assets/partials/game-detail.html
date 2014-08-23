@@ -3,8 +3,10 @@
 <div ng-if="game != null">
 	<div class="row">
 		<h2> {{game.full_name}} ({{game.name}}) </h2>
+
 		<a class="small" href='/game/#{game.name}/editmapping'>Edit Mapping</a>
 
+    <h3>Year: {{game.year}}</h3>
 		<div class="col-md-4 titleImg">
 				<img ng-src="http://sifty.tk/hiscores/titles/{{game.name}}.png" style="width:100%" />
 		</div>
@@ -21,7 +23,7 @@
 						<span ng-if="score.alias == null">{{score.name}}</span>
 					</td>
 					<td style='text-align:right'>{{score.score}}</td>
-					<td style='text-align:right'><span am-time-ago="score.createdAt"></td>
+					<td style='text-align:right'><span am-time-ago="score.createdAt"></span></td>
 				</tr>
 			</table>
 		</div>
@@ -43,7 +45,7 @@
 						<span ng-if="score.alias == null">{{score.name}}</span>
 					</td>
 					<td style='text-align:right'>{{score.score}}</td>
-					<td style='text-align:right'><span am-time-ago="score.createdAt"></td>
+					<td style='text-align:right'><span am-time-ago="score.createdAt"></span></td>
 				</tr>
 			</table>
 		</div>
