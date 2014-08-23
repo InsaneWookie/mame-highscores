@@ -5,13 +5,12 @@ html(lang='en', ng-app='myApp')
     meta(name="viewport" content="width=device-width, initial-scale=1")
 
 
-    //<!-- Latest compiled and minified CSS -->
-    link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
-    //<!-- Optional theme -->
-    link(rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css")
+    //Latest compiled and minified CSS
+    link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
+    //Optional theme
+    link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css')
 
-    //link(rel="stylesheet" href="/stylesheets/typeahead.css")
-    script(src="//code.jquery.com/jquery-2.1.0.min.js")
+    script(src='//code.jquery.com/jquery-2.1.0.min.js')
 
     link(rel='stylesheet' href='/css/app.css')
 
@@ -69,17 +68,7 @@ html(lang='en', ng-app='myApp')
       .jumbotron
         block body
 
-
-    //
-      In production use:
-    //script(src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.21/angular.min.js")
-
-    //script(src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js")
-    //script(src='/socket.io/socket.io.js')
-
     script.
-      //io.socket.get("/score", function() {});
-
       io.socket.on("score", function (message) {
         console.log('**got score message**');
         console.log(message);
@@ -97,60 +86,3 @@ html(lang='en', ng-app='myApp')
           }
         }
       });
-
-    //
-      script.
-        var socket = io();
-
-        socket.on('notification', function(msg){
-          var notificationText = msg.topScore.name + " just set a new high score of " + msg.topScore.score + " on " + msg.game.fullName;
-          var n = new Notification(notificationText, 
-            { body: "Click here to view the new scores", icon: "/images/notification-icon.png"});
-          n.onclick = function() {
-            n.close();
-            location.href = "/game/" + msg.game.name;
-          }
-
-          n.onshow = function () { 
-            setTimeout(function() { n.close() }, 5000); 
-          }
-        });
-
-      
-        //TODO: move this out of here/wrap up in own function
-        var gamesAdapter = new Bloodhound({
-          datumTokenizer: function(d) {
-            return Bloodhound.tokenizers.whitespace(d.fullName);
-          },
-          queryTokenizer: Bloodhound.tokenizers.whitespace,
-          limit: 10,
-          prefetch: { //note this is cached in local storage for 1 day
-            url: '/games?allGames=true',
-          }
-        });
-         
-        // kicks off the loading/processing of `local` and `prefetch`
-        gamesAdapter.initialize();
-         
-        // passing in `null` for the `options` arguments will result in the default
-        // options being used
-        $('.typeahead').typeahead({
-          hint: true,
-          highlight: true,
-          minLength: 1
-        },
-        {
-          //name: 'fullName',
-          displayKey: 'fullName',
-          // `ttAdapter` wraps the suggestion engine in an adapter that
-          // is compatible with the typeahead jQuery plugin
-          source: gamesAdapter.ttAdapter()
-        }).bind('typeahead:selected', function(eventObj, gameObj){ 
-          window.location = '/games/' + gameObj.name;
-        });
-
-        //super hack to remove the stupid extra styling that typeahead adds
-        $('.typeahead').css('vertical-align', '');
-        $('.typeahead').css('background-color', '');
-
-

@@ -148,7 +148,7 @@ module.exports = {
               Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [newGame.id], function (err, result) {});
 
               game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
-                res.redirect('/#/games/' + newGame.id);
+                res.ok('/#/games/' + newGame.id);
               });
             });
           } else {
@@ -157,7 +157,7 @@ module.exports = {
             Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id], function (err, result) {});
 
             game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
-              res.redirect('/#/games/' + game.id);
+              res.ok('/#/games/' + game.id);
             });
           }
         });

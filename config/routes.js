@@ -36,13 +36,8 @@ module.exports.routes = {
 
   //gets all the games with scores that the user has scores for
   'get /user/:id/games': {
-        controller    : 'user',
-        action        : 'games'
-  },
-
-  'get /game/top_players': {
-        controller    : 'game',
-        action        : 'top_players'
+    controller: 'user',
+    action: 'games'
   },
 
   'post /game/upload' : {

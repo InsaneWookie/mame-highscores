@@ -18,7 +18,52 @@ module.exports.policies = {
 
   // Default policy for all controllers and actions
   // (`true` allows public access)
-  '*': true,
+  '*': false,
+
+  AliasController: {
+    find: true,
+    findOne: true
+  },
+
+  GameController: {
+    find: true,
+    findOne: true,
+    search_list: true,
+    top_players: true,
+    upload: true
+  },
+
+  GamePlayedController: {
+    find: true,
+    findOne: true
+  },
+
+  MappingController: {
+    find: true,
+    findOne: true
+  },
+
+  RawScoreController: {
+    find: true,
+    findOne: true
+  },
+
+  ScoreController: {
+    find: true,
+    findOne: true
+  },
+
+  UserController: {
+    find: true,
+    findOne: true,
+    create: true,
+    //update: true, //TODO: only allow update of a users own details
+    games: true
+  }
+
+
+
+
 
 	// Here's an example of mapping some policies to run before
   // a controller and its actions
