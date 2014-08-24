@@ -109,24 +109,54 @@ module.exports = {
 
             //add a played record
             GamePlayed.create({game_id: game.id}).exec(function(err, newGamePLayed){});
+
             //dont technically need to do this as it can be inferred from the gameplayed table
-            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id], function (err, result) {});
+            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
+              function (err, result) { /* something something handle error*/ });
 
             game.addScores(newScores, function (createdScores) {
 
               //not sure if this should be here or in the model
               if (createdScores.length > 0) {
+                //we created some scores so notify users
                 console.log("**** created scores***");
                 Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
+                  //notify everyone that we created a score
                   Score.publishCreate(notifyScore);
+
+                  //also want to send an email
+                  //workout if the top created score beat any other user's scores
+
+                  Score.findAll({game_id: game.id}).populate('alias').exec(function(err, allScores){
+                    allScores.sort(function(a, b){
+                      return parseInt(b.score) - parseInt(a.score);
+                    });
+
+                    var topCreatedScore = createdScore[0];
+                    var userToNotify = null;
+                    var foundCreated = false;
+                    var beatenScore = allScores.some(function(score){
+                      if(score.id = topCreatedScore.id){
+                        foundCreated = true;
+                      }
+
+                      if(foundCreated){
+                        //go through the aliases and find the user id that does not match the new score id
+
+                      }
+                    });
+                  });
+
+
                 });
-              }
+                }
 
               res.ok(createdScores, '/#/games/' + game.id);
             });
           }
         });
       } else {
+
         //Its possible that the reson we couldn't decode the file is because its the wrong type. ie .nv instead of .hi
         //so in this case we don't want to add the raw scores
         if (ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'hi') || ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'nv')) {

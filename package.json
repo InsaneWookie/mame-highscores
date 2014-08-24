@@ -28,7 +28,9 @@
     "jade": "~1.4.2",
     "sails-postgresql": "~0.10.7",
     "gake": "~0.1.2",
-    "bower": "~1.3.9"
+    "bower": "~1.3.9",
+    "email-templates": "~1.1.1",
+    "nodemailer": "~1.2.1"
   },
   "scripts": {
     "postinstall": "export HOME=/var/lib/openshift/53d73a6550044601bc0001dd/app-root/runtime/repo; ./node_modules/bower/bin/bower install",
