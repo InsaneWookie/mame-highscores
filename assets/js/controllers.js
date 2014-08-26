@@ -30,34 +30,42 @@ angular.module('myApp.controllers', [])
       });
     */
 
-      $sails.on("game", function (message) {
-        console.log('got socket message');
-        //console.log(message);
-        if (message.verb === "created") {
-          $scope.games.push(message.data);
-        }
-      });
+//      $sails.on("game", function (message) {
+//        console.log('got socket message');
+//        //console.log(message);
+//        if (message.verb === "created") {
+//          $scope.games.push(message.data);
+//        }
+//      });
 
       $sails.get("/game?has_mapping=true&limit=500&sort=full_name ASC").success(function (data) {
 
-        $scope.games = data;
-        $scope.$watchCollection('games', function(newGames, oldGames){
-          console.log("game colletion changed");
-          //console.log(newGames);
-
-          var addedElements = newGames.filter(function (i) {
-              return oldGames.indexOf(i) < 0;
-            });
-
-
-          addedElements.forEach(function (item) {
-              if (!item.id) { //if is a brand new item w/o id from the database
-                  $sails.post('/game', angular.copy(item));
-              }
+        //need to sort the scores so we get the first one
+        //super crap way as it assumes the scores are numbers
+        data.forEach(function(game){
+          game.scores.sort(function(a, b){
+            return parseInt(b.score) - parseInt(a.score);
           });
-
-          //$sails.post()
         });
+
+        $scope.games = data;
+//        $scope.$watchCollection('games', function(newGames, oldGames){
+//          console.log("game colletion changed");
+//          //console.log(newGames);
+//
+//          var addedElements = newGames.filter(function (i) {
+//              return oldGames.indexOf(i) < 0;
+//            });
+//
+//
+//          addedElements.forEach(function (item) {
+//              if (!item.id) { //if is a brand new item w/o id from the database
+//                  $sails.post('/game', angular.copy(item));
+//              }
+//          });
+//
+//          //$sails.post()
+//        });
       })
       .error(function (data) {
         alert('Houston, we got a problem!');

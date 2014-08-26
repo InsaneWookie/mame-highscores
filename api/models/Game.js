@@ -40,9 +40,12 @@ module.exports = {
         //go through the scores and see if it exists in the ones being uploaded and if so remove it from the list
         filteredScores = newScores.filter(function (newScore){
           //if it doesn't exist then we want to add it to the filtered scores list
-          return !scores.some(function (currentScore){
-              return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);    
+          var doesntExist = !scores.some(function (currentScore){
+              return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);
           });
+
+          //only save score if it does not exists and there is actually a score
+          return doesntExist && newScore.score !== '';
         });
 
         filteredScores.forEach(function(score){

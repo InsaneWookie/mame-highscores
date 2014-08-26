@@ -25,6 +25,12 @@ module.exports = {
     });
   },
 
+  game_list: function(req, res){
+    //TODO: use this it replace the game list as its quite slow
+    //var queryString = 'SELECT g.id, g.name, g.full_name, a.alias, s.score'
+    //Game.query
+  },
+
   top_players: function (req, res) {
 
     var query =
@@ -127,25 +133,25 @@ module.exports = {
                   //also want to send an email
                   //workout if the top created score beat any other user's scores
 
-                  Score.findAll({game_id: game.id}).populate('alias').exec(function(err, allScores){
-                    allScores.sort(function(a, b){
-                      return parseInt(b.score) - parseInt(a.score);
-                    });
-
-                    var topCreatedScore = createdScore[0];
-                    var userToNotify = null;
-                    var foundCreated = false;
-                    var beatenScore = allScores.some(function(score){
-                      if(score.id = topCreatedScore.id){
-                        foundCreated = true;
-                      }
-
-                      if(foundCreated){
-                        //go through the aliases and find the user id that does not match the new score id
-
-                      }
-                    });
-                  });
+//                  Score.findAll({game_id: game.id}).populate('alias').exec(function(err, allScores){
+//                    allScores.sort(function(a, b){
+//                      return parseInt(b.score) - parseInt(a.score);
+//                    });
+//
+//                    var topCreatedScore = createdScore[0];
+//                    var userToNotify = null;
+//                    var foundCreated = false;
+//                    var beatenScore = allScores.some(function(score){
+//                      if(score.id = topCreatedScore.id){
+//                        foundCreated = true;
+//                      }
+//
+//                      if(foundCreated){
+//                        //go through the aliases and find the user id that does not match the new score id
+//
+//                      }
+//                    });
+//                  });
 
 
                 });
