@@ -8,6 +8,14 @@ before(function(done) {
     // configuration for testing purposes
     log: {
       level: 'silent'
+    },
+
+    connections: {
+      postgresqlServer: {
+        adapter: 'sails-postgresql',
+        url: 'postgres://postgres:postgres@localhost:5432/mame-highscores-test',
+        database: 'mame-highscores-test'
+      }
     }
   }, function(err, sails) {
     if (err) return done(err);

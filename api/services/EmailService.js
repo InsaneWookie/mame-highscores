@@ -8,6 +8,7 @@ var path           = require('path')
 //basically the nodemailer.sendMail callback
 exports.sendBeatenEmail = function (templateData, emailOptions, callback) {
 
+  emailOptions.subject = "Score has been beaten";
   this.sendEmail('beaten', templateData, emailOptions, callback);
 };
 

@@ -59,7 +59,7 @@ module.exports = {
 	}
 
 
-}
+};
 
 
 function ScoreDecoder(gameSaveMappings) {

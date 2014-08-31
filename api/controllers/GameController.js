@@ -73,7 +73,7 @@ module.exports = {
     console.log(req.param);
     console.log(req.body);
 
-    var gameMaps = require('../game_mappings/gameMaps.json');
+
     //var decoder = require('../modules/score_decoder');
 
     req.file('game').upload(function (err, files) {
@@ -87,6 +87,7 @@ module.exports = {
       //TODO: we need to remove the file (can we just read it from memory?)
       var filePath = file.fd;
       var fileName = file.filename;
+      var fileType = path.extname(fileName).substring(1);
       var gameName = req.body.gamename;
 
       //invalid game so try and work it out from the file name
@@ -94,110 +95,21 @@ module.exports = {
         gameName = fileName.substring(0, fileName.lastIndexOf('.'));
       }
 
-      //need to check if the game exists in the mapping file, 
-      //and if not then we add it to the database but flag it as missing
-      var decodedScores = ScoreDecoder.decodeFromFile(gameMaps, filePath, gameName);
+      Game.findOneByName(gameName).exec(function(err, game){
+        if(err){
+          res.notFound("Game does not exist");
+        } else {
 
-      //if we have some score data, process it
-      if (decodedScores !== null) {
+          fs.readFile(filePath, {}, function(err, rawBuffer){
 
-        var newScores = decodedScores[gameName];
+            if(err) return res.serverError("Problem reading file");
 
-        Game.findOneByName(gameName).exec(function (err, game) {
-          if (err) {
-            console.log(err);
-            return res.serverError(err);
-          }
-
-          if (!game) {
-            return res.notFound("Game not found");
-          } else {
-
-            //add a played record
-            GamePlayed.create({game_id: game.id}).exec(function(err, newGamePLayed){});
-
-            //dont technically need to do this as it can be inferred from the gameplayed table
-            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
-              function (err, result) { /* something something handle error*/ });
-
-            game.addScores(newScores, function (createdScores) {
-
-              //not sure if this should be here or in the model
-              if (createdScores.length > 0) {
-                //we created some scores so notify users
-                console.log("**** created scores***");
-                Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
-                  //notify everyone that we created a score
-                  Score.publishCreate(notifyScore);
-
-                  //also want to send an email
-                  //workout if the top created score beat any other user's scores
-
-//                  Score.findAll({game_id: game.id}).populate('alias').exec(function(err, allScores){
-//                    allScores.sort(function(a, b){
-//                      return parseInt(b.score) - parseInt(a.score);
-//                    });
-//
-//                    var topCreatedScore = createdScore[0];
-//                    var userToNotify = null;
-//                    var foundCreated = false;
-//                    var beatenScore = allScores.some(function(score){
-//                      if(score.id = topCreatedScore.id){
-//                        foundCreated = true;
-//                      }
-//
-//                      if(foundCreated){
-//                        //go through the aliases and find the user id that does not match the new score id
-//
-//                      }
-//                    });
-//                  });
-
-
-                });
-                }
-
-              res.ok(createdScores, '/#/games/' + game.id);
+            Game.uploadScores(rawBuffer, fileType, gameName, function(err, savedScores){
+              if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
             });
-          }
-        });
-      } else {
-
-        //Its possible that the reson we couldn't decode the file is because its the wrong type. ie .nv instead of .hi
-        //so in this case we don't want to add the raw scores
-        if (ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'hi') || ScoreDecoder.getGameMappingStructure(gameMaps, gameName, 'nv')) {
-          res.notFound("I have a mapping for this game but not for this file type.");
-          //TODO: better error handling
-          return;
+          });
         }
-
-        //no decode mapping was found so just add the raw bytes to the game mapping so we can decode them later
-        var fileBytes = fs.readFileSync(filePath);
-        var fileType = path.extname(fileName).substring(1);
-
-        Game.findOneByName(gameName).exec(function (err, game) {
-          if (!game) {
-            //no game we want to create a empty game and store the raw score against it
-            Game.create({name: gameName}).exec(function (err, newGame) {
-              GamePlayed.create({game_id: newGame.id}).exec(function(err, newGamePLayed){});
-              //dont technically need to do this as it can be inferred from the gameplayed table
-              Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [newGame.id], function (err, result) {});
-
-              game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
-                res.ok('/#/games/' + newGame.id);
-              });
-            });
-          } else {
-            GamePlayed.create({game_id: game.id}).exec(function(err, newGamePLayed){});
-            //dont technically need to do this as it can be inferred from the gameplayed table
-            Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id], function (err, result) {});
-
-            game.addRawScores(fileBytes.toString('hex'), fileType, function(err, newRawScore){
-              res.ok('/#/games/' + game.id);
-            });
-          }
-        });
-      }
+      });
     });
   }
 

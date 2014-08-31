@@ -3,6 +3,6 @@ html(lang='en')
   head
 
   body
-    div Your high score of <b>#{score.score}</b> on <b>#{game.full_name}</b> has just bean beaten by <b>#{beatenBy.username}</b>
+    div Your high score of <b>#{beaten.score}</b> on <b>#{game.full_name}</b> has just bean beaten by <b>#{beatenBy.alias.user}</b>
     div View here:
       a(href="http://#{siteUrl}/#games/#{game.id}") #{siteUrl}/#games/#{game.id}
