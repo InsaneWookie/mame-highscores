@@ -22,4 +22,6 @@ module.exports.email = {
     }
   }
 
+  //transport: stubTransport()
+
 };

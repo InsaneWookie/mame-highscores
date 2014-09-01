@@ -18,16 +18,16 @@ describe('Game', function () {
     it('should get one beaten score', function () {
 
       var newScores = [
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias_id: 2 }];
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'XYZ', alias: 2 }];
 
       var afterAddedScores = [
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias_id: 2 },
-        { id: 1, score: '123', name: 'ABC', alias_id: 1 }];
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'XYZ', alias: 2 },
+        { id: 1, score: '123', name: 'ABC', alias: 1 }];
 
       var expectedBeatenScores = [
-        { beaten: { id: 1, score: '123', name: 'ABC', alias_id: 1 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias_id: 2 } }
+        { beaten: { id: 1, score: '123', name: 'ABC', alias: 1 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias: 2 } }
       ];
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -41,19 +41,19 @@ describe('Game', function () {
     it('should not show user as beaten by a user they have beaten', function () {
 
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias_id: 2 }];
+        { id: 4, score: '456', name: 'ABC', alias: 1 },
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'XYZ', alias: 2 }];
 
       var afterAddedScores = [
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 }, //new score - beatenBy
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, //new score - beaten
-        { id: 2, score: '234', name: 'XYZ', alias_id: 2 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias_id: 1 }  //original score
+        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score - beatenBy
+        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score - beaten
+        { id: 2, score: '234', name: 'XYZ', alias: 2 }, //new score
+        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
       ];
 
       var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias_id: 1 } }
+        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
       ];
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -68,20 +68,20 @@ describe('Game', function () {
     it('should show multiple beaten if different users', function () {
 
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }];
+        { id: 4, score: '456', name: 'ABC', alias: 1 },
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'FOO', alias: 3 }];
 
       var afterAddedScores = [
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 }, //new score
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias_id: 1 }  //original score
+        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score
+        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
+        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
+        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
       ];
 
       var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias_id: 1 } },
-        { beaten: { id: 2, score: '234', name: 'FOO', alias_id: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias_id: 1 } }
+        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } },
+        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
       ];
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -95,21 +95,21 @@ describe('Game', function () {
     it('should show multiple beaten if different users even of higher scores', function () {
 
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }];
+        { id: 4, score: '456', name: 'ABC', alias: 1 },
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'FOO', alias: 3 }];
 
       var afterAddedScores = [
-        { id: 5, score: '9001', name: 'BOB', alias_id: 99}, //existing higher score
-        { id: 4, score: '456', name: 'ABC', alias_id: 1 }, //new score
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias_id: 1 }  //original score
+        { id: 5, score: '9001', name: 'BOB', alias: 99}, //existing higher score
+        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score
+        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
+        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
+        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
       ];
 
       var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias_id: 1 } },
-        { beaten: { id: 2, score: '234', name: 'FOO', alias_id: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias_id: 1 } }
+        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } },
+        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
       ];
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -123,17 +123,17 @@ describe('Game', function () {
     it('should should not show non user scores as beaten', function () {
 
       var newScores = [
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 },
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }];
+        { id: 3, score: '345', name: 'XYZ', alias: 2 },
+        { id: 2, score: '234', name: 'FOO', alias: 3 }];
 
       var afterAddedScores = [
-        { id: 3, score: '345', name: 'XYZ', alias_id: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias_id: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias_id: null }  //original score
+        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
+        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
+        { id: 1, score: '123', name: 'ABC', alias: null }  //original score
       ];
 
       var expectedBeatenScores = [
-        { beaten: { id: 2, score: '234', name: 'FOO', alias_id: 3 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias_id: 2 } }
+        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias: 2 } }
       ];
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -223,7 +223,7 @@ describe('Game', function () {
               assert.equal(savedScores[1].name, 'DEF');
               assert.equal(savedScores[1].score, '54000');
 
-              //done(err);
+              done(err);
             });
           });
         }

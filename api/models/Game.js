@@ -123,6 +123,10 @@ module.exports = {
    */
   uploadScores: function (rawBytes, fileType, game, callback) {
 
+    if(typeof game != 'object'){
+      callback("game must be an object", null);
+      return;
+    }
     var gameMaps = require('../game_mappings/gameMaps.json');
 
     Game.updatePlayedCount(game, function(err, playCount){
@@ -170,11 +174,23 @@ module.exports = {
               beatenScores.forEach(function(beatenScore){
                 beatenScore.game = game;
 
-                User.findOneById(beatenScore.beaten.alias.user).exec(function(err, userToEmail){
-                  EmailService.sendBeatenEmail(beatenScore, { to: userToEmail.email }, function (err, emailResponse) {
-                    if (err) console.error(err);
+                async.parallel({
+                    beatenUser: function(asyncCallback){
+                      User.findOneById(beatenScore.beaten.alias.user).exec(asyncCallback);
+                    },
+                    beatenByUser: function(asyncCallback){
+                      User.findOneById(beatenScore.beatenBy.alias.user).exec(asyncCallback);
+                    }
+                  },
+                  function(err, results){
+                    // the results array will equal ['one','two'] even though
+                    // the second function had a shorter timeout.
+                    beatenScore.beatenBy.user = results.beatenByUser;
+                    beatenScore.beaten.user = results.beatenUser;
+                    EmailService.sendBeatenEmail(beatenScore, { to: results.beatenUser.email }, function (err, emailResponse) {
+                      if (err) console.error(err);
+                    });
                   });
-                });
               });
             }
           });
@@ -194,7 +210,7 @@ module.exports = {
         return;
       }
 
-      Game.addRawScores(rawBytes.toString('hex'), fileType, function (err, newRawScore) {
+      Game.addRawScores(game, rawBytes.toString('hex'), fileType, function (err, newRawScore) {
         callback(err, newRawScore);
       });
     }

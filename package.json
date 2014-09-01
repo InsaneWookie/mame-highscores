@@ -43,5 +43,8 @@
     "url": "todo"
   },
   "author": "Rowan",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "nodemailer-stub-transport": "~0.1.4"
+  }
 }

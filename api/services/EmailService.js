@@ -1,14 +1,24 @@
+// api/services/EmailService.js
+
 var path           = require('path')
   , templatesDir   = path.resolve(__dirname, '../..', 'views/emails')
   , emailTemplates = require('email-templates')
   , nodemailer     = require('nodemailer');
+var stubTransport = require('nodemailer-stub-transport');
 
-// EmailService.js - in api/services
-//callback(err, emailResponse)
-//basically the nodemailer.sendMail callback
+/**
+ * TODO: document templateData format (maybe make a template data class)
+ * @param templateData
+ * @param emailOptions
+ * @param callback
+ */
 exports.sendBeatenEmail = function (templateData, emailOptions, callback) {
 
-  emailOptions.subject = "Score has been beaten";
+
+  var gameName = templateData.game.full_name;
+  var beatenByUserName = templateData.beatenBy.user.username;
+
+  emailOptions.subject = "Score on " + gameName + " has been beaten by " + beatenByUserName;
   this.sendEmail('beaten', templateData, emailOptions, callback);
 };
 
@@ -21,7 +31,7 @@ exports.sendBeatenEmail = function (templateData, emailOptions, callback) {
  */
 exports.sendEmail = function(templateDir, templateData, options, callback) {
 
-  var transportConfig = sails.config.email.transport;
+  var transportConfig = (sails.config.email.transport === 'stub') ? stubTransport() : sails.config.email.transport;
   var fromAddress = sails.config.email.from;
 
   var sendMailConfig = options;
@@ -43,10 +53,13 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
       return;
     }
 
+    //console.log(transportConfig);
     var transport = nodemailer.createTransport(transportConfig);
 
     // Send a single email
     template(templateDir, templateData, function(err, html, text) {
+
+      if(err) return callback(err, null);
 
       sendMailConfig.html = html;
       sendMailConfig.text = text;
