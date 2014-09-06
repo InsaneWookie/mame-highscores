@@ -13,136 +13,213 @@ describe('Game', function () {
     });
   });
 
+
+  //I think for this the easies is to just get the unique user's scores
+  //that have been beaten by the top score
+  //TODO: clean up the test data
   describe('#getBeatenScores()', function () {
 
-    it('should get one beaten score', function () {
+    //most basic test to see if the structure is correct
+    it('should return the correct structure', function(){
 
-      var newScores = [
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias: 2 }];
+      var newScores = [{ id: 2, score: '200', name: 'BAR', alias: 2 }];
 
       var afterAddedScores = [
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias: 2 },
-        { id: 1, score: '123', name: 'ABC', alias: 1 }];
-
-      var expectedBeatenScores = [
-        { beaten: { id: 1, score: '123', name: 'ABC', alias: 1 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias: 2 } }
+        { id: 2, score: '200', name: 'BAR', alias: 2 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 }
       ];
+
+      var expectedBeatenScores = {
+        //game: { id: 1, name: 'test', full_name: 'Test'},
+        beatenBy: { id: 2, score: '200', name: 'BAR', alias: 2 },
+        beaten: [{ id: 1, score: '100', name: 'FOO', alias: 1 }]
+      };
+
+      var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
+      assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
+    });
+
+    it('should always show the top score with that has a user', function(){
+
+      var newScores = [
+        { id: 4, score: '300', name: 'BOB', alias: null },
+        { id: 3, score: '200', name: 'BAR', alias: 2 },
+        { id: 2, score: '50', name: 'BIL', alias: null }
+      ];
+
+      var afterAddedScores = [
+        { id: 4, score: '300', name: 'BOB', alias: null },
+        { id: 3, score: '200', name: 'BAR', alias: 2 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 },
+        { id: 2, score: '50', name: 'BIL', alias: null }
+      ];
+
+      var expectedBeatenScores = {
+        beatenBy: { id: 3, score: '200', name: 'BAR', alias: 2 },
+        beaten: [{ id: 1, score: '100', name: 'FOO', alias: 1 }]
+      };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
 
       //console.log(actualBeatenScores);
       //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
-
     });
 
-    it('should not show user as beaten by a user they have beaten', function () {
-
+    it('should not beat the same user more than once', function(){
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'XYZ', alias: 2 }];
+        { id: 9, score: '9000', name: 'BOB', alias: 5 },
+      ];
 
       var afterAddedScores = [
-        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score - beatenBy
-        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score - beaten
-        { id: 2, score: '234', name: 'XYZ', alias: 2 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
+        { id: 9, score: '9000', name: 'BOB', alias: 5 }, //new score
+        { id: 8, score: '800', name: 'FOO', alias: 1 },
+        { id: 7, score: '700', name: 'FOO', alias: 1 },
+        { id: 6, score: '600', name: 'BAR', alias: 2 },
+        { id: 5, score: '500', name: 'ROW', alias: 4 },
+        { id: 4, score: '400', name: 'BAR', alias: 2 },
+        { id: 3, score: '300', name: 'JIM', alias: 3 },
+        { id: 2, score: '200', name: 'BAR', alias: 2 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 }
       ];
 
-      var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
-      ];
+      var expectedBeatenScores = {
+        beatenBy: { id: 9, score: '9000', name: 'BOB', alias: 5 },
+        beaten: [
+          { id: 8, score: '800', name: 'FOO', alias: 1 },
+          { id: 6, score: '600', name: 'BAR', alias: 2 },
+          { id: 5, score: '500', name: 'ROW', alias: 4 },
+          { id: 3, score: '300', name: 'JIM', alias: 3 }]
+      };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
 
-//      console.log(actualBeatenScores);
-//      console.log(expectedBeatenScores);
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
-
     });
 
-
-    it('should show multiple beaten if different users', function () {
-
+    it('should not beat yourself', function(){
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'FOO', alias: 3 }];
+        { id: 3, score: '300', name: 'BOB', alias: 2 },
+        { id: 2, score: '200', name: 'BOB', alias: 2 }];
 
       var afterAddedScores = [
-        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score
-        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
-      ];
+        { id: 3, score: '300', name: 'BOB', alias: 2 },
+        { id: 2, score: '200', name: 'BOB', alias: 2 },
+        { id: 1, score: '100', name: 'BAR', alias: 1 },
+        { id: 4, score: '50', name: 'BOB', alias: 2 }];
 
-      var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } },
-        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
-      ];
+      var expectedBeatenScores = {
+        beatenBy: { id: 3, score: '300', name: 'BOB', alias: 2 },
+        beaten: [
+          { id: 1, score: '100', name: 'BAR', alias: 1 }]
+      };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
 
-//      console.log(actualBeatenScores);
-//      console.log(expectedBeatenScores);
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
+    });
+
+    it.skip('should not beat already beaten users', function(){
 
     });
 
-    it('should show multiple beaten if different users even of higher scores', function () {
-
+    it('should not beat higher scores', function(){
       var newScores = [
-        { id: 4, score: '456', name: 'ABC', alias: 1 },
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'FOO', alias: 3 }];
+        { id: 3, score: '200', name: 'BAR', alias: 3 },
+        { id: 2, score: '50', name: 'BAR', alias: 3 }
+      ];
 
       var afterAddedScores = [
-        { id: 5, score: '9001', name: 'BOB', alias: 99}, //existing higher score
-        { id: 4, score: '456', name: 'ABC', alias: 1 }, //new score
-        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias: 1 }  //original score
+        { id: 4, score: '300', name: 'BOB', alias: 2 },
+        { id: 3, score: '200', name: 'BAR', alias: 3 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 },
+        { id: 2, score: '50', name: 'ROW', alias: 4 }
       ];
 
-      var expectedBeatenScores = [
-        { beaten: { id: 3, score: '345', name: 'XYZ', alias: 2 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } },
-        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 4, score: '456', name: 'ABC', alias: 1 } }
-      ];
+      var expectedBeatenScores = {
+        beatenBy: { id: 3, score: '200', name: 'BAR', alias: 3 },
+        beaten: [
+          { id: 1, score: '100', name: 'FOO', alias: 1 },
+          { id: 2, score: '50', name: 'ROW', alias: 4 }]
+      };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
 
-//      console.log(actualBeatenScores);
-//      console.log(expectedBeatenScores);
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
+    });
+
+    it.skip('should beat users if score in new scores', function(){
 
     });
 
-    it('should should not show non user scores as beaten', function () {
-
+    it('should not beat scores without a user', function(){
       var newScores = [
-        { id: 3, score: '345', name: 'XYZ', alias: 2 },
-        { id: 2, score: '234', name: 'FOO', alias: 3 }];
+        { id: 3, score: '200', name: 'BAR', alias: 2 },
+        { id: 2, score: '50', name: 'BIL', alias: null }
+      ];
 
       var afterAddedScores = [
-        { id: 3, score: '345', name: 'XYZ', alias: 2 }, //new score
-        { id: 2, score: '234', name: 'FOO', alias: 3 }, //new score
-        { id: 1, score: '123', name: 'ABC', alias: null }  //original score
+        { id: 3, score: '200', name: 'BAR', alias: 2 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 },
+        { id: 2, score: '50', name: 'BIL', alias: null }
       ];
 
-      var expectedBeatenScores = [
-        { beaten: { id: 2, score: '234', name: 'FOO', alias: 3 }, beatenBy: { id: 3, score: '345', name: 'XYZ', alias: 2 } }
-      ];
+      var expectedBeatenScores = {
+        beatenBy: { id: 3, score: '200', name: 'BAR', alias: 2 },
+        beaten: [{ id: 1, score: '100', name: 'FOO', alias: 1 }]
+      };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
 
-//      console.log(actualBeatenScores);
-//      console.log(expectedBeatenScores);
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
-
     });
+
+    it('should only beat top 10 scores', function(){
+      var newScores = [
+        { id: 12, score: '9000', name: 'BOB', alias: 5 },
+      ];
+
+      var afterAddedScores = [
+        { id: 12, score: '9000', name: 'BOB', alias: 5 }, //new score
+        { id: 11, score: '800', name: 'FOO', alias: 1 },
+        { id: 10, score: '700', name: 'FOO', alias: 1 },
+        { id: 9, score: '600', name: 'BAR', alias: 2 },
+        { id: 8, score: '500', name: 'ROW', alias: 4 },
+        { id: 7, score: '400', name: 'BAR', alias: 2 },
+        { id: 6, score: '300', name: 'JIM', alias: 3 },
+        { id: 5, score: '200', name: 'BAR', alias: 2 },
+        { id: 4, score: '100', name: 'FOO', alias: 1 },
+        { id: 3, score: '90', name: 'CAT', alias: 7 },
+        { id: 2, score: '80', name: 'DOG', alias: 8 }, //the last 2 should not get marked as beaten
+        { id: 1, score: '70', name: 'ABC', alias: 6 }
+      ];
+
+      var expectedBeatenScores = {
+        beatenBy: { id: 12, score: '9000', name: 'BOB', alias: 5 },
+        beaten: [
+          { id: 11, score: '800', name: 'FOO', alias: 1 },
+          { id: 9, score: '600', name: 'BAR', alias: 2 },
+          { id: 8, score: '500', name: 'ROW', alias: 4 },
+          { id: 6, score: '300', name: 'JIM', alias: 3 },
+          { id: 3, score: '90', name: 'CAT', alias: 7 }]
+      };
+
+
+      var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
+
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
+      assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
+    });
+
   });
 
   describe('#uploadScores()', function () {

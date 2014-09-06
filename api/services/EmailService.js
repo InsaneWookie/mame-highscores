@@ -7,29 +7,42 @@ var path           = require('path')
 var stubTransport = require('nodemailer-stub-transport');
 
 /**
- * TODO: document templateData format (maybe make a template data class)
- * @param templateData
+ *
+ * @param {Game} game
+ * @param {Score} beatenBy (score with user)
+ * @param {Score} beaten
  * @param emailOptions
  * @param callback
  */
-exports.sendBeatenEmail = function (templateData, emailOptions, callback) {
+exports.sendBeatenEmail = function (game, beatenBy, beaten, emailOptions, callback) {
 
+  var templateData = {
+    game: game,
+    beatenBy: beatenBy,
+    beaten: beaten
+  };
 
-  var gameName = templateData.game.full_name;
-  var beatenByUserName = templateData.beatenBy.user.username;
+  var beatenByUserName = beatenBy.user.username;
 
-  emailOptions.subject = "Score on " + gameName + " has been beaten by " + beatenByUserName;
+  emailOptions.subject = "Here comes a new challenger: " + beatenByUserName + " beat your score on " +  game.full_name;
   this.sendEmail('beaten', templateData, emailOptions, callback);
 };
 
 /**
  *
- * @param template
+ * @param templateDir
  * @param templateData
  * @param options object email options (eg to, subject, etc)
  * @param callback (error, emailResponse)
  */
 exports.sendEmail = function(templateDir, templateData, options, callback) {
+
+  if(!options.to || options.to.trim() === ''){
+    //no email so do nothing
+    console.log("no to email set");
+    callback(null, null); //TODO: returning null for both params is not right
+    return;
+  }
 
   var transportConfig = (sails.config.email.transport === 'stub') ? stubTransport() : sails.config.email.transport;
   var fromAddress = sails.config.email.from;
@@ -49,7 +62,7 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
   emailTemplates(templatesDir, function(err, template) {
 
     if (err) {
-      console.log(err);
+      console.error(err);
       return;
     }
 
@@ -59,13 +72,16 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
     // Send a single email
     template(templateDir, templateData, function(err, html, text) {
 
-      if(err) return callback(err, null);
+      if(err) {
+        console.error(err);
+        return callback(err, null);
+      }
 
       sendMailConfig.html = html;
       sendMailConfig.text = text;
 
       transport.sendMail(sendMailConfig, function(err, responseStatus) {
-        if(err) console.log(err); //probably remove this log, but log for now in case we have any problems
+        if(err) console.error(err); //probably remove this log, but log for now in case we have any problems
         callback(err, responseStatus);
       });
     });

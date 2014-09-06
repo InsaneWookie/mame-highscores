@@ -6,7 +6,7 @@ describe('GameService', function () {
 
   //this.timeout(5000);
 
-  describe('#filterScores()', function () {
+  describe.skip('#filterScores()', function () {
 
     it('should filter scores', function () {
 
@@ -16,7 +16,7 @@ describe('GameService', function () {
     });
   });
 
-  describe('#addScores()', function () {
+  describe.skip('#addScores()', function () {
 
     it('should send email', function () {
 

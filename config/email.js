@@ -21,7 +21,4 @@ module.exports.email = {
       pass: process.env.MAME_GMAIL_PASS
     }
   }
-
-  //transport: stubTransport()
-
 };

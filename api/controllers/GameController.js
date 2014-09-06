@@ -69,18 +69,9 @@ module.exports = {
 
   upload: function (req, res) {
 
-    console.log("*** decoding ***");
-    console.log(req.param);
-    console.log(req.body);
-
-
-    //var decoder = require('../modules/score_decoder');
-
     req.file('game').upload(function (err, files) {
 
       if (err) return res.serverError(err);
-
-      console.log(files);
 
       var file = files[0]; //hopefully only one file
 

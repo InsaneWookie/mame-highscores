@@ -55,46 +55,92 @@ module.exports = {
    * @param {array} afterAddedScores
    * @return {object}
    *  example
-   *  [
-   *   { beaten: { Score }, beatenBy: { Score },
-   *   { beaten: { Score }, beatenBy: { Score },
-   *   ...
-   *  ]
+   *  {
+   *    //game: {Game}
+   *    beatenBy: { Score }
+   *    beaten: [
+   *      { Score ,
+   *      ...
+   *    ]
+   *  }
    */
   getBeatenScores: function (addedScores, afterAddedScores) {
-
-    var beatenList = []; //list of beaten/beatenBy objects to return;
-    var topNewScore = addedScores[0];
     var foundCreatedScore = false;
 
-    //has the aliasId been beaten by the beatenByAliasId
-    var hasBeenBeatenBy = function(aliasId, beatenByAliasId){
-      return beatenList.some(function(beatenObj){
-        return beatenObj.beatenBy.alias === beatenByAliasId && beatenObj.beaten.alias === aliasId;
-      });
+    var topNewScore = null;
+    //find the first score with a user
+    for(var i = 0; i < addedScores.length; i++){
+      if(addedScores[i].alias){
+        topNewScore = addedScores[i];
+        break;
+      }
+    }
+
+    var beatenObject = {
+      beatenBy: {},
+      beaten: []
     };
+
+    //could not find a top score so return the empty object
+    if(topNewScore === null){
+      return beatenObject;
+    }
+
+
+    //has the aliasId been beaten by the beatenByAliasId
+    var hasBeenBeatenByTopScore = function(beatenAliasId){
+      var scoreAliasIdTop = (typeof beatenObject.beatenBy.alias == 'object')
+        ? beatenObject.beatenBy.alias.id
+        : beatenObject.beatenBy.alias;
+      return scoreAliasIdTop === beatenAliasId;
+    };
+
+    //simple array for holding the alias ids that we have beaten (so only add a score for a user once)
+    var beatenAliasIds = [];
+
+    //count for holding how far though the score list we are
+    //only want to beat top 10
+    var beatenCount = 0;
+
+    var topScoreAliasId = null;
 
     //go through each score and find the added one
     afterAddedScores.forEach(function (score) {
 
-      if (foundCreatedScore
-        && score.alias //only care about scores that have a user
-        && topNewScore.alias != score.alias
-        && !hasBeenBeatenBy(score.alias, topNewScore.alias) ) { //TODO: add support for multiple aliases
-;
-        var beaten = { beaten: score, beatenBy: topNewScore };
+      beatenCount++;
 
-        beatenList.push(beaten);
+      if(beatenCount > 10){
+        //probably a better way of doing this
+        //it will keep returning until we run out of scores
+        return;
+      }
+
+      var scoreAliasId = null;
+      if(score.alias) {
+        scoreAliasId = (typeof score.alias == 'object') ? score.alias.id : score.alias;
+      }
+
+      if (foundCreatedScore
+        && scoreAliasId //only care about scores that have a user
+        && topScoreAliasId != scoreAliasId //don't beat yourself
+        //&& !hasBeenBeatenByTopScore(scoreAliasId)
+        && beatenAliasIds.indexOf(scoreAliasId) === -1) { //TODO: add support for multiple aliases
+;
+        beatenObject.beaten.push(score);
+        beatenAliasIds.push(scoreAliasId);
       }
 
       if(foundCreatedScore === false && topNewScore.id === score.id){
         topNewScore = score;
+        topScoreAliasId = (typeof score.alias == 'object') ? topNewScore.alias.id : topNewScore.alias;
         foundCreatedScore = true;
       }
 
     });
 
-    return beatenList;
+    beatenObject.beatenBy = topNewScore;
+
+    return beatenObject;
   },
 
   /**
@@ -111,6 +157,44 @@ module.exports = {
       function (err, result) {
         callback(err, result);
       });
+  },
+
+  sendBeatenScoreEmails: function(game, createdScores, callback){
+
+    Score.find({game_id: game.id}).populate('alias').exec(function (err, allScores) {
+
+      if(err) return callback(err);
+
+      if(allScores.length) {
+        allScores.sort(function (a, b) {
+          return parseInt(b.score) - parseInt(a.score);
+        });
+
+        var beatenScores = Game.getBeatenScores(createdScores, allScores);
+
+        if(beatenScores.beatenBy != {} && beatenScores.beaten.length != 0){
+          User.findOneById(beatenScores.beatenBy.alias.user).exec(function(err, beatenByUser){
+
+            if(err) return callback(err);
+
+            var beatenBy = beatenScores.beatenBy;
+            beatenBy.user = beatenByUser;
+
+            //go though all the beaten scores and send them emails
+            beatenScores.beaten.forEach(function(beatenScore){
+              User.findOneById(beatenScore.alias.user).exec(function(err, beatenUser){
+
+                var beaten = beatenScore;
+                beaten.user = beatenUser;
+                EmailService.sendBeatenEmail(game, beatenBy, beaten, { to: beaten.user.email }, function (err, emailResponse) {
+                  if (err) console.error(err);
+                });
+              });
+            });
+          });
+        }
+      }
+    });
   },
 
 
@@ -160,39 +244,8 @@ module.exports = {
 
           //also want to send an email
           //workout if the top created score beat any other user's scores
-          Score.find({game_id: game.id}).populate('alias').exec(function (err, allScores) {
-
-            if(err) return callback(err);
-
-            if(allScores.length) {
-              allScores.sort(function (a, b) {
-                return parseInt(b.score) - parseInt(a.score);
-              });
-
-              var beatenScores = Game.getBeatenScores(createdScores, allScores);
-
-              beatenScores.forEach(function(beatenScore){
-                beatenScore.game = game;
-
-                async.parallel({
-                    beatenUser: function(asyncCallback){
-                      User.findOneById(beatenScore.beaten.alias.user).exec(asyncCallback);
-                    },
-                    beatenByUser: function(asyncCallback){
-                      User.findOneById(beatenScore.beatenBy.alias.user).exec(asyncCallback);
-                    }
-                  },
-                  function(err, results){
-                    // the results array will equal ['one','two'] even though
-                    // the second function had a shorter timeout.
-                    beatenScore.beatenBy.user = results.beatenByUser;
-                    beatenScore.beaten.user = results.beatenUser;
-                    EmailService.sendBeatenEmail(beatenScore, { to: results.beatenUser.email }, function (err, emailResponse) {
-                      if (err) console.error(err);
-                    });
-                  });
-              });
-            }
+          Game.sendBeatenScoreEmails(game, createdScores, function(err){
+            console.log(err);
           });
         }
 
