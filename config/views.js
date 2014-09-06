@@ -28,5 +28,6 @@ module.exports.views = {
   // https://github.com/balderdashy/sails-wiki/blob/0.9/config.views.md#engine
 
   engine: 'jade',
+  layout: false
   
 };

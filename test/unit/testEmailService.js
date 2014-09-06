@@ -9,7 +9,7 @@ describe('EmailService', function () {
     it('should send an email', function (done) {
 
 
-      var game = { id: 1234, full_name: 'Test game'};
+      var game = { id: 1234, full_name: 'Test game', scores: [{ id: 2, score: '234', name: 'FOO'}]};
       var beatenBy = {
         id: 3, score: '345', name: 'XYZ',
         user: { id: 2, username: 'Test2', email: 'invalid2'}

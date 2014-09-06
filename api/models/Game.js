@@ -86,15 +86,6 @@ module.exports = {
       return beatenObject;
     }
 
-
-    //has the aliasId been beaten by the beatenByAliasId
-    var hasBeenBeatenByTopScore = function(beatenAliasId){
-      var scoreAliasIdTop = (typeof beatenObject.beatenBy.alias == 'object')
-        ? beatenObject.beatenBy.alias.id
-        : beatenObject.beatenBy.alias;
-      return scoreAliasIdTop === beatenAliasId;
-    };
-
     //simple array for holding the alias ids that we have beaten (so only add a score for a user once)
     var beatenAliasIds = [];
 
@@ -123,7 +114,6 @@ module.exports = {
       if (foundCreatedScore
         && scoreAliasId //only care about scores that have a user
         && topScoreAliasId != scoreAliasId //don't beat yourself
-        //&& !hasBeenBeatenByTopScore(scoreAliasId)
         && beatenAliasIds.indexOf(scoreAliasId) === -1) { //TODO: add support for multiple aliases
 ;
         beatenObject.beaten.push(score);
@@ -169,6 +159,9 @@ module.exports = {
         allScores.sort(function (a, b) {
           return parseInt(b.score) - parseInt(a.score);
         });
+
+        //set the score TODO: check if they are already set?
+        game.scores = allScores;
 
         var beatenScores = Game.getBeatenScores(createdScores, allScores);
 

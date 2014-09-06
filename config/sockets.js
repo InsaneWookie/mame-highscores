@@ -19,7 +19,7 @@ module.exports.sockets = {
   onConnect: function(session, socket) {
 
     //everyone gets subscribed to score events
-    Score.subscribe( socket )
+    Score.subscribe( socket, [], 'create')
 
   },
 
