@@ -1,13 +1,11 @@
-<h3><a href=""> View All Games</a></h3>
-<br />
-<table class="table table-striped">
+<table class="table table-striped" cg-busy="loadingPromise">
 	<tr>
 		<th> Game</th>
 		<th> Top Name</th>
 		<th> Top Score</th>
 		<th> Set</th>
 	</tr>
-	<tr ng-repeat="game in games">
+	<tr ng-repeat="game in games track by game.id">
 		<td>
 			<div ng-if="game.clone_of"><a href="#/games/{{game.clone_of}}">{{game.full_name}}</a></div>
 			<div ng-if="!game.clone_of"><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></div>
@@ -17,7 +15,7 @@
 				<div ng-if="!game.scores[0].user"> {{game.scores[0].name}} </div>
 		</td >
 		<td ng-if="game.scores.length > 0">{{game.scores[0].score}}</td>
-		<td ng-if="game.scores.length > 0"><span am-time-ago="game.scores[0].createdAt"></td>
+		<td ng-if="game.scores.length > 0"><span am-time-ago="game.scores[0].createdAt"></span></td>
 	</tr>
 </table>
 

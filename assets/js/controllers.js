@@ -4,127 +4,71 @@
 
 angular.module('myApp.controllers', [])
   .controller('GameListCtrl', ['$scope', '$sails', function($scope, $sails) {
-  	//$http.get('games').success(function(data) {
-    //	$scope.games = data;
-  	//});
 
 	  	// To easily add new items to the collection.
-	  $scope.newGame = {};  
-	  /** This will:
-	  *     1. Add a "items" model to $scope. (pluralized)
-	  *     2. Get the data from your http://<examplesite.com>/item thru sailsjs socket get.
-	  *     3. Setup socket io so that, when something changes in the sailsjs backend, they will be reflected
-	  *        in the angular "items" model.
-	  *     4. Watch the "items" model for collection changes in angular (add and removal of items
-	  *        and send them to the backend using socket.
-	  **/
-	  //$sailsBind.bind("game", $scope);
-
+	  $scope.newGame = {};
 
 	  $scope.games = [];
 
-    //(function () {
-      /*
-      $sails.on("message", function (message){
-        console.log(message);
-      });
-    */
+    $scope.loadingPromise = $sails.get("/game?has_mapping=true&limit=500&sort=full_name ASC").success(function (data) {
 
-//      $sails.on("game", function (message) {
-//        console.log('got socket message');
-//        //console.log(message);
-//        if (message.verb === "created") {
-//          $scope.games.push(message.data);
-//        }
-//      });
-
-      $sails.get("/game?has_mapping=true&limit=500&sort=full_name ASC").success(function (data) {
-
-        //need to sort the scores so we get the first one
-        //super crap way as it assumes the scores are numbers
-        data.forEach(function(game){
-          game.scores.sort(function(a, b){
-            return parseInt(b.score) - parseInt(a.score);
-          });
+      //need to sort the scores so we get the first one
+      //super crap way as it assumes the scores are numbers
+      data.forEach(function(game){
+        game.scores.sort(function(a, b){
+          return parseInt(b.score) - parseInt(a.score);
         });
 
-        $scope.games = data;
-//        $scope.$watchCollection('games', function(newGames, oldGames){
-//          console.log("game colletion changed");
-//          //console.log(newGames);
-//
-//          var addedElements = newGames.filter(function (i) {
-//              return oldGames.indexOf(i) < 0;
-//            });
-//
-//
-//          addedElements.forEach(function (item) {
-//              if (!item.id) { //if is a brand new item w/o id from the database
-//                  $sails.post('/game', angular.copy(item));
-//              }
-//          });
-//
-//          //$sails.post()
-//        });
-      })
-      .error(function (data) {
-        alert('Houston, we got a problem!');
+        //games.push({id: game.id, name: game.name, full_name: game.full_name, scores: [game.scores[0]]});
       });
 
+      $scope.games = data;
 
-      
-    //}());
-
+    })
+    .error(function (data) {
+      console.error(data);
+    });
 
   }])
   .controller('GameDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
-	  //$sailsBind.bind("game", $scope, { id: $routeParams.id });
-///score?game=19
 
     $scope.game = [];
     $scope.scores = [];
     $scope.clones = [];
 
-    (function () {
+    $sails.get("/game/" + $routeParams.id).success(function (data) {
+      $scope.game = data;
 
-      $sails.get("/game/" + $routeParams.id).success(function (data) {
-        $scope.game = data;
+      $sails.get('/game?clone_of=' + data.id, function (clones) {
 
-        $sails.get('/game?clone_of=' + data.id, function(clones){
+        clones.forEach(function (clone) {
 
-          //$scope.clones = clones;
+          if (clone.scores.length != 0) {
 
-          clones.forEach(function(clone){
+            $scope.clones.push(clone);
 
-            if(clone.scores.length != 0){
-
-              $scope.clones.push(clone);
-
-              $sails.get("/score?sort=score DESC&game=" + clone.id).success(function (cloneScores) {
-                cloneScores.sort(function(a, b){
-                  return parseInt(b.score) - parseInt(a.score);
-                });
-
-                if(cloneScores.length == 0){
-                  //delete clone;
-                } else {
-                  clone.scores = cloneScores;
-                }
-
-
-              })
-              .error(function (data) {
-                alert('Houston, we got a problem!');
+            $sails.get("/score?sort=score DESC&game=" + clone.id).success(function (cloneScores) {
+              cloneScores.sort(function (a, b) {
+                return parseInt(b.score) - parseInt(a.score);
               });
 
-            }
-          });
-        });
+              if (cloneScores.length == 0) {
 
-      })
-      .error(function (data) {
-        alert('Houston, we got a problem!');
+              } else {
+                clone.scores = cloneScores;
+              }
+
+            }).error(function (data) {
+              console.error(data);
+            });
+
+          }
+        });
       });
+
+    }).error(function (data) {
+      console.error(data);
+    });
 
 
 //      $sails.on("game", function (message) {
@@ -147,28 +91,26 @@ angular.module('myApp.controllers', [])
 //      });
 
 
-      $sails.get("/score?sort=score DESC&game=" + $routeParams.id).success(function (data) {
-        data.sort(function(a, b){
-          return parseInt(b.score) - parseInt(a.score);
-        });
-        $scope.scores = data;
-      })
-      .error(function (data) {
-        alert('Houston, we got a problem!');
+    $sails.get("/score?sort=score DESC&game=" + $routeParams.id).success(function (data) {
+      data.sort(function (a, b) {
+        return parseInt(b.score) - parseInt(a.score);
       });
+      $scope.scores = data;
+    })
+    .error(function (data) {
+      alert('Houston, we got a problem!');
+    });
 
 
-      $sails.on("score", function (message) {
-        console.log('got score detail message');
-        console.log(message);
+    $sails.on("score", function (message) {
+      console.log('got score detail message');
+      console.log(message);
 
-        if (message.verb === "created") {
-          //angular.extend($scope.scores, message.data);
-          $scope.scores.push(message.data);
-        }
-      });
-
-    }());
+      if (message.verb === "created") {
+        //angular.extend($scope.scores, message.data);
+        $scope.scores.push(message.data);
+      }
+    });
 
   }]).controller('HomeCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
 
@@ -183,24 +125,24 @@ angular.module('myApp.controllers', [])
         $scope.games = data;
         $scope.selectedGame = $scope[0];
 
-        $scope.$watch( 'selectedGame', function ( game ) {
+        $scope.$watch('selectedGame', function ( game ) {
           if(game){
-            $location.path( 'games/' + game.id );
+            $location.path('games/' + game.id );
           }
         });
-    })
-    .error(function (data) {
-      alert('Houston, we got a problem!');
     });
 
-    $sails.get('/game?sort=last_played DESC&limit=5&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
+    $scope.lastPlayedLoading = $sails.get('/game?sort=last_played DESC&limit=5&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
       $scope.lastPlayedGames = data;
     });
 
-    $sails.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
+    $scope.latestScoresLoading = $sails.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
       $scope.lastestScores = data;
     });
 
+    $scope.topPlayersLoading = $sails.get('/game/top_players').success(function (data){
+      $scope.topPlayers = data;
+    });
 
     $sails.on("game", function (message) {
       console.log('got home game message');
@@ -214,9 +156,7 @@ angular.module('myApp.controllers', [])
       }
     });
 
-    $sails.get('/game/top_players').success(function (data){
-      $scope.topPlayers = data;
-    });
+
 
 
   }])
@@ -270,19 +210,14 @@ angular.module('myApp.controllers', [])
     
   }])
   .controller('UserListCtrl', ['$scope', '$sails', function($scope, $sails) {
-    //probably dont really need real time updates of user create
-      // $sails.on("user", function (message) {
-      //   if (message.verb === "created") {
-      //     $scope.users.push(message.data);
-      //   }
-      // });
+
       $scope.users = [];
 
       $sails.get("/user").success(function (data) {
         $scope.users = data;
       })
       .error(function (data) {
-        alert('Houston, we got a problem!');
+        console.error(data);
       });
 
   }])
@@ -301,7 +236,7 @@ angular.module('myApp.controllers', [])
       $scope.games = data;
     })
     .error(function (data) {
-      alert('Houston, we got a problem!');
+        console.error(data);
     });
 
   }]);

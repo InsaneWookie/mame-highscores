@@ -8,6 +8,8 @@ angular.module('myApp', [
   'angularMoment',
   'ui.bootstrap',
 
+  'cgBusy',
+
   'ngSails',
   'myApp.filters',
   'myApp.services',
@@ -31,4 +33,9 @@ config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/users/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
 
 	$routeProvider.otherwise({redirectTo: '/home'});
-}]);
+}]).value('cgBusyDefaults',{
+    backdrop: true,
+    templateUrl: 'partials/loading-indicator.html',
+    delay: 200,
+    minDuration: 300
+});
