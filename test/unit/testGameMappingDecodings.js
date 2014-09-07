@@ -77,4 +77,26 @@ describe('GameMappingDecodings', function () {
 
   });
 
+  it('should decode arknoid2 correctly', function () {
+
+    var hexString = '0100000553534200008000044B454900006000034F4752000040000247574B0000200001544B4E010000';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'arknoid2', 'hi');
+
+    var expected = { arknoid2: [
+      { score: '100000', name: 'SSB' },
+      { score: '80000', name: 'KEI' },
+      { score: '60000', name: 'OGR' },
+      { score: '40000', name: 'GWK' },
+      { score: '20000', name: 'TKN' },
+
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+
 });

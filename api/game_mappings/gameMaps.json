@@ -1650,12 +1650,13 @@
     ],
     "fileType": "hi",
     "structure": {
-      "blocks": 4,
+      "blocks": 5,
       "fields": [
         {
           "name": "score",
           "bytes": 3,
-          "format": "asIs"
+          "format": "asIs",
+          "settings": { "append": "0" }
         },
         {
           "name": "round",
