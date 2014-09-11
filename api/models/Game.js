@@ -212,7 +212,7 @@ module.exports = {
 
     //need to check if the game exists in the mapping file,
     //and if not then we add it to the database but flag it as missing
-    var decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name);
+    var decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name, fileType);
 
     //if we have some score data, process it
     if (decodedScores !== null) {
