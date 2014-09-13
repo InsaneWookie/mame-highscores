@@ -29,20 +29,36 @@ module.exports = {
   },
 
   /**
-   * Removes already existing scores and other invalid scores (like empty score)
+   * Removes already existing scores, duplicate new scores and other invalid scores (like empty score)
    * @param newScores
    * @param currentScores
    */
   filterScores: function (newScores, currentScores) {
-    //go through the scores and see if it exists in the ones being uploaded and if so remove it from the list
-    return newScores.filter(function (newScore) {
+
+    return newScores.filter(function (newScore, filterIndex) {
+
+      //compares a score to the newScore to see if they match (compares name and score)
+      var areScoresEqual = function(scoreToCompare){
+        return (newScore.name === scoreToCompare.name) && (newScore.score === scoreToCompare.score);
+      };
+
       //if it doesn't exist then we want to add it to the filtered scores list
-      var doesntExist = !currentScores.some(function (currentScore) {
-        return (currentScore.name === newScore.name) && (currentScore.score === newScore.score);
+      var doesntExist = !currentScores.some(areScoresEqual);
+
+      //also want to remove duplicate new scores
+      var foundDuplicateIndex = 0;
+      var foundDuplicate = newScores.some(function(dupeScore, dupeSomeIndex){
+        //if a score has a duplicate we want to keep the first instance of it
+        foundDuplicateIndex = dupeSomeIndex;
+        return areScoresEqual(dupeScore)
       });
 
-      //only save score if it does not exists and there is actually a score
-      return doesntExist && newScore.score !== '';
+      //we do not want to remove the first instance of the duplicate
+      //so if we find a duplicate score for the one being filtered we also need to check that the
+      //one we found isn't in the same position, if its not in the same posistion then its a dupe
+      var isNotDuplicate = foundDuplicate && filterIndex === foundDuplicateIndex;
+
+      return doesntExist && isNotDuplicate && newScore.score !== '';
     });
   },
 

@@ -11,7 +11,7 @@ html(lang='en')
       tr
         th Name
         th(style='text-align:right') Score
-        each score in game.scores.slice(0,9)
+        each score in game.scores.slice(0,10)
           - var scoreClass = (score.id === beatenBy.id ? "background-color: #dff0d8;" : score.id === beaten.id ? "background-color: #f2dede;" : "")
           tr(style=scoreClass)
             td #{score.name}

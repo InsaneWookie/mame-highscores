@@ -8,9 +8,115 @@ describe('Game', function () {
 
   describe('#filterScores()', function () {
 
-    it('should filter scores', function (done) {
-      done();
+    it('no existing scores should not filter any scores', function () {
+
+      var newScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+      ];
+
+      var existingScores = [];
+
+      var filteredScores = Game.filterScores(newScores, existingScores);
+
+      assert.deepEqual(filteredScores, newScores, 'should not have filtered any scores')
+
     });
+
+    it('should filter if there are the same existing scores ', function () {
+
+      var newScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+      ];
+
+      var existingScores = [{name: 'ABC', score: '123'},];
+
+      var expectedScores = [
+        {name: 'TEST', score: '1234'},
+      ];
+
+      var filteredScores = Game.filterScores(newScores, existingScores);
+
+      assert.deepEqual(filteredScores, expectedScores, 'should have filtered existing scores')
+
+    });
+
+    it('should filter duplicate new scores', function () {
+
+      var newScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+        {name: 'BOB', score: '222'},
+        {name: 'TEST', score: '1234'},
+      ];
+
+      var existingScores = [];
+
+      var expectedScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+        {name: 'BOB', score: '222'},
+      ];
+
+      var filteredScores = Game.filterScores(newScores, existingScores);
+
+      assert.deepEqual(filteredScores, expectedScores, 'should have filtered duplicate scores')
+
+    });
+
+    it('should filter both existing scores and duplicate new scores', function () {
+
+      var newScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+        {name: 'TEST', score: '1234'},
+        {name: 'ABC', score: '123'},
+        {name: 'BOB', score: '222'},
+        {name: 'TEST', score: '1234'},
+      ];
+
+      var existingScores = [{name: 'ABC', score: '123'}];
+
+      var expectedScores = [
+        {name: 'TEST', score: '1234'},
+        {name: 'BOB', score: '222'},
+      ];
+
+      var filteredScores = Game.filterScores(newScores, existingScores);
+
+      assert.deepEqual(filteredScores, expectedScores, 'should have filtered duplicate scores')
+
+    });
+
+    it('should filter scores with empty scores', function () {
+
+      var newScores = [
+        {name: 'TEST', score: ''},
+        {name: 'ABC', score: '0'},
+        {name: 'TEST', score: '0'},
+        {name: 'ABC', score: ''},
+        {name: 'BOB', score: '222'},
+        {name: 'TEST', score: '1234'},
+      ];
+
+      var existingScores = [{name: 'ABC', score: '123'}];
+
+      var expectedScores = [
+        {name: 'ABC', score: '0'},
+        {name: 'TEST', score: '0'},
+        {name: 'BOB', score: '222'},
+        {name: 'TEST', score: '1234'},
+      ];
+
+      var filteredScores = Game.filterScores(newScores, existingScores);
+
+      assert.deepEqual(filteredScores, expectedScores, 'should have filtered duplicate scores')
+
+    });
+
   });
 
 
