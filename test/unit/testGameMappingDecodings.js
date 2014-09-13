@@ -69,8 +69,7 @@ describe('GameMappingDecodings', function () {
       { score: '48000', name: '...' },
       { score: '46000', name: '...' },
       { score: '44000', name: '...' },
-      { score: '42000', name: '...' },
-
+      { score: '42000', name: '...' }
     ] };
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
@@ -90,8 +89,27 @@ describe('GameMappingDecodings', function () {
       { score: '80000', name: 'KEI' },
       { score: '60000', name: 'OGR' },
       { score: '40000', name: 'GWK' },
-      { score: '20000', name: 'TKN' },
+      { score: '20000', name: 'TKN' }
+    ] };
 
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode crush correctly', function () {
+
+    var hexString = '0000004B524C0000004B524C0000004B524C0000004B524C0000004B524C000000';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'crush', 'hi');
+
+    var expected = { crush: [
+      { score: '0', name: 'KRL' },
+      { score: '0', name: 'KRL' },
+      { score: '0', name: 'KRL' },
+      { score: '0', name: 'KRL' },
+      { score: '0', name: 'KRL' }
     ] };
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");

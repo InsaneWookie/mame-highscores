@@ -381,8 +381,7 @@
       "skip": 6,
       "blocks": 8,
       "fields": [
-        {"name": "score", "bytes": 5, "format": "asIs"},
-        {"name": "trash", "bytes": 1},
+        {"name": "score", "bytes": 6, "format": "bcd", "settings":{ "append": "0"}},
         {"name": "stage", "bytes": 1, "format": "asIs"},
         {"name": "trash", "bytes": 1},
         {"name": "dimension", "bytes": 1, "format": "asIs"},
@@ -2734,13 +2733,9 @@
     ],
     "fileType": "hi",
     "structure": {
+      "skip": 3,
       "blocks": 5,
       "fields": [
-        {
-          "name": "score",
-          "bytes": 3,
-          "format": "asIs"
-        },
         {
           "name": "name",
           "bytes": 3,
@@ -2750,7 +2745,13 @@
               "40": " "
             }
           }
-        }        
+        },
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs",
+          "settings": {"append": "0"}
+        }
       ]
     }
   },
