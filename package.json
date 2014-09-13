@@ -1,7 +1,7 @@
 {
   "name": "mame-highscores",
   "private": true,
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "Mame high score tracking",
   "keywords": [],
   "engines": {
