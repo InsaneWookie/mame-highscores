@@ -116,5 +116,83 @@ describe('GameMappingDecodings', function () {
 
   });
 
+  it('should decode dorodon correctly', function () {
+
+    var hexString = '0100000100000100000100000100000100000100000100000100000F0A150C1817FFFF0F0A150C1817FFFF0F0A15' +
+      '0C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'dorodon', 'hi');
+
+    var expected = { dorodon: [
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' },
+      { score: '10000', name: 'FALCON' }
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode boggy84 correctly', function () {
+
+    var hexString = '000500000500000500000500000500000500000500000500000500000500000000111111111111111111111' +
+      '111111111111111111111111111111111111111111111000005101010101010000000';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'boggy84', 'hi');
+
+    var expected = { boggy84: [
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' },
+      { score: '5000', name: 'AAA' }
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode aso correctly', function () {
+
+    var hexString = '0050004E4F2E312020202020200028004E4F2E322020202020200027004E4F2E332020202020200026004E4F2E3420' +
+      '20202020200025004E4F2E352020202020200024004E4F2E362020202020200023004E4F2E372020202020200022004E4F2E38202020' +
+      '2020200021004E4F2E392020202020200020004E4F2E31302020202020005000';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'aso', 'hi');
+
+    var expected = { aso: [
+      { score: '50000', name: 'NO.1' },
+      { score: '28000', name: 'NO.2' },
+      { score: '27000', name: 'NO.3' },
+      { score: '26000', name: 'NO.4' },
+      { score: '25000', name: 'NO.5' },
+      { score: '24000', name: 'NO.6' },
+      { score: '23000', name: 'NO.7' },
+      { score: '22000', name: 'NO.8' },
+      { score: '21000', name: 'NO.9' },
+      { score: '20000', name: 'NO.10' },
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
 
 });

@@ -6,26 +6,27 @@ var path = require('path');
 module.exports = {
 
 	decode: function(gameSaveMappings, buffer, gameName, fileType){ //TODO: need to pass the file type in, ie .hi or .nv
-		var decoder = new ScoreDecoder(gameSaveMappings);
+		var decoder = new ScoreDecoder(gameSaveMappings, buffer);
 
 		if(!fileType){
 			fileType = 'hi';
 		}
 		var gameMappingStructure = decoder.getGameMappingStructure(gameName, fileType);
 
-		return decoder.decode_internal(buffer, gameName, gameMappingStructure);
+
+		return decoder.decode_internal(gameName, gameMappingStructure);
 	},
 
 	decodeFromFile: function(gameSaveMappings, filePath, gameName){
-		var decoder = new ScoreDecoder(gameSaveMappings);
-		var buffer = fs.readFileSync(filePath);
+    var buffer = fs.readFileSync(filePath);
+    var decoder = new ScoreDecoder(gameSaveMappings, buffer);
 
 		var fileType = path.extname(filePath).substring(1); //extname returns the extention with the dot so we need to remove it
 
 		//this is basically just structure part of the document from the gameMaps for this game
 		var gameMappingStructure = decoder.getGameMappingStructure(gameName, fileType);
 
-		return decoder.decode_internal(buffer, gameName, gameMappingStructure);
+		return decoder.decode_internal(gameName, gameMappingStructure);
 	},
 	
 	//TODO: really need to clean this up
@@ -62,8 +63,9 @@ module.exports = {
 };
 
 
-function ScoreDecoder(gameSaveMappings) {
+function ScoreDecoder(gameSaveMappings, buffer) {
 	this.gameSaveMappings = gameSaveMappings;
+  this.fileBufferData = buffer;
 	//this.mappingsVersion = mappingsVersion;
 }
 
@@ -97,7 +99,7 @@ ScoreDecoder.prototype.getGameMappingStructure = function(gameName, fileType){
 	return null;
 };
 
-ScoreDecoder.prototype.decode_internal = function(buffer, gameName, gameMappingStructure){
+ScoreDecoder.prototype.decode_internal = function(gameName, gameMappingStructure){
 	
 	//var fileHandle = fs.openSync(filePath, 'r');
 
@@ -117,19 +119,19 @@ ScoreDecoder.prototype.decode_internal = function(buffer, gameName, gameMappingS
 	if(structure.skip !== undefined){
 		//var skipBuffer = new Buffer(structure['skip']);
 		//fs.readSync(fileHandle, skipBuffer, 0, structure['skip']);
-		buffer = buffer.slice(structure.skip, buffer.length);
+    this.fileBufferData = this.fileBufferData.slice(structure.skip, this.fileBufferData.length);
 	}
 
 	//use a custom functions for decoding this file
-	if('custom' in structure){
+	if(structure.custom){
 		//var buff = fs.readFileSync(filePath, {flag: 'r'});
 		//console.log(buff.toString('hex'));
-		return this.decodeCustom(buffer, gameName);
+		return this.decodeCustom(this.fileBufferData, gameName);
 	}
 
 	scoreData[gameName] = [];
 
-	//the structure.blocks defines bassically how many scores the game has
+	//the structure.blocks defines basically how many scores the game has
 	for(var scoreCount = 0; scoreCount < structure.blocks; scoreCount++){
 		
 		var data = {};
@@ -137,26 +139,50 @@ ScoreDecoder.prototype.decode_internal = function(buffer, gameName, gameMappingS
 		for(var fieldIndex in structure.fields){
 			var field = structure.fields[fieldIndex];
 
-			var byteCount = field.bytes;
-			//var bytes = new Buffer(byteCount);
-			var bytes = buffer.slice(0, byteCount);
-			//remove the bytes we just slice from the full buffer so we dont read them nect time round
-			buffer = buffer.slice(byteCount, buffer.length);
-			//fs.readSync(fileHandle, bytes, 0, byteCount);
+      //if we get another structure then we want to recurs down
+      if(field.structure){
+        var subDecode = this.decode_internal(gameName, field.structure);
 
-		
-			//currently only store name and score, skip all other fields
-			if(field.name === 'name' || field.name === 'score'){
-				var format = field.format;
-				var settings = (field.settings !== undefined) ? field.settings : []; //array or null, can't decide
+        //now need to merge sub decodes together
+        if(scoreData[gameName].length === 0){
+          scoreData[gameName] = subDecode[gameName];
+        } else {
+          //shallow merge objects
+          subDecode[gameName].forEach(function(entry, index){
+           for(var key in entry){
+             if(entry.hasOwnProperty(key)){
+               scoreData[gameName][index][key] = entry[key];
+             }
+           }
+          });
+        }
+      } else {
 
-				var decodedBytes = this.decodeBytes(bytes, format, settings);
-		
-				data[field.name] = decodedBytes + ''; //make sure is a string
-			}
+        var byteCount = field.bytes;
+        //var bytes = new Buffer(byteCount);
+        var bytes = this.fileBufferData.slice(0, byteCount);
+        //remove the bytes we just slice from the full buffer so we don't read them next time round
+        this.fileBufferData = this.fileBufferData.slice(byteCount, this.fileBufferData.length);
+        //fs.readSync(fileHandle, bytes, 0, byteCount);
+
+
+        //currently only store name and score, skip all other fields
+        if (field.name === 'name' || field.name === 'score') {
+          var format = field.format;
+          var settings = (field.settings !== undefined) ? field.settings : []; //array or null, can't decide
+
+          var decodedBytes = this.decodeBytes(bytes, format, settings);
+
+          data[field.name] = decodedBytes + ''; //make sure is a string
+        }
+      }
 		}
-		
-		scoreData[gameName].push(data);
+
+    //little bit of a hack, if the decoding field data (ie using sub structures) we end up with an empty object
+    if(Object.keys(data).length > 0){
+      scoreData[gameName].push(data);
+    }
+
 	}
 
 	//TODO: need to catch any errors otherwise it will leave the file handle open (maybe its better if we dont open the file in this function?)
