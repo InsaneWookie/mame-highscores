@@ -31,7 +31,7 @@
            <th>Date</th>
          </tr>
          <tr ng-repeat="game in lastPlayedGames">
-           <td> <a href='#/games/{{game.id}}'>{{game.full_name}} </a></td>
+           <td> <a href='#/games/{{game.id}}'>{{game.clean_name}} </a></td>
            <td>{{game.play_count}}</td>
            <td><span am-time-ago="game.last_played"></span></td>
          </tr>

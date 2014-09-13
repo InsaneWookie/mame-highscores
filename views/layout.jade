@@ -62,8 +62,7 @@ html(lang='en', ng-app='myApp')
               
           form.navbar-form.navbar-right(role='search')
             .form-group(ng-controller="SearchCtrl")
-              input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")
-              button.btn.btn-default(type='submit') Submit
+              input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")
 
         // /.nav-collapse
     .container

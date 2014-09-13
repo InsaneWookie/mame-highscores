@@ -147,13 +147,8 @@ ScoreDecoder.prototype.decode_internal = function(gameName, gameMappingStructure
         if(scoreData[gameName].length === 0){
           scoreData[gameName] = subDecode[gameName];
         } else {
-          //shallow merge objects
           subDecode[gameName].forEach(function(entry, index){
-           for(var key in entry){
-             if(entry.hasOwnProperty(key)){
-               scoreData[gameName][index][key] = entry[key];
-             }
-           }
+            scoreData[gameName][index] = _.extend(scoreData[gameName][index], entry);
           });
         }
       } else {
@@ -179,7 +174,7 @@ ScoreDecoder.prototype.decode_internal = function(gameName, gameMappingStructure
 		}
 
     //little bit of a hack, if the decoding field data (ie using sub structures) we end up with an empty object
-    if(Object.keys(data).length > 0){
+    if(!_.isEmpty(data)){
       scoreData[gameName].push(data);
     }
 

@@ -55,7 +55,9 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
   templateData.siteUrl = sails.config.siteUrl;
 
   //stick the port on if its not 80
-  if(sails.config.port !== 80) {
+  //for now only stick the port of not production (cant use the port as openshift binds to port 8080 and routes
+  //external port 80 to it
+  if(sails.config.environment !== 'production' && sails.config.port !== 80) {
     templateData.siteUrl += ':' + sails.config.port;
   }
 

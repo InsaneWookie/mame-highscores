@@ -25,7 +25,19 @@ module.exports = {
     scores: {
       collection: 'Score',
       via: 'game'
+    },
+
+    clean_name_func: function(){
+      var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
+      return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
+    },
+
+    toJSON: function(){
+      var obj = this.toObject();
+      obj.clean_name = this.clean_name_func();
+      return obj;
     }
+
   },
 
   /**
@@ -131,7 +143,7 @@ module.exports = {
         && scoreAliasId //only care about scores that have a user
         && topScoreAliasId != scoreAliasId //don't beat yourself
         && beatenAliasIds.indexOf(scoreAliasId) === -1) { //TODO: add support for multiple aliases
-;
+
         beatenObject.beaten.push(score);
         beatenAliasIds.push(scoreAliasId);
       }
