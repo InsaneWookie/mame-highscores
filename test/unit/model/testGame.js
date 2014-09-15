@@ -413,4 +413,43 @@ describe('Game', function () {
       });
     });
   });
+
+
+  describe('#updateHasMapping()', function () {
+
+    beforeEach(function(done){
+
+      Game.query('TRUNCATE TABLE game RESTART IDENTITY CASCADE', [], function(err){
+        User.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', [], function(err){
+
+          Game.create({name: 'zerowing', has_mapping: false }).exec(function(err, game){
+           Game.create({ name: 'bob', has_mapping: false }).exec(function(err, game){
+              done(err);
+            });
+          });
+        });
+      });
+    });
+
+
+    it('should update has_mapping from gameMaps', function (done) {
+
+      Game.findOneByName('zerowing').exec(function(err, game){
+        assert.ok(!err);
+        assert.ok(game, 'game not found');
+        assert.ok(!game.has_mapping);
+
+        Game.updateHasMapping(function(err){
+          assert.ok(!err);
+
+          Game.findOneByName('zerowing').exec(function(err, game) {
+            assert.ok(!err);
+            assert.ok(game.has_mapping);
+
+            done(err);
+          });
+        });
+      });
+    });
+  });
 });

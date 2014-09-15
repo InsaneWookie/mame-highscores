@@ -101,13 +101,21 @@
   },
   {
     "name": [
-      "aso"
+      "aso",
+      "alphamis",
+      "arian"
     ],
     "structure": {
       "blocks": 10,
       "fields": [
         {"name": "score", "bytes": 3, "format": "asIs", "settings": {"append": "0"}},
-        {"name": "name", "bytes": 10, "format": "ascii"}
+        {"name": "name", "bytes": 10, "format": "ascii",
+          "settings": {
+            "special": {
+              "FF": " "
+            }
+          }
+        }
       ]
     }
   },

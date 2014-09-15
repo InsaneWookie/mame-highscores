@@ -358,6 +358,33 @@ module.exports = {
     Score.query(query, [game.id], function (err, result) {
       callback(err);
     });
+  },
+
+  /**
+   * This function goes through the game mappings and sets game.has_mapping to true
+   * if it exists
+   */
+  updateHasMapping: function (callback){
+
+    var gameMaps = require('../game_mappings/gameMaps.json');
+    var gameNamesToUpdate = [];
+
+    gameMaps.forEach(function(map){
+      gameNamesToUpdate = gameNamesToUpdate.concat(map.name);
+    });
+
+    Game.update(
+      {
+        or: [
+          { name: gameNamesToUpdate },
+          { clone_of_name: gameNamesToUpdate }
+        ]
+      },
+      { has_mapping: true },
+      function(err){
+        callback(err);
+      }
+    );
   }
 
 };
