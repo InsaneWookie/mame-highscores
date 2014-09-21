@@ -79,8 +79,8 @@ module.exports = {
    * IMPORTANT: this assumes bother addedScores and afterAddedScores are sorted high to low
    * TODO: currently this only handles single alias, if a user sets a score on the same game with
    * a different alias it will think they have beaten them self
-   * @param {array} addedScores
-   * @param {array} afterAddedScores
+   * @param {Array} addedScores
+   * @param {Array} afterAddedScores
    * @return {object}
    *  example
    *  {
@@ -95,6 +95,9 @@ module.exports = {
   getBeatenScores: function (addedScores, afterAddedScores) {
     var foundCreatedScore = false;
 
+    //scores above the new ones
+    var topScoreAliasIds = [];
+
     var topNewScore = null;
     //find the first score with a user
     for(var i = 0; i < addedScores.length; i++){
@@ -103,6 +106,8 @@ module.exports = {
         break;
       }
     }
+
+
 
     var beatenObject = {
       beatenBy: {},
@@ -142,16 +147,22 @@ module.exports = {
       if (foundCreatedScore
         && scoreAliasId //only care about scores that have a user
         && topScoreAliasId != scoreAliasId //don't beat yourself
-        && beatenAliasIds.indexOf(scoreAliasId) === -1) { //TODO: add support for multiple aliases
+        && beatenAliasIds.indexOf(scoreAliasId) === -1  //TODO: add support for multiple aliases
+        && topScoreAliasIds.indexOf(scoreAliasId) === -1) { //don't flag a score as beaten if they have a higher score
 
         beatenObject.beaten.push(score);
         beatenAliasIds.push(scoreAliasId);
       }
 
-      if(foundCreatedScore === false && topNewScore.id === score.id){
-        topNewScore = score;
-        topScoreAliasId = (typeof score.alias == 'object') ? topNewScore.alias.id : topNewScore.alias;
-        foundCreatedScore = true;
+      if(foundCreatedScore === false ){
+        if(topNewScore.id === score.id){
+          topNewScore = score;
+          topScoreAliasId = (typeof score.alias == 'object') ? topNewScore.alias.id : topNewScore.alias;
+          foundCreatedScore = true;
+        } else {
+          var beatenAliasId = (score.alias && typeof score.alias == 'object') ? score.alias.id : score.alias;
+          topScoreAliasIds.push(beatenAliasId);
+        }
       }
 
     });

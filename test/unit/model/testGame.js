@@ -229,8 +229,34 @@ describe('Game', function () {
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
     });
 
-    it.skip('should not beat already beaten users', function(){
+    it('should only beat user if top score', function(){
+      var newScores = [
+        { id: 6, score: '600', name: 'BAR', alias: 2 },
+      ];
 
+      var afterAddedScores = [
+        { id: 9, score: '9000', name: 'BOB', alias: 5 },
+        { id: 8, score: '800', name: 'FOO', alias: 1 },
+        { id: 7, score: '700', name: 'FOO', alias: 1 },
+        { id: 6, score: '600', name: 'BAR', alias: 2 }, //new score
+        { id: 5, score: '500', name: 'BOB', alias: 5 },
+        { id: 4, score: '400', name: 'BAR', alias: 2 },
+        { id: 3, score: '300', name: 'JIM', alias: 3 },
+        { id: 2, score: '200', name: 'BAR', alias: 2 },
+        { id: 1, score: '100', name: 'FOO', alias: 1 }
+      ];
+
+      var expectedBeatenScores = {
+        beatenBy: { id: 6, score: '600', name: 'BAR', alias: 2 },
+        beaten: [
+          { id: 3, score: '300', name: 'JIM', alias: 3 }]
+      };
+
+      var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
+
+      //console.log(actualBeatenScores);
+      //console.log(expectedBeatenScores);
+      assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
     });
 
     it('should not beat higher scores', function(){
@@ -243,7 +269,8 @@ describe('Game', function () {
         { id: 4, score: '300', name: 'BOB', alias: 2 },
         { id: 3, score: '200', name: 'BAR', alias: 3 },
         { id: 1, score: '100', name: 'FOO', alias: 1 },
-        { id: 2, score: '50', name: 'ROW', alias: 4 }
+        { id: 2, score: '50', name: 'ROW', alias: 4 },
+        { id: 4, score: '20', name: 'BOB', alias: 2 } //this should not get beaten as the user has a higher score than what was newly set
       ];
 
       var expectedBeatenScores = {
@@ -258,10 +285,6 @@ describe('Game', function () {
       //console.log(actualBeatenScores);
       //console.log(expectedBeatenScores);
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
-    });
-
-    it.skip('should beat users if score in new scores', function(){
-
     });
 
     it('should not beat scores without a user', function(){
