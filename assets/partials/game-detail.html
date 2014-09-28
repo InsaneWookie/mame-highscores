@@ -1,6 +1,6 @@
 <div ng-if="game == null">No game found</div> 
 
-<div ng-if="game != null">
+<div ng-cloak ng-if="game != null">
 	<div class="row">
 		<h2> {{game.full_name}} ({{game.name}}) </h2>
 
@@ -8,16 +8,18 @@
 
     <h3>Year: {{game.year}}</h3>
 		<div class="col-md-4 titleImg">
-				<img ng-src="http://sifty.tk/hiscores/titles/{{game.name}}.png" style="width:100%" />
+				<img ng-src="{{game.imgUrl}}" style="width:100%" />
 		</div>
 		<div class="col-md-8">
 			<table class="table table-striped">
 				<tr>
-					<th>Name</th>
+          <th>Rank</th>
+          <th>Name</th>
 					<th style='text-align:right'>Score</th>
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in scores'>
+          <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
 						<span ng-if="score.alias == null">{{score.name}}</span>
@@ -35,11 +37,13 @@
 		<div class="col-md-12">
 			<table class="table table-striped">
 				<tr>
-					<th>Name</th>
+          <th>Rank</th>
+          <th>Name</th>
 					<th style='text-align:right'>Score</th>
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in game.scores'>
+          <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
 						<span ng-if="score.alias == null">{{score.name}}</span>

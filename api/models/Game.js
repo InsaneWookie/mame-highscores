@@ -326,21 +326,28 @@ module.exports = {
         } else {
           //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
           if(createdScores.length) {
-            Game.updateScoreAliases(game, function (err) {
-              //we need to refetch the created scores so we have the updated alias data
-              var scoreIds = [];
-              createdScores.forEach(function(score){
-                scoreIds.push(score.id);
-              });
+            //created some scores so update the score rank
+            //Score.updateRanks(gameId, function(err){
+            //  if(err) { return callback(err, null); }
 
-              Score.find().where({id: scoreIds}).exec(function(err, updateCreatedScores){
-                updateCreatedScores.sort(function (a, b) {
-                  return parseInt(b.score) - parseInt(a.score);
+              Game.updateScoreAliases(game, function (err) {
+                if(err) { return callback(err, null); }
+
+                //we need to refetch the created scores so we have the updated alias data
+                var scoreIds = [];
+                createdScores.forEach(function(score){
+                  scoreIds.push(score.id);
                 });
 
-                callback(err, updateCreatedScores);
+                Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
+//                  updateCreatedScores.sort(function (a, b) {
+//                    return parseInt(b.score) - parseInt(a.score);
+//                  });
+
+                  callback(err, updateCreatedScores);
+                });
               });
-            });
+            //});
           } else {
             callback(err, createdScores);
           }

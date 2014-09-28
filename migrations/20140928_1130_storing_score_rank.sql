@@ -1,0 +1,1 @@
+ALTER TABLE score ADD COLUMN rank INTEGER;

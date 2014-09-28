@@ -3,25 +3,20 @@
 <h4> Aliases: <span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></h4>
 
 
-<div ng-repeat="game in games">
-    <h3><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h3>
+<div>
+  <!--<h3><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h3>-->
     
      <table class="table table-striped">
         <tr>
-          <th>Name</th>
-          <th>Score</th>
+          <th>Game</th>
+          <th>Top Rank</th>
+          <th>Top Score</th>
         </tr>
-        <tr ng-repeat="score in game.scores">
-            
-          <td>{{score.name}}</td>
-          <td>{{score.score}}</td>
-            
-          <!-- 
-          <td><a href='/users/#{score.user_id}'>{{score.name}}</a></td>
-          <td>{{score.score}}</td>
-          -->
+        <tr ng-repeat="game in topGames">
+          <td><a href="#/games/{{game.id}}">{{game.full_name}}</a></td>
+          <td>{{game.top_score.rank}}</td>
+          <td>{{game.top_score.score}}</td>
         </tr>
       </table>
-
 </div>
 

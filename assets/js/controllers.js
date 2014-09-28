@@ -1,7 +1,7 @@
 'use strict';
 
 /* Controllers */
-
+//TODO: separate out the controllers in to their own files
 angular.module('myApp.controllers', [])
   .controller('GameListCtrl', ['$scope', '$sails', function($scope, $sails) {
 
@@ -10,13 +10,13 @@ angular.module('myApp.controllers', [])
 
 	  $scope.games = [];
 
-    $scope.loadingPromise = $sails.get("/game?has_mapping=true&limit=500&sort=full_name ASC").success(function (data) {
+    $scope.loadingPromise = $sails.get('/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').success(function (data) {
 
       //need to sort the scores so we get the first one
-      //super crap way as it assumes the scores are numbers
+      //probably should do this on the backend
       data.forEach(function(game){
         game.scores.sort(function(a, b){
-          return parseInt(b.score) - parseInt(a.score);
+          return a.rank - b.rank;
         });
 
         //games.push({id: game.id, name: game.name, full_name: game.full_name, scores: [game.scores[0]]});
@@ -32,12 +32,14 @@ angular.module('myApp.controllers', [])
   }])
   .controller('GameDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
 
-    $scope.game = [];
+    $scope.game = {};
     $scope.scores = [];
     $scope.clones = [];
 
     $sails.get("/game/" + $routeParams.id).success(function (data) {
+      data.imgUrl = "http://sifty.tk/hiscores/titles/" + data.name + ".png";
       $scope.game = data;
+
 
       $sails.get('/game?clone_of=' + data.id, function (clones) {
 
@@ -47,11 +49,7 @@ angular.module('myApp.controllers', [])
 
             $scope.clones.push(clone);
 
-            $sails.get("/score?sort=score DESC&game=" + clone.id).success(function (cloneScores) {
-              cloneScores.sort(function (a, b) {
-                return parseInt(b.score) - parseInt(a.score);
-              });
-
+            $sails.get("/score?sort=rank ASC&game=" + clone.id).success(function (cloneScores) {
               if (cloneScores.length == 0) {
 
               } else {
@@ -91,10 +89,7 @@ angular.module('myApp.controllers', [])
 //      });
 
 
-    $sails.get("/score?sort=score DESC&game=" + $routeParams.id).success(function (data) {
-      data.sort(function (a, b) {
-        return parseInt(b.score) - parseInt(a.score);
-      });
+    $sails.get("/score?sort=rank ASC&game=" + $routeParams.id).success(function (data) {
       $scope.scores = data;
     })
     .error(function (data) {
@@ -181,25 +176,43 @@ angular.module('myApp.controllers', [])
   }])
   .controller('UserDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
 
-    $scope.user = {};
-    $scope.games = [];
 
-    $sails.get('/user/' + $routeParams.id ).success(function (data){
+    //var userId = (typeof $routeParams.id == 'integer') ? $routeParams.id : null;
+    //var aliasId = ($routeParams.aliasId) ? $routeParams.aliasId : null;
+
+
+
+    $scope.user = {};
+    $scope.topGames = [];
+
+    //if the alias id is set then we want to look up the user based on that id
+//    var requestUrl = "";
+//    if(aliasId){
+//      requestUrl = ''
+//
+//
+//
+//    }
+
+
+
+   $sails.get('/user/' + $routeParams.id ).success(function (data){
       $scope.user = data;
     });
+//
+//    $sails.get('/user/' + $routeParams.id + '/games' ).success(function (games){
+//      $scope.games = games;
+//
+//      games.forEach(function(game){
+//        $sails.get('/score?sort=rank ASC&game=' + game.id).success(function (scores){
+//          game.scores = scores;
+//        });
+//      })
+//    });
 
-    $sails.get('/user/' + $routeParams.id + '/games' ).success(function (games){
-      $scope.games = games;
 
-      games.forEach(function(game){
-        $sails.get('/score?game=' + game.id).success(function (scores){
-
-          scores.sort(function(a, b){
-            return parseInt(b.score) - parseInt(a.score);
-          });
-          game.scores = scores;
-        });
-      })
+    $sails.get('/user/player_scores/' + $routeParams.id ).success(function (data){
+      $scope.topGames = data;
     });
 
   }])

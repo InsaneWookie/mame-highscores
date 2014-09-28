@@ -11,8 +11,8 @@
 			<div ng-if="!game.clone_of"><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></div>
 		</td>
 		<td ng-if="game.scores.length > 0">				
-				<div ng-if="game.scores[0].user"><a href=''>{{game.scores[0].name}}</a></div>
-				<div ng-if="!game.scores[0].user"> {{game.scores[0].name}} </div>
+				<!--<div ng-if="game.scores[0].alias"><a ng-href='#/users/alias/{{game.scores[0].alias}}'>{{game.scores[0].name}}</a></div>-->
+				<div> {{game.scores[0].name}} </div>
 		</td >
 		<td ng-if="game.scores.length > 0">{{game.scores[0].score}}</td>
 		<td ng-if="game.scores.length > 0"><span am-time-ago="game.scores[0].createdAt"></span></td>

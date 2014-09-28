@@ -31,6 +31,7 @@ config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/create-user', {templateUrl: 'partials/user-create.html', controller: 'UserCreateCtrl'});
   $routeProvider.when('/users', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
 	$routeProvider.when('/users/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
+	$routeProvider.when('/users/alias/:aliasId', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
 
 	$routeProvider.otherwise({redirectTo: '/home'});
 }]).value('cgBusyDefaults',{

@@ -69,12 +69,14 @@
        <table class="table table-striped">
          <tr>
            <th>Game Name</th>
+           <th>Rank</th>
            <th>Name</th>
            <th>Score</th>
            <th>Date</th>
          </tr>
          <tr ng-repeat='score in lastestScores'>
            <td> <a href='#/games/{{score.game.id}}'> {{score.game.full_name}}</a></td>
+           <td>{{score.rank}}</td>
            <td>
              <a ng-if="score.alias" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
              <span ng-if="!score.alias">{{score.name}}</span>

@@ -58,7 +58,8 @@ module.exports.policies = {
     findOne: true,
     create: true,
     //update: true, //TODO: only allow update of a users own details
-    games: true
+    games: true,
+    player_scores: true
   }
 
 
