@@ -4,6 +4,9 @@ html(lang='en', ng-app='myApp')
     title Mame High Scores
     meta(name="viewport" content="width=device-width, initial-scale=1")
 
+    //update the verson on this if changeing the favicon
+    link(rel="shortcut icon" href="favicon.ico?v=2")
+
 
     //Latest compiled and minified CSS
     //link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
@@ -43,7 +46,7 @@ html(lang='en', ng-app='myApp')
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/') Mame High Scores 
+          a.navbar-brand(href='/') Mame High Scores
             small(style='font-size: 0.5em') (v#{sails.config.globals.version})
         .navbar-collapse.collapse
           ul.nav.navbar-nav
@@ -51,15 +54,13 @@ html(lang='en', ng-app='myApp')
               a(href='#/games') Games
             li
               a(href='#/users') Users
-            //li
-            //  a(href='#todo') Enter Score
-            li 
+            li
               a(href='#/game-upload') Upload File
             li
               a(href='#/settings') Settings
             li
               a(href='#/admin') Admin
-              
+
           form.navbar-form.navbar-right(role='search')
             .form-group(ng-controller="SearchCtrl")
               input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")

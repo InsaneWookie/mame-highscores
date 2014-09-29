@@ -119,7 +119,7 @@ describe('GameMappingDecodings', function () {
   it('should decode dorodon correctly', function () {
 
     var hexString = '0100000100000100000100000100000100000100000100000100000F0A150C1817FFFF0F0A150C1817FFFF0F0A15' +
-      '0C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817';
+      '0C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFFFFFFFF1B1820';
 
     var buffer = new Buffer(hexString, 'hex');
 
@@ -134,7 +134,7 @@ describe('GameMappingDecodings', function () {
       { score: '10000', name: 'FALCON' },
       { score: '10000', name: 'FALCON' },
       { score: '10000', name: 'FALCON' },
-      { score: '10000', name: 'FALCON' }
+      { score: '10000', name: 'ROW' }
     ] };
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
@@ -189,6 +189,72 @@ describe('GameMappingDecodings', function () {
       { score: '22000', name: 'NO.8' },
       { score: '21000', name: 'NO.9' },
       { score: '20000', name: 'NO.10' },
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+
+  it('should decode actionhw correctly', function () {
+
+    //when the name is entered if the user its end the remaining chars are filled with FF
+    var hexString = '4A4F450001F401014B414D000190010146415300012C010145474F0000C801014A414E0000640101';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'actionhw', 'hi');
+
+    var expected = { actionhw: [
+      { score: '50000', name: 'JOE' },
+      { score: '40000', name: 'KAM' },
+      { score: '30000', name: 'FAS' },
+      { score: '20000', name: 'EGO' },
+      { score: '10000', name: 'JAN' }
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+
+  it('should decode blktiger correctly', function () {
+
+    //when the name is entered if the user its end the remaining chars are filled with FF
+    var hexString = '000000000200000020202020494D4F200000000001080000202020204D4B50200000000001060000202020204D2E4' +
+      '820000000000104000020202020592E4B20000000000102000020202020592E46200000000002000000';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'blktiger', 'hi');
+
+    var expected = { blktiger: [
+      { score: '20000', name: 'IMO' },
+      { score: '18000', name: 'MKP' },
+      { score: '16000', name: 'M.H' },
+      { score: '14000', name: 'Y.K' },
+      { score: '12000', name: 'Y.F' }
+    ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode valtric correctly', function () {
+
+    //when the name is entered if the user its end the remaining chars are filled with FF
+    var hexString = '00001500014A4C4300000500004E4D4B0000040000542E4E0000030000415247000002000047555300001500';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'valtric', 'hi');
+
+    var expected = { valtric: [
+      { score: '15000', name: 'JLC' },
+      { score: '5000', name: 'NMK' },
+      { score: '4000', name: 'T.N' },
+      { score: '3000', name: 'ARG' },
+      { score: '2000', name: 'GUS' }
     ] };
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");

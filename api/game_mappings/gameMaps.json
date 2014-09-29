@@ -404,6 +404,7 @@
                   "charMap": "upper",
                   "offset": "0A",
                   "special": {
+                    "FF": "",
                     "10": " ",
                     "2B": ".",
                     "2C": ":"
@@ -1187,7 +1188,10 @@
         {
           "name": "score",
           "bytes": 2,
-          "format": "hexToDecimal"
+          "format": "hexToDecimal",
+          "settings": {
+              "append": "00"
+          }
         },
         {
           "name": "stage",
@@ -4012,7 +4016,9 @@
         {
           "name": "score",
           "bytes": 4,
-          "format": "asIs"
+          "format": "asIs",
+          "settings": { "append": "0" }
+
         },
         {
           "name": "unuseda",
