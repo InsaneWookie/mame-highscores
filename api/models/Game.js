@@ -112,8 +112,6 @@ module.exports = {
       }
     }
 
-
-
     var beatenObject = {
       beatenBy: {},
       beaten: []
@@ -138,7 +136,7 @@ module.exports = {
 
       beatenCount++;
 
-      if(beatenCount > 10){
+      if(beatenCount > 5){
         //probably a better way of doing this
         //it will keep returning until we run out of scores
         return;

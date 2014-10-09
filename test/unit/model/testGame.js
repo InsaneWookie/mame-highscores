@@ -182,7 +182,7 @@ describe('Game', function () {
         { id: 8, score: '800', name: 'FOO', alias: 1 },
         { id: 7, score: '700', name: 'FOO', alias: 1 },
         { id: 6, score: '600', name: 'BAR', alias: 2 },
-        { id: 5, score: '500', name: 'ROW', alias: 4 },
+        { id: 5, score: '500', name: 'ROW', alias: 4 }, //only beat the top 5
         { id: 4, score: '400', name: 'BAR', alias: 2 },
         { id: 3, score: '300', name: 'JIM', alias: 3 },
         { id: 2, score: '200', name: 'BAR', alias: 2 },
@@ -195,7 +195,7 @@ describe('Game', function () {
           { id: 8, score: '800', name: 'FOO', alias: 1 },
           { id: 6, score: '600', name: 'BAR', alias: 2 },
           { id: 5, score: '500', name: 'ROW', alias: 4 },
-          { id: 3, score: '300', name: 'JIM', alias: 3 }]
+          /*{ id: 3, score: '300', name: 'JIM', alias: 3 }*/]
       };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -229,6 +229,7 @@ describe('Game', function () {
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
     });
 
+    //TODO: redo this test as we have changes it to the top 5 instead of top 10
     it('should only beat user if top score', function(){
       var newScores = [
         { id: 6, score: '600', name: 'BAR', alias: 2 },
@@ -249,7 +250,7 @@ describe('Game', function () {
       var expectedBeatenScores = {
         beatenBy: { id: 6, score: '600', name: 'BAR', alias: 2 },
         beaten: [
-          { id: 3, score: '300', name: 'JIM', alias: 3 }]
+          /*{ id: 3, score: '300', name: 'JIM', alias: 3 }*/]
       };
 
       var actualBeatenScores = Game.getBeatenScores(newScores, afterAddedScores);
@@ -311,7 +312,7 @@ describe('Game', function () {
       assert.deepEqual(actualBeatenScores, expectedBeatenScores, "Invalid beaten scores");
     });
 
-    it('should only beat top 10 scores', function(){
+    it('should only beat top 5 scores', function(){
       var newScores = [
         { id: 12, score: '9000', name: 'BOB', alias: 5 },
       ];
@@ -322,12 +323,12 @@ describe('Game', function () {
         { id: 10, score: '700', name: 'FOO', alias: 1 },
         { id: 9, score: '600', name: 'BAR', alias: 2 },
         { id: 8, score: '500', name: 'ROW', alias: 4 },
-        { id: 7, score: '400', name: 'BAR', alias: 2 },
+        { id: 7, score: '400', name: 'BAR', alias: 2 }, //only top 5 beaten now
         { id: 6, score: '300', name: 'JIM', alias: 3 },
         { id: 5, score: '200', name: 'BAR', alias: 2 },
         { id: 4, score: '100', name: 'FOO', alias: 1 },
         { id: 3, score: '90', name: 'CAT', alias: 7 },
-        { id: 2, score: '80', name: 'DOG', alias: 8 }, //the last 2 should not get marked as beaten
+        { id: 2, score: '80', name: 'DOG', alias: 8 },
         { id: 1, score: '70', name: 'ABC', alias: 6 }
       ];
 
@@ -337,8 +338,8 @@ describe('Game', function () {
           { id: 11, score: '800', name: 'FOO', alias: 1 },
           { id: 9, score: '600', name: 'BAR', alias: 2 },
           { id: 8, score: '500', name: 'ROW', alias: 4 },
-          { id: 6, score: '300', name: 'JIM', alias: 3 },
-          { id: 3, score: '90', name: 'CAT', alias: 7 }]
+          /*{ id: 6, score: '300', name: 'JIM', alias: 3 },
+          { id: 3, score: '90', name: 'CAT', alias: 7 }*/]
       };
 
 
