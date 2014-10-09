@@ -1,0 +1,9 @@
+<div style="font-family: courier, monospace">
+  <span ng-repeat="b in rawscore.byteArray track by $index" ng-click="selectByte($index)"
+        ng-class="{'bg-primary': $index >= startByte && $index <= endByte}">{{b}} <br ng-if="($index + 1) % 16 == 0"></span>
+  <div>{{startByte}}</div>
+  <div>{{endByte}}</div>
+  <div>{{selectedBytes}}</div>
+  <div>{{decoded}}</div>
+
+</div>

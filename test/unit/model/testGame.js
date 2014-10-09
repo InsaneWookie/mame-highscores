@@ -435,6 +435,66 @@ describe('Game', function () {
         }
       });
     });
+
+    it.skip('should upload scores concurrently without error', function (done) {
+
+      var bytes = '0000500000005000000048000000460000004400000042000026002600260000000000000026002600260000000' +
+        '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
+        '00120011001050';
+
+      var newBytes = '000050000000550000005400000046000000440000004200000A000B000C000000000000000D000E000F0000000' +
+        '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
+        '00120011001050';
+
+      var bytesBuffer = new Buffer(bytes, 'hex');
+
+      var fileType = 'hi';
+      var gameName = 'zerowing';
+
+      Game.findOneByName(gameName).exec(function(err, game){
+        if(err){
+          done(err);
+        } else {
+
+          assert.ok(game, "game not set");
+
+          async.parallel([
+            function(done){
+              Game.uploadScores(bytesBuffer, fileType, game, function(err, savedScores){
+                assert.equal(null, err, "should not have got an error");
+                //assert.ok(savedScores.length > 0, "should have saved some scores");
+                done(err, savedScores); //this is the async function done
+              });
+            },
+            function(done) {
+              Game.uploadScores(bytesBuffer, fileType, game, function (err, savedScores) {
+                assert.equal(null, err, "should not have got an error");
+                //assert.ok(savedScores.length > 0, "should have saved some scores");
+                done(err, savedScores); //this is the async function done
+              })
+            },
+            function(done) {
+              Game.uploadScores(bytesBuffer, fileType, game, function (err, savedScores) {
+                assert.equal(null, err, "should not have got an error");
+                //assert.ok(savedScores.length > 0, "should have saved some scores");
+                done(err, savedScores); //this is the async function done
+              })
+            }
+          ], function(err, results){
+            var scoreCount = 0;
+            assert.equal(null, err, "should not have got an error");
+            console.log(results);
+            results.forEach(function(item){
+              scoreCount = scoreCount + item.length;
+            });
+
+
+            assert.equal(scoreCount, 5, "should have only retuned 5 scores");
+            done(); //this is the test done
+          });
+        }
+      });
+    });
   });
 
 

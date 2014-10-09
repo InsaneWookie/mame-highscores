@@ -38,7 +38,7 @@ html(lang='en', ng-app='myApp')
 
   body
 
-    .navbar.navbar-default.navbar-fixed-top(role='navigation')
+    .navbar.navbar-default.navbar-fixed-top(role='navigation' id='nav_bar')
       .container
         .navbar-header
           button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
@@ -65,12 +65,20 @@ html(lang='en', ng-app='myApp')
             .form-group(ng-controller="SearchCtrl")
               input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")
 
-        // /.nav-collapse
     .container
-      .jumbotron
+      .jumbotron(style='margin-top: 50px')
         block body
 
+    //TODO: move this into its own file
     script.
+      //this closes the menu when in drop down mode
+      //needed because we are a single pag app
+      $(document).on('click','.navbar-collapse.in',function(e) {
+          if( $(e.target).is('a') ) {
+              $(this).collapse('hide');
+          }
+      });
+
       io.socket.on("score", function (message) {
         console.log('**got score message**');
         console.log(message);

@@ -29,7 +29,7 @@ module.exports = {
       //}
       //delete obj.user;
       return obj;
-    },
+    }
 
 
   },
@@ -52,21 +52,26 @@ module.exports = {
         WHERE game_id = $1) r \
       WHERE s.id = r.id";
 
-    Score.query(query, [gameId], function (err, result) {
-      cb(err, result);
-    });
-  },
+    //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
+      Score.query(query, [gameId], function (err, result) {
+     //   Game.query('SELECT pg_advisory_unlock(1234)', [], function() {
+          cb(err, result);
+      //  });
+      });
+   // });
+
+  }
 
   //don't think this is working but do the update anyway
-  afterCreate: function(newScore, cb){
-
-    var gameId = newScore.game;
-
-    Score.updateRanks(gameId, function(err, result){
-      if(err) return cb(err);
-      cb();
-    });
-  }
+//  afterCreate: function(newScore, cb){
+//
+//    var gameId = newScore.game;
+//
+//    Score.updateRanks(gameId, function(err, result){
+//      if(err) return cb(err);
+//      cb();
+//    });
+//  }
 
 };
 

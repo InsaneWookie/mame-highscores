@@ -27,6 +27,11 @@ module.exports = {
       via: 'game'
     },
 
+    rawscores: {
+      collection: 'RawScore',
+      via: 'game'
+    },
+
     clean_name_func: function(){
       var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
       return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
@@ -239,6 +244,7 @@ module.exports = {
    */
   uploadScores: function (rawBytes, fileType, game, callback) {
 
+
     if(typeof game != 'object'){
       callback("game must be an object", null);
       return;
@@ -258,32 +264,57 @@ module.exports = {
 
       var newScores = decodedScores[game.name];
 
-      Game.addScores(game, newScores, function (err, createdScores) {
+      //need to create a lock so we dont get multiple uploads at the same time
+      //other wise we end up creating duplicate scores
+      //this is mega hacky
+      //Game.query('SELECT pg_advisory_lock(1234)', [], function(){
+        //console.log(err,result);
+       // if(err) { return callback(err, null); }
 
-        if (createdScores.length > 0) {
-          //we created some scores so notify users
+//        if(!result.rows[0].pg_try_advisory_lock){
+//          return callback(null, [])
+//        }
 
-          //notify socket subscribers
-          Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            //notify everyone that we created a score
-            //TODO: only notify the people that were beaten
-            Score.publishCreate(notifyScore);
-          });
+        Game.addScores(game, newScores, function (err, createdScores) {
 
-          //also want to send an email
-          //workout if the top created score beat any other user's scores
-          Game.sendBeatenScoreEmails(game, createdScores, function(err){
+          if(err) {
             console.log(err);
-          });
-        }
+            //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
+              //if(err) { console.log(err); }
+              return callback(err, null);
+           // });
+          }
 
-        //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
-        callback(null, createdScores);
-      });
+          if (createdScores.length > 0) {
+            //we created some scores so notify users
+
+
+            //notify socket subscribers
+            Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
+              if (err) {
+                console.log(err);
+                return;
+              }
+              //notify everyone that we created a score
+              //TODO: only notify the people that were beaten
+              Score.publishCreate(notifyScore);
+            });
+
+            //also want to send an email
+            //workout if the top created score beat any other user's scores
+            Game.sendBeatenScoreEmails(game, createdScores, function(err){
+              console.log(err);
+            });
+          }
+
+          //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
+          //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
+            //if(err) { console.log(err); }
+            callback(err, createdScores);
+          //});
+
+        });
+      //});
 
     } else {
 
@@ -326,9 +357,7 @@ module.exports = {
         } else {
           //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
           if(createdScores.length) {
-            //created some scores so update the score rank
-            //Score.updateRanks(gameId, function(err){
-            //  if(err) { return callback(err, null); }
+
 
               Game.updateScoreAliases(game, function (err) {
                 if(err) { return callback(err, null); }
@@ -339,15 +368,15 @@ module.exports = {
                   scoreIds.push(score.id);
                 });
 
-                Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
-//                  updateCreatedScores.sort(function (a, b) {
-//                    return parseInt(b.score) - parseInt(a.score);
-//                  });
+                //created some scores so update the score rank
+                Score.updateRanks(gameId, function(err){
+                  if(err) { return callback(err, null); }
 
-                  callback(err, updateCreatedScores);
+                  Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
+                    callback(err, updateCreatedScores);
+                  });
                 });
               });
-            //});
           } else {
             callback(err, createdScores);
           }

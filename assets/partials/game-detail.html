@@ -1,16 +1,21 @@
 <div ng-if="game == null">No game found</div> 
 
-<div ng-cloak ng-if="game != null">
+<div ng-if="game != null">
+
 	<div class="row">
-		<h2> {{game.full_name}} ({{game.name}}) </h2>
+		<h2 style="margin-bottom: 50px">{{game.full_name}} ({{game.name}}) <small>[{{game.year}}]</small></h2>
 
-		<!--<a class="small" href='/game/#{game.name}/editmapping'>Edit Mapping</a>-->
-
-    <h3>Year: {{game.year}}</h3>
 		<div class="col-md-4 titleImg">
 				<img ng-src="{{game.imgUrl}}" style="width:100%" />
 		</div>
-		<div class="col-md-8">
+
+    <div class="col-md-8" ng-if="!game.has_mapping">
+      The game does not currently have a decoding for the high score file<br>
+      <a href='#/games/{{game.id}}/editdecoding'>Edit Decoding</a>
+    </div>
+
+
+		<div class="col-md-8" ng-if="game.has_mapping">
 			<table class="table table-striped">
 				<tr>
           <th>Rank</th>
@@ -31,7 +36,7 @@
 		</div>
 	</div>
 
-	<div class="row" ng-repeat="game in clones">
+	<div class="row" ng-if="game.has_mapping" ng-repeat="game in clones">
 		<h2><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h2>
 		
 		<div class="col-md-12">

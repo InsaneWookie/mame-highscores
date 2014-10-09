@@ -14,7 +14,7 @@ module.exports = {
     game: { 
       model: 'Game',
       columnName: 'game_id'
-    },
-  },
+    }
+  }
 };
 
