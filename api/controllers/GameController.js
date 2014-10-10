@@ -33,39 +33,30 @@ module.exports = {
 
   top_players: function (req, res) {
 
-    var query =
-      "WITH scores AS ( \
-      SELECT g.name, g.full_name, u.id, u.username, s.name, s.score, rank() \
-      OVER (PARTITION BY g.name  ORDER BY (0 || regexp_replace(s.score, E'\\\\D','','g'))::bigint DESC ) as r \
-      FROM \
-      game g \
-      INNER JOIN score s ON s.game_id = g.id \
-      LEFT OUTER JOIN alias a ON s.alias_id = a.id \
-      LEFT OUTER JOIN \"user\" u ON a.user_id = u.id) \
-      SELECT id, username, sum(points) total_score FROM ( \
-      SELECT *, \
-      CASE  \
-      WHEN r = 1 THEN 8 \
-      WHEN r = 2 THEN 5 \
-      WHEN r = 3 THEN 3 \
-      WHEN r = 4 THEN 2 \
-      WHEN r = 5 THEN 1 \
-      ELSE 0 \
-      END as points \
-      FROM scores WHERE id IS NOT NULL AND r <= 5) sub \
-      GROUP BY id, username \
-      ORDER BY sum(points) DESC \
-      LIMIT 5";
+    User.points(null, null, function(err, topPlayers){
+      if (err) return res.serverError(err);
 
-    Game.query(query, function (err, results) {
-      if (err) {
-        return console.log(err);
-      }
-
-      res.json(results.rows);
-    })
+      res.json(topPlayers);
+    });
   },
 
+  /**
+   * Gets the data for the game decode page
+   * TODO: convert this to client side
+   * @param req
+   * @param res
+   */
+  decode_data: function(req, res) {
+
+    var responseData = {};
+
+    var gameId = req.param('id');
+
+    Game.findById(gameId).populate('rawscores').exec(function(err, game){
+
+    });
+
+  },
 
   upload: function (req, res) {
 
@@ -103,6 +94,7 @@ module.exports = {
       });
     });
   }
+
 
 
 

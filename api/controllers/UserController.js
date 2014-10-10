@@ -7,7 +7,7 @@
 
 module.exports = {
 	games: function(req, res) {
-		var user_id = req.param('id');
+		var userId = req.param('id');
 
 		var query = 
 			"SELECT DISTINCT g.* FROM game g, score s, alias a \
@@ -15,7 +15,7 @@ module.exports = {
 			AND s.alias_id = a.id \
 			AND a.user_id = $1";
 
-		User.query(query, [user_id], function(err, games){
+		User.query(query, [userId], function(err, games){
 
 
 			res.json(games.rows);
@@ -60,6 +60,20 @@ module.exports = {
 
       res.json(games);
     });
+  },
+
+  points: function(req, res){
+
+    var userId = req.param('id');
+
+    User.points(userId, [], function(err, userPoints){
+      if(err) return res.serverError(err);
+
+      if(userPoints.length === 0) return res.notFound("User not found");
+
+      res.json(userPoints[0]);
+    });
   }
+
 };
 

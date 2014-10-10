@@ -37,7 +37,9 @@ angular.module('myApp.controllers', [])
     $scope.clones = [];
 
     $sails.get("/game/" + $routeParams.id).success(function (data) {
-      data.imgUrl = "http://sifty.tk/hiscores/titles/" + data.name + ".png";
+      //always look up the non clone name otherwise we wont find the image
+      var imgName = (data.clone_of_name) ? data.clone_of_name : data.name;
+      data.imgUrl = "http://sifty.tk/hiscores/titles/" + imgName + ".png";
       $scope.game = data;
 
 
@@ -107,7 +109,8 @@ angular.module('myApp.controllers', [])
       }
     });
 
-  }]).controller('HomeCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
+  }])
+  .controller('HomeCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
 
     $scope.selectedGame = {};
 
@@ -127,7 +130,7 @@ angular.module('myApp.controllers', [])
         });
     });
 
-    $scope.lastPlayedLoading = $sails.get('/game?sort=last_played DESC&limit=5&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
+    $scope.lastPlayedLoading = $sails.get('/game?sort=last_played DESC&limit=10&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
       $scope.lastPlayedGames = data;
     });
 
@@ -136,7 +139,8 @@ angular.module('myApp.controllers', [])
     });
 
     $scope.topPlayersLoading = $sails.get('/game/top_players').success(function (data){
-      $scope.topPlayers = data;
+      //just want the top 10 for now
+      $scope.topPlayers = data.slice(0,10);
     });
 
     $sails.on("game", function (message) {
@@ -176,43 +180,22 @@ angular.module('myApp.controllers', [])
   }])
   .controller('UserDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
 
-
-    //var userId = (typeof $routeParams.id == 'integer') ? $routeParams.id : null;
-    //var aliasId = ($routeParams.aliasId) ? $routeParams.aliasId : null;
-
-
+    var userId = $routeParams.id;
 
     $scope.user = {};
     $scope.topGames = [];
 
-    //if the alias id is set then we want to look up the user based on that id
-//    var requestUrl = "";
-//    if(aliasId){
-//      requestUrl = ''
-//
-//
-//
-//    }
 
-
-
-   $sails.get('/user/' + $routeParams.id ).success(function (data){
+   $sails.get('/user/' + userId ).success(function (data){
       $scope.user = data;
     });
-//
-//    $sails.get('/user/' + $routeParams.id + '/games' ).success(function (games){
-//      $scope.games = games;
-//
-//      games.forEach(function(game){
-//        $sails.get('/score?sort=rank ASC&game=' + game.id).success(function (scores){
-//          game.scores = scores;
-//        });
-//      })
-//    });
 
-
-    $sails.get('/user/player_scores/' + $routeParams.id ).success(function (data){
+    $sails.get('/user/player_scores/' + userId ).success(function (data){
       $scope.topGames = data;
+    });
+
+    $sails.get('/user/' + userId + '/points').success(function(data){
+      $scope.user.points = data.total_points;
     });
 
   }])
@@ -251,5 +234,44 @@ angular.module('myApp.controllers', [])
     .error(function (data) {
         console.error(data);
     });
+
+  }])
+  .controller('GameDecodeDetailCtrl', ['$scope', '$sails', '$http', '$routeParams', function($scope, $sails, $http, $routeParams) {
+
+    var gameId = $routeParams.id;
+    $scope.rawscore = {};
+
+    $scope.startByte = null;
+    $scope.endByte = null;
+
+    $scope.selectedBytes = [];
+
+    $scope.selectByte = function(selection){
+      console.log(selection);
+      if($scope.startByte === null){
+        $scope.startByte = selection;
+      } else if ($scope.startByte !== null && $scope.endByte === null) {
+        $scope.endByte = selection;
+
+        $scope.selectedBytes = [];
+        for(var i = $scope.startByte; i < $scope.endByte + 1; i++){
+          $scope.selectedBytes.push($scope.rawscore.byteArray[i]);
+        }
+
+        $scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
+
+      } else {
+        $scope.startByte = selection;
+        $scope.endByte = null;
+      }
+    };
+
+    $http.get('/rawscore', { params: {game_id: gameId }}).success(function(data){
+      $scope.rawscore = data[0];
+      $scope.rawscore.byteArray = $scope.rawscore.bytes.match(/.{1,2}/g);
+      $scope.rawscore.formattedBytes = $scope.rawscore.bytes.match(/.{1,2}/g).join(' ').match(/.{1,48}/g).join('\n');
+    });
+
+
 
   }]);

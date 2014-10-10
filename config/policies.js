@@ -59,7 +59,8 @@ module.exports.policies = {
     create: true,
     //update: true, //TODO: only allow update of a users own details
     games: true,
-    player_scores: true
+    player_scores: true,
+    points: true
   }
 
 

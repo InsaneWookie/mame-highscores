@@ -20,16 +20,16 @@ module.exports = {
     alias: {
       model: 'Alias',
       columnName: 'alias_id'
-    },
-
-    toJSON: function () {
-      var obj = this.toObject();
-      //if(!Array.isArray(obj.game)){
-      //	delete obj.game;
-      //}
-      //delete obj.user;
-      return obj;
     }
+
+//    toJSON: function () {
+//      var obj = this.toObject();
+//      //if(!Array.isArray(obj.game)){
+//      //	delete obj.game;
+//      //}
+//      //delete obj.user;
+//      return obj;
+//    }
 
 
   },
@@ -62,7 +62,7 @@ module.exports = {
 
   }
 
-  //don't think this is working but do the update anyway
+
 //  afterCreate: function(newScore, cb){
 //
 //    var gameId = newScore.game;

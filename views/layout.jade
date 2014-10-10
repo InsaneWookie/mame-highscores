@@ -65,9 +65,8 @@ html(lang='en', ng-app='myApp')
             .form-group(ng-controller="SearchCtrl")
               input.form-control.typeahead(type='text', placeholder='Search' ng-model="selected" typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)")
 
-    .container
-      .jumbotron(style='margin-top: 50px')
-        block body
+    .container(style='margin-top: 60px')
+      block body
 
     //TODO: move this into its own file
     script.

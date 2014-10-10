@@ -1,6 +1,4 @@
 
-<h1 class="text-center">Mame Highscores</h1>
-
 <div style="width:100%" class="row center-block">
   <div class="col-md-12">
     <div class="panel panel-default">
@@ -21,12 +19,12 @@
  <div class="col-md-6">
    <div class="panel panel-default" cg-busy="lastPlayedLoading">
      <div class="panel-heading">
-       <h3 class="panel-title">5 Recently Played Games</h3>
+       <h3 class="panel-title">Recently Played Games</h3>
      </div>
      <div class="panel-body">
        <table class="table table-striped">
          <tr>
-           <th>Game Name</th>
+           <th>Game</th>
            <th>Play Count</th>
            <th>Date</th>
          </tr>
@@ -42,7 +40,7 @@
  <div class="col-md-6">
    <div class="panel panel-default" cg-busy="topPlayersLoading">
      <div class="panel-heading">
-       <h3 class="panel-title">Top 5 Players</h3>
+       <h3 class="panel-title">Top 10 Players</h3>
      </div>
      <div class="panel-body">
        <table class="table table-striped">
@@ -52,7 +50,7 @@
          </tr>
          <tr ng-repeat="player in topPlayers">
              <td><a href='#/users/{{player.id}}'>{{player.username}}</a></td>
-             <td>{{player.total_score}}</td>
+             <td>{{player.total_points}}</td>
          </tr>
        </table>
      </div>
@@ -68,7 +66,7 @@
      <div class="panel-body">
        <table class="table table-striped">
          <tr>
-           <th>Game Name</th>
+           <th>Game</th>
            <th>Rank</th>
            <th>Name</th>
            <th>Score</th>

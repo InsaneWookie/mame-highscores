@@ -16,6 +16,7 @@ module.exports = {
     has_mapping: 'boolean',
     play_count: 'integer',
     clone_of: 'integer',
+    clone_of_name: 'string',
     last_played: 'datetime',
     letter: 'string',
     order: 'string',
