@@ -93,9 +93,32 @@ module.exports = {
         }
       });
     });
+  },
+
+  mapping: function (req, res) {
+    var gameId = req.param('id');
+
+    Game.findById(gameId).exec(function(err, game){
+
+      //for now just send a simple default structure
+
+      var exampleStructure = {
+        "name": [
+          game.name
+        ],
+        "structure": {
+          "blocks": 5,
+          "fields": [
+            {"name": "score", "bytes": 4, "format": "reverseDecimal", "settings": {"append": "0"}},
+            {"name": "name", "bytes": 3, "format": "ascii"}
+          ]
+        }
+      };
+
+
+      res.json(exampleStructure);
+    });
   }
-
-
 
 
 };

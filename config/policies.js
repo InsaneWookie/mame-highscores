@@ -30,7 +30,8 @@ module.exports.policies = {
     findOne: true,
     search_list: true,
     top_players: true,
-    upload: true
+    upload: true,
+    mapping: true
   },
 
   GamePlayedController: {

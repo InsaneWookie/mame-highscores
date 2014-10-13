@@ -236,15 +236,51 @@ angular.module('myApp.controllers', [])
     });
 
   }])
-  .controller('GameDecodeDetailCtrl', ['$scope', '$sails', '$http', '$routeParams', function($scope, $sails, $http, $routeParams) {
+  .controller('GameDecodeDetailCtrl', ['$scope', '$sails', '$http', '$routeParams', 'mamedecoder', function($scope, $sails, $http, $routeParams, mamedecoder) {
 
     var gameId = $routeParams.id;
     $scope.rawscore = {};
+    $scope.asciiDecoded = "";
 
     $scope.startByte = null;
     $scope.endByte = null;
 
-    $scope.selectedBytes = [];
+    $scope.selectedBytes = ""; //[];
+
+    $scope.decodeMapping = "";
+
+    $scope.decodings = {
+      'bcd': null,
+      'packedBcd': null,
+      'reverseDecimal': null,
+      'hexToDecimal': null,
+      'reverseHexToDecimal': null
+    };
+
+    var hexToAscii = function (hexString) {
+      var hex = hexString.toString();//force conversion
+      var str = '';
+      for (var i = 0; i < hex.length; i += 2) {
+        var charCode = parseInt(hex.substr(i, 2), 16);
+        //only want printable ascii codes
+        str += (charCode >= 32 && charCode <= 126) ? String.fromCharCode(charCode) : ".";
+      }
+      return str;
+    };
+
+    $scope.updateSelected = function(){
+
+      var selectedBytes = window.getSelection().toString().replace(/(\r\n|\n|\r|\s)/gm,"");
+
+      $scope.selectedBytes = selectedBytes;
+
+      for (var key in $scope.decodings) {
+        if($scope.decodings.hasOwnProperty(key)){
+
+          $scope.decodings[key] = (selectedBytes == "") ? "" : mamedecoder.decodeBytes(selectedBytes, key);
+        }
+      }
+    };
 
     $scope.selectByte = function(selection){
       console.log(selection);
@@ -258,7 +294,16 @@ angular.module('myApp.controllers', [])
           $scope.selectedBytes.push($scope.rawscore.byteArray[i]);
         }
 
-        $scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
+        //convert the byte array into a hex string
+        var hexString = $scope.selectedBytes.join('');
+        //run the hex string through all the formats
+        for (var key in $scope.decodings) {
+          if($scope.decodings.hasOwnProperty(key)){
+            $scope.decodings[key] = mamedecoder.decodeBytes(hexString, key);
+          }
+        }
+
+        //$scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
 
       } else {
         $scope.startByte = selection;
@@ -270,6 +315,14 @@ angular.module('myApp.controllers', [])
       $scope.rawscore = data[0];
       $scope.rawscore.byteArray = $scope.rawscore.bytes.match(/.{1,2}/g);
       $scope.rawscore.formattedBytes = $scope.rawscore.bytes.match(/.{1,2}/g).join(' ').match(/.{1,48}/g).join('\n');
+
+      console.log(hexToAscii($scope.rawscore.bytes));
+
+      $scope.asciiDecoded = hexToAscii($scope.rawscore.bytes)
+    });
+
+    $http.get('/game/' + gameId + '/mapping').success(function(data){
+      $scope.decodeMapping = JSON.stringify(data, null, 2);
     });
 
 

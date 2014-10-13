@@ -1,9 +1,37 @@
-<div style="font-family: courier, monospace">
-  <span ng-repeat="b in rawscore.byteArray track by $index" ng-click="selectByte($index)"
-        ng-class="{'bg-primary': $index >= startByte && $index <= endByte}">{{b}} <br ng-if="($index + 1) % 16 == 0"></span>
-  <div>{{startByte}}</div>
-  <div>{{endByte}}</div>
-  <div>{{selectedBytes}}</div>
-  <div>{{decoded}}</div>
 
+<div class="row">
+
+
+  <div class="col-md-5" style="font-family: courier, monospace" >
+    <span ng-repeat="b in rawscore.byteArray track by $index"  ng-mouseup="updateSelected()"
+        ng-class="{'bg-primary': $index >= startByte && $index <= endByte}">{{b}} <br ng-if="($index + 1) % 16 == 0"></span>
+  </div>
+
+  <div class="col-md-2" style="font-family: courier, monospace">
+    <span ng-repeat="b in asciiDecoded track by $index"
+          ng-class="{'bg-primary': $index >= startByte && $index <= endByte}">{{b}}<br ng-if="($index + 1) % 16 == 0"></span>
+  </div>
+
+  <div class="col-md-3">
+
+    <table class="table">
+      <tr>
+        <th>Format</th>
+        <th>Value</th>
+      </tr>
+      <tr ng-repeat="(name, value) in decodings">
+        <td>{{name}}</td>
+        <td>{{value}}</td>
+      </tr>
+    </table>
+
+
+    <h3>0x{{selectedBytes}}</h3>
+
+  </div>
+</div>
+
+<div class="row">
+  <h3>Edit Mapping</h3>
+  <textarea style='width: 100%; height: 500px'>{{decodeMapping}}</textarea>
 </div>

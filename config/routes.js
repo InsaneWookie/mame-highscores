@@ -48,6 +48,11 @@ module.exports.routes = {
   'post /game/upload' : {
     controller: 'game',
     action: 'upload'
+  },
+
+  'get /game/:id/mapping': {
+    controller: 'game',
+    action: 'mapping'
   }
 
   // If a request to a URL doesn't match any of the custom routes above,

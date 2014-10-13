@@ -27,6 +27,7 @@ config(['$routeProvider', function($routeProvider) {
 	$routeProvider.when('/games', {templateUrl: 'partials/game-list.html', controller: 'GameListCtrl'});
 	$routeProvider.when('/games/:id', {templateUrl: 'partials/game-detail.html', controller: 'GameDetailCtrl'});
 
+	$routeProvider.when('/games/:id/decode', {templateUrl: 'partials/gamedecoding-detail.html', controller: 'GameDecodeDetailCtrl'});
 
 	$routeProvider.when('/create-user', {templateUrl: 'partials/user-create.html', controller: 'UserCreateCtrl'});
   $routeProvider.when('/users', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
