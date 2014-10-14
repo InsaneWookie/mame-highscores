@@ -459,6 +459,47 @@
   },
   {
     "name": [
+      "galaga",
+      "galagamf",
+      "galagamk",
+      "galagamw",
+      "galagao",
+      "gallag",
+      "gatsbee"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {"name": "score", "bytes": 5, "format": "bcdReversed"},
+              { "name": "skip", "bytes": 1 }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name", "bytes": 3, "format": "fromCharMap",
+                "settings": { "charMap": "upper", "offset": "0A",
+                  "special": {
+                    "24": " ",
+                    "2A": "."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
       "galaga88",
       "galaga88j"
     ],

@@ -210,11 +210,15 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 		case 'bcd':
 			value = this.decodeBcd(hexString, settings);
 			break;
+    case 'bcdReversed':
+      value = this.decodeBcdReversed(hexString, settings);
+      break;
 		case 'asIs': //asIs is actually packed bcd (keep it until the mapping is fixed)
 		case 'packedBcd':
 			value = this.decodePackedBcd(hexString);
 			break;
 		case 'reverseDecimal':
+    case 'packedBcdReversed':
 			value = this.decodeReverseDecimal(hexString, specialSettings);
 			break;
 		case 'hexToDecimal': 
@@ -352,6 +356,16 @@ ScoreDecoder.prototype.decodeBcd = function(hexString){
 	return parseInt(decimalValue, 10).toString().replace(/^0+/,'');
 };
 
+ScoreDecoder.prototype.decodeBcdReversed = function(hexString){
+  hexString = hexString.match(/.{1,2}/g).reverse().join("");
+  var decimalValue = '';
+  for(var byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2){
+    decimalValue += hexString[byteCount];
+  }
+
+  return parseInt(decimalValue, 10).toString().replace(/^0+/,'');
+};
+
 ScoreDecoder.prototype.decodePackedBcd = function(hexString, settings){
 	return parseInt(hexString, 10).toString().replace(/^0+/,'');
 };
@@ -417,6 +431,7 @@ ScoreDecoder.prototype.decodeReverseHexToDecimal = function(hexString, specialSe
 	//parseInt(hexString, 16).toString().replace(/^0+/,'');
 };
 
+//TODO: this should check if all numbers
 ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSettings){
 	//work backwards and build a new reversed string
 	var reversedString = "";

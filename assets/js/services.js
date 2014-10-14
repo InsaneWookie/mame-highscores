@@ -27,10 +27,14 @@ angular.module('myApp.services', []).
           case 'bcd':
             value = this.decodeBcd(hexString);
             break;
+          case 'bcdReversed':
+            value = this.decodeBcdReversed(hexString);
+            break;
           case 'asIs': //asIs is actually packed bcd (keep it until the mapping is fixed)
           case 'packedBcd':
             value = this.decodePackedBcd(hexString);
             break;
+          case 'packedBcdReversed':
           case 'reverseDecimal':
             value = this.decodeReverseDecimal(hexString);
             break;
@@ -51,6 +55,16 @@ angular.module('myApp.services', []).
       },
 
       decodeBcd: function (hexString) {
+        var decimalValue = '';
+        for (var byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2) {
+          decimalValue += hexString[byteCount];
+        }
+
+        return parseInt(decimalValue, 10).toString().replace(/^0+/, '');
+      },
+
+      decodeBcdReversed: function (hexString) {
+        hexString = hexString.match(/.{1,2}/g).reverse().join("");
         var decimalValue = '';
         for (var byteCount = 1; byteCount < hexString.length; byteCount = byteCount + 2) {
           decimalValue += hexString[byteCount];

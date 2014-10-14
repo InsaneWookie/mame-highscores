@@ -98,26 +98,52 @@ module.exports = {
   mapping: function (req, res) {
     var gameId = req.param('id');
 
-    Game.findById(gameId).exec(function(err, game){
+    //yeah, yeah this shouldn't be a post for this route
+    if (req.method === 'POST') {
 
-      //for now just send a simple default structure
+      var decodedScores = {};
 
-      var exampleStructure = {
-        "name": [
-          game.name
-        ],
-        "structure": {
-          "blocks": 5,
-          "fields": [
-            {"name": "score", "bytes": 4, "format": "reverseDecimal", "settings": {"append": "0"}},
-            {"name": "name", "bytes": 3, "format": "ascii"}
-          ]
+      Game.findOneById(gameId).exec(function (err, game) {
+
+        if(err) { return res.serverError(err); }
+
+        try {
+          //need to wrap it up in an array as the decoder expects an array of mappings to search through
+          var testMapping = [req.body.gameMapping];
+          var rawScore = new Buffer(req.body.rawBytes, 'hex');
+
+          decodedScores = ScoreDecoder.decode(testMapping, rawScore, game.name);
+        } catch (ex) {
+          console.log(ex.message);
+          decodedScores = { error: ex.message };
         }
-      };
+
+        res.json(decodedScores);
+      });
+    } else {
+      Game.findOneById(gameId).exec(function (err, game) {
+
+        if(err) { return res.serverError(err); }
+
+        //for now just send a simple default structure
+        var exampleStructure = {
+          "name": [
+            game.name
+          ],
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {"name": "score", "bytes": 4, "format": "reverseDecimal", "settings": {"append": "0"}},
+              {"name": "name", "bytes": 3, "format": "ascii"}
+            ]
+          }
+        };
+
+        res.json(exampleStructure);
+      });
+    }
 
 
-      res.json(exampleStructure);
-    });
   }
 
 

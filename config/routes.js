@@ -53,6 +53,11 @@ module.exports.routes = {
   'get /game/:id/mapping': {
     controller: 'game',
     action: 'mapping'
+  },
+
+  'post /game/:id/mapping': {
+    controller: 'game',
+    action: 'mapping'
   }
 
   // If a request to a URL doesn't match any of the custom routes above,

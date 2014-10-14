@@ -249,10 +249,13 @@ angular.module('myApp.controllers', [])
 
     $scope.decodeMapping = "";
 
+    $scope.decodedScores = "";
+
     $scope.decodings = {
       'bcd': null,
+      'bcdReversed': null,
       'packedBcd': null,
-      'reverseDecimal': null,
+      'packedBcdReversed': null,
       'hexToDecimal': null,
       'reverseHexToDecimal': null
     };
@@ -282,34 +285,55 @@ angular.module('myApp.controllers', [])
       }
     };
 
-    $scope.selectByte = function(selection){
-      console.log(selection);
-      if($scope.startByte === null){
-        $scope.startByte = selection;
-      } else if ($scope.startByte !== null && $scope.endByte === null) {
-        $scope.endByte = selection;
+    $scope.decodeScores = function(){
+      alert($scope.decodeMapping);
+      var mapping = $scope.decodeMapping;
 
-        $scope.selectedBytes = [];
-        for(var i = $scope.startByte; i < $scope.endByte + 1; i++){
-          $scope.selectedBytes.push($scope.rawscore.byteArray[i]);
-        }
+      try {
+        var mappingJson = JSON.parse(mapping);
 
-        //convert the byte array into a hex string
-        var hexString = $scope.selectedBytes.join('');
-        //run the hex string through all the formats
-        for (var key in $scope.decodings) {
-          if($scope.decodings.hasOwnProperty(key)){
-            $scope.decodings[key] = mamedecoder.decodeBytes(hexString, key);
-          }
-        }
+        var postData = {
+          gameMapping: mappingJson,
+          rawBytes: $scope.rawscore.bytes
+        };
 
-        //$scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
+        $http.post('/game/' + gameId + '/mapping', postData).success(function(data){
+          $scope.decodedScores = JSON.stringify(data, null, 2);
+        });
 
-      } else {
-        $scope.startByte = selection;
-        $scope.endByte = null;
+      } catch (e) {
+        alert("invalid decode mapping")
       }
     };
+
+//    $scope.selectByte = function(selection){
+//      console.log(selection);
+//      if($scope.startByte === null){
+//        $scope.startByte = selection;
+//      } else if ($scope.startByte !== null && $scope.endByte === null) {
+//        $scope.endByte = selection;
+//
+//        $scope.selectedBytes = [];
+//        for(var i = $scope.startByte; i < $scope.endByte + 1; i++){
+//          $scope.selectedBytes.push($scope.rawscore.byteArray[i]);
+//        }
+//
+//        //convert the byte array into a hex string
+//        var hexString = $scope.selectedBytes.join('');
+//        //run the hex string through all the formats
+//        for (var key in $scope.decodings) {
+//          if($scope.decodings.hasOwnProperty(key)){
+//            $scope.decodings[key] = mamedecoder.decodeBytes(hexString, key);
+//          }
+//        }
+//
+//        //$scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
+//
+//      } else {
+//        $scope.startByte = selection;
+//        $scope.endByte = null;
+//      }
+//    };
 
     $http.get('/rawscore', { params: {game_id: gameId }}).success(function(data){
       $scope.rawscore = data[0];
