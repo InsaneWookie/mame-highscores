@@ -286,7 +286,6 @@ angular.module('myApp.controllers', [])
     };
 
     $scope.decodeScores = function(){
-      alert($scope.decodeMapping);
       var mapping = $scope.decodeMapping;
 
       try {
