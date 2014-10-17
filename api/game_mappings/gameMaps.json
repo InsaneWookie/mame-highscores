@@ -478,7 +478,7 @@
                 "name": "score", "bytes": 6, "format": "fromCharMap",
                 "settings": { "charMap": "numericUpper", "reverse": true,
                   "special": {
-                    "24": "0",
+                    "24": "",
                     "2A": "."
                   }
                 }

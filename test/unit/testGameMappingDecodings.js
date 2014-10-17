@@ -272,9 +272,9 @@ describe('GameMappingDecodings', function () {
     var expected = { galaga: 
       [ { score: '155220', name: 'DEA' },
         { score: '126380', name: 'JAY' },
-        { score: '098320', name: 'DMI' },
-        { score: '091980', name: 'DEA' },
-        { score: '088720', name: 'JOE' } ] };
+        { score: '98320', name: 'DMI' },
+        { score: '91980', name: 'DEA' },
+        { score: '88720', name: 'JOE' } ] };
     
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
