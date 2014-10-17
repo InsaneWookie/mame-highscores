@@ -241,6 +241,7 @@ ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
 	
 	//console.log('pre processing');
 	bytes = this.removeIgnoreBytes(bytes, settings);
+	bytes = this.reverseBytes(bytes, settings);
 	bytes = this.addOffset(bytes, settings);
 	bytes = this.addDivider(bytes, settings);
 	return bytes;
@@ -258,6 +259,15 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 		}		
 	}
 	return new Buffer(clean);
+};
+
+ScoreDecoder.prototype.reverseBytes = function(bytes, settings){
+
+  if(settings.reverse !== undefined && settings.reverse == true){
+     return new Buffer(bytes.toJSON().reverse());
+  }
+
+  return bytes;
 };
 
 

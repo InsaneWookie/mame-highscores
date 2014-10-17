@@ -260,6 +260,27 @@ describe('GameMappingDecodings', function () {
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
   });
+  
+  it('should decode galaga correctly', function () {
+
+    var hexString = '0002020505010008030602010002030809240008090109240002070808240D0E0A130A220D16120D0E0A13180E000202050501';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'galaga', 'hi');
+
+    var expected = { galaga: 
+      [ { score: '155220', name: 'DEA' },
+        { score: '126380', name: 'JAY' },
+        { score: '098320', name: 'DMI' },
+        { score: '091980', name: 'DEA' },
+        { score: '088720', name: 'JOE' } ] };
+    
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+
 
 
 });

@@ -474,8 +474,15 @@
           "structure": {
             "blocks": 5,
             "fields": [
-              {"name": "score", "bytes": 5, "format": "bcdReversed"},
-              { "name": "skip", "bytes": 1 }
+              {
+                "name": "score", "bytes": 6, "format": "fromCharMap",
+                "settings": { "charMap": "numericUpper", "reverse": true,
+                  "special": {
+                    "24": "0",
+                    "2A": "."
+                  }
+                }
+              }
             ]
           }
         },
