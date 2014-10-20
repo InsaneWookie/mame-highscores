@@ -239,13 +239,15 @@ angular.module('myApp.controllers', [])
   .controller('GameDecodeDetailCtrl', ['$scope', '$sails', '$http', '$routeParams', 'mamedecoder', function($scope, $sails, $http, $routeParams, mamedecoder) {
 
     var gameId = $routeParams.id;
+    $scope.game = {};
+
     $scope.rawscore = {};
     $scope.asciiDecoded = "";
 
     $scope.startByte = null;
     $scope.endByte = null;
 
-    $scope.selectedBytes = ""; //[];
+    $scope.selectedBytes = "";
 
     $scope.decodeMapping = "";
 
@@ -334,7 +336,11 @@ angular.module('myApp.controllers', [])
 //      }
 //    };
 
-    $http.get('/rawscore', { params: {game_id: gameId }}).success(function(data){
+    $http.get('/game/' + gameId).success(function(game){
+      $scope.game = game;
+    });
+
+    $http.get('/rawscore', { params: {game_id: gameId, sort: 'createdAt DESC' }}).success(function(data){
       $scope.rawscore = data[0];
       $scope.rawscore.byteArray = $scope.rawscore.bytes.match(/.{1,2}/g);
       $scope.rawscore.formattedBytes = $scope.rawscore.bytes.match(/.{1,2}/g).join(' ').match(/.{1,48}/g).join('\n');
