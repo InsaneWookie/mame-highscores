@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
     rank: 'integer',
-    name: 'string',
+    name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
 
     game: {
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   /**
-   * Update the rank posiiton for all scores for a given game
+   * Update the rank position for all scores for a given game
    * TODO: put this in a trigger/function in the database
    * this currently only supports scores that are numbers
    * @param gameId

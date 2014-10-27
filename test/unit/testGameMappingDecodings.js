@@ -281,6 +281,25 @@ describe('GameMappingDecodings', function () {
   });
 
 
+  it('should decode frogger correctly', function () {
 
+    var hexString = '630405029701580127016304';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'frogger', 'hi');
+
+    //frogger only has scores, no name entry
+    var expected = { "frogger": [
+        {"score": "4630"},
+        {"score": "2050"},
+        {"score": "1970"},
+        {"score": "1580"},
+        {"score": "1270"}]
+    };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
 
 });

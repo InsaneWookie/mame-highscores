@@ -458,6 +458,32 @@
     }
   },
   {
+    "_comment": "only has scores, does not have name input",
+    "name": [
+      "frogger",
+      "frogf",
+      "frogg",
+      "froggermc",
+      "froggers",
+      "froggers1",
+      "froggers2",
+      "froggrs"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "packedBcdReversed",
+          "settings": {
+            "append": "0"
+          }
+        }
+      ]
+    }
+  },
+  {
     "name": [
       "galaga",
       "galagamf",

@@ -57,7 +57,15 @@ module.exports = {
 
       //compares a score to the newScore to see if they match (compares name and score)
       var areScoresEqual = function(scoreToCompare){
-        return (newScore.name === scoreToCompare.name) && (newScore.score === scoreToCompare.score);
+        //some games don't have names, only scores so we need to take this into account
+        //if the name isn't set then just compare the scores
+        //TODO: really need to have a flag against the game to say that it has scores only
+        //var newScoreName = (newScore.name === undefined) ? null : newScore.name;
+        if(newScore.name === undefined){
+          return (newScore.score === scoreToCompare.score);
+        } else {
+          return (newScoreName === scoreToCompare.name) && (newScore.score === scoreToCompare.score);
+        }
       };
 
       //if it doesn't exist then we want to add it to the filtered scores list
@@ -331,6 +339,12 @@ module.exports = {
     }
   },
 
+  /**
+   *
+   * @param game
+   * @param newScores - decoded scores
+   * @param callback (error, [Score])
+   */
   addScores: function (game, newScores, callback) {
 
     var gameId = game.id;

@@ -25,7 +25,7 @@
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in scores'>
-          <td><a ng-if="score.name === ''" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+          <td><a href="" ng-if="score.name === '' || score.name === null" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
@@ -51,7 +51,7 @@
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in game.scores'>
-          <td><a ng-if="score.name === ''" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
+          <td><a ng-if="score.name === '' || score.name === null" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
