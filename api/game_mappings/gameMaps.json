@@ -3416,7 +3416,16 @@
         {
           "name": "name",
           "bytes": 2,
-          "format": "<unknown:TwoToThreeEncoding(32)>"
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "convert2To3": true,
+            "reverse": true,
+            "offset": "01",
+            "special": {
+              "FF": " "
+            }
+          }
         },
         {
           "name": "score",

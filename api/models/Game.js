@@ -64,7 +64,7 @@ module.exports = {
         if(newScore.name === undefined){
           return (newScore.score === scoreToCompare.score);
         } else {
-          return (newScoreName === scoreToCompare.name) && (newScore.score === scoreToCompare.score);
+          return (newScore.name === scoreToCompare.name) && (newScore.score === scoreToCompare.score);
         }
       };
 

@@ -302,4 +302,24 @@ describe('GameMappingDecodings', function () {
 
   });
 
+  it('should decode explorer correctly', function () {
+
+    var hexString = '49F00030011D3A0025014CBA002001102300150132B0001001041A100801003001';
+
+    var buffer = new Buffer(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'explorer', 'hi');
+
+    var expected = { explorer:
+      [ { score: '13000', name: 'ROP' },
+        { score: '12500', name: 'GIZ' },
+        { score: '12000', name: 'SEZ' },
+        { score: '11500', name: 'DAC' },
+        { score: '11000', name: 'LUP' },
+        { score: '10810', name: 'A Z' }] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
 });

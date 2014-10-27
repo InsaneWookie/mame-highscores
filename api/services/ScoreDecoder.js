@@ -206,7 +206,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 			break;
 		case 'fromCharMap':
 			value = this.decodeFromCharMap(bytes, settings.charMap, settings);
-			break;		
+			break;
 		case 'bcd':
 			value = this.decodeBcd(hexString, settings);
 			break;
@@ -228,6 +228,7 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 		case 'reverseHexToDecimal':
 			value = this.decodeReverseHexToDecimal(hexString, specialSettings);
 			break;
+
 		default:
 			console.log('unknown format type ' + format + ' \n');
 			break;
@@ -241,6 +242,7 @@ ScoreDecoder.prototype.preProcessBytes = function(bytes, settings){
 	
 	//console.log('pre processing');
 	bytes = this.removeIgnoreBytes(bytes, settings);
+  bytes = this.convertTwoToThree(bytes, settings);
 	bytes = this.reverseBytes(bytes, settings);
 	bytes = this.addOffset(bytes, settings);
 	bytes = this.addDivider(bytes, settings);
@@ -270,6 +272,31 @@ ScoreDecoder.prototype.reverseBytes = function(bytes, settings){
   return bytes;
 };
 
+/**
+ * This is used to decode 3 letter values that have been encoded in 2 bytes
+ * Basically every 5 bits starting from the LSB is a char
+ * so do the shifting then run it though the decode from char map
+ * @param bytes
+ * @param settings
+ */
+ScoreDecoder.prototype.convertTwoToThree = function(bytes, settings){
+
+  if(!settings.convert2To3 || bytes.length !== 2){ //must be 2 bytes
+    return bytes;
+  }
+
+  //convert to integer
+  var hexString = bytes.toString('hex').replace(' ', '');
+  var intValue = parseInt(hexString, 16);
+
+  var buff = new Buffer(3);
+
+  buff[0] = intValue & 0x1F; //mask of the top 11 bits (ie keep the bottom 5)
+  buff[1] = (intValue >> 5) & 0x1F;
+  buff[2] = (intValue >> 10) & 0x1F;
+
+  return buff;
+};
 
 ScoreDecoder.prototype.addOffset = function(bytes, settings){
 	//console.log(bytes.length);
@@ -451,7 +478,6 @@ ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSetting
 
 	return reversedString.replace(/^0+/,'');
 };
-
 
 
 ScoreDecoder.prototype.decodeSpecialOnly = function(){
