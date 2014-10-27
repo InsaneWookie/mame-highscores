@@ -3870,6 +3870,22 @@
     }
   },
   {
+    "_comment": "only has scores, does not have name input",
+    "name": [
+      "mpatrol"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "packedBcdReversed"
+        }
+      ]
+    }
+  },
+  {
     "name": [
       "qix",
       "qixa",
