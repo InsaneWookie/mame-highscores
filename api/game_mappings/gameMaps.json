@@ -3872,7 +3872,9 @@
   {
     "_comment": "only has scores, does not have name input",
     "name": [
-      "mpatrol"
+      "mpatrol",
+	  "mpatrolw",
+	  "mranger"
     ],
     "structure": {
       "blocks": 1,
