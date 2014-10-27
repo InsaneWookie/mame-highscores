@@ -30,42 +30,44 @@ angular.module('myApp.controllers', [])
     });
 
   }])
-  .controller('GameDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
+  .controller('GameDetailCtrl', ['$scope', '$routeParams', '$sails', '$modal', function($scope, $routeParams, $sails, $modal) {
 
     $scope.game = {};
     $scope.scores = [];
     $scope.clones = [];
 
-    $sails.get("/game/" + $routeParams.id).success(function (data) {
+    function getScores(gameId){
+      return $sails.get("/score?sort=rank ASC&game=" + gameId)
+        .error(function (data) {
+          console.error(data);
+        });
+    }
+
+    $sails.get("/game/" + $routeParams.id, {populate: []}).success(function (game) {
+
       //always look up the non clone name otherwise we wont find the image
-      var imgName = (data.clone_of_name) ? data.clone_of_name : data.name;
-      data.imgUrl = "http://sifty.tk/hiscores/titles/" + imgName + ".png";
-      $scope.game = data;
+      var imgName = (game.clone_of_name) ? game.clone_of_name : game.name;
+      game.imgUrl = "http://sifty.tk/hiscores/titles/" + imgName + ".png";
+      $scope.game = game;
+
+      getScores(game.id).success(function(scores){
+        $scope.scores = scores;
+      });
 
 
-      $sails.get('/game?clone_of=' + data.id, function (clones) {
+      $sails.get('/game?clone_of=' + game.id, {populate: []}).success(function (clones) {
 
         clones.forEach(function (clone) {
 
-          if (clone.scores.length != 0) {
+          getScores(clone.id).success(function(scores){
+            if (scores.length != 0) {
+              clone.scores = scores;
+              $scope.clones.push(clone);
+            }
+          });
 
-            $scope.clones.push(clone);
-
-            $sails.get("/score?sort=rank ASC&game=" + clone.id).success(function (cloneScores) {
-              if (cloneScores.length == 0) {
-
-              } else {
-                clone.scores = cloneScores;
-              }
-
-            }).error(function (data) {
-              console.error(data);
-            });
-
-          }
         });
       });
-
     }).error(function (data) {
       console.error(data);
     });
@@ -91,24 +93,76 @@ angular.module('myApp.controllers', [])
 //      });
 
 
-    $sails.get("/score?sort=rank ASC&game=" + $routeParams.id).success(function (data) {
-      $scope.scores = data;
-    })
-    .error(function (data) {
-      alert('Houston, we got a problem!');
-    });
 
 
-    $sails.on("score", function (message) {
-      console.log('got score detail message');
-      console.log(message);
 
-      if (message.verb === "created") {
-        //angular.extend($scope.scores, message.data);
-        $scope.scores.push(message.data);
-      }
-    });
+//    $sails.on("score", function (message) {
+//      console.log('got score detail message');
+//      console.log(message);
+//
+//      if (message.verb === "created") {
+//        $scope.scores.push(message.data);
+//      }
+//    });
 
+
+    $scope.openClaimScore = function (score) {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'score-claim.html',
+        controller: 'ClaimScoreModalInstanceCtrl',
+
+        resolve: {
+          selectedScore: function () {
+            return score;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (scoreToClaim) {
+        //need to save the score
+        $sails.post('/score/' + scoreToClaim.id + '/claim', { alias: scoreToClaim.name.trim() }).success(function(updatedScore){
+          //probably a correct binding way of doing this
+          if($scope.game.id === updatedScore.game){
+            getScores(updatedScore.game).success(function(scores){
+              $scope.scores = scores;
+            });
+          } else {
+            $scope.clones.forEach(function (clone) {
+              if (clone.id === updatedScore.game) {
+                getScores(clone.id).success(function (scores) {
+                    clone.scores = scores;
+                });
+              }
+            });
+          }
+
+        });
+        //$scope.selected = selectedItem;
+      }, function () {
+        //$log.info('Modal dismissed at: ' + new Date());
+      });
+
+
+
+    };
+
+
+
+
+  }])
+  .controller('ClaimScoreModalInstanceCtrl', ['$scope', '$modalInstance', 'selectedScore', function($scope, $modalInstance, selectedScore){
+
+    $scope.score = selectedScore;
+
+    $scope.save = function () {
+      $modalInstance.close($scope.score);
+    };
+
+    $scope.cancel = function () {
+      $scope.score.name = '';
+      $modalInstance.dismiss('cancel');
+    };
   }])
   .controller('HomeCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
 

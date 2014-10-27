@@ -18,12 +18,14 @@
 		<div class="col-md-8" ng-if="game.has_mapping">
 			<table class="table table-striped">
 				<tr>
+          <th></th>
           <th>Rank</th>
           <th>Name</th>
 					<th style='text-align:right'>Score</th>
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in scores'>
+          <td><a ng-if="score.name === ''" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
@@ -42,12 +44,14 @@
 		<div class="col-md-12">
 			<table class="table table-striped">
 				<tr>
+          <th></th>
           <th>Rank</th>
           <th>Name</th>
 					<th style='text-align:right'>Score</th>
 					<th style='text-align:right'>When set</th>
 				</tr>
 				<tr ng-repeat='score in game.scores'>
+          <td><a ng-if="score.name === ''" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
@@ -60,3 +64,17 @@
 		</div>
 	</div>
 </div>
+
+
+<script type="text/ng-template" id="score-claim.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Enter your alias</h3>
+  </div>
+  <div class="modal-body">
+    <input type="text" name="score_name" ng-model="score.name" required>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>

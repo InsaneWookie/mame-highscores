@@ -51,7 +51,8 @@ module.exports.policies = {
 
   ScoreController: {
     find: true,
-    findOne: true
+    findOne: true,
+    claim: true
   },
 
   UserController: {

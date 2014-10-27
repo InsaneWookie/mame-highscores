@@ -357,7 +357,7 @@ module.exports = {
           //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
           if(createdScores.length) {
 
-
+              //TODO: pull this out so it can be reused
               Game.updateScoreAliases(game, function (err) {
                 if(err) { return callback(err, null); }
 

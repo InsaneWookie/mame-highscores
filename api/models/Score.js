@@ -60,7 +60,7 @@ module.exports = {
       });
    // });
 
-  }
+  },
 
 
 //  afterCreate: function(newScore, cb){
@@ -72,6 +72,57 @@ module.exports = {
 //      cb();
 //    });
 //  }
+
+  /**
+   * Allows a user to claim a score
+   * All we are really doing is setting the alias on a score
+   * Returns error if the alias is not empty
+   * @param scoreId
+   * @param aliasName
+   * @param callBackFn (err, Score)
+   */
+  claim: function(scoreId, aliasName, callBackFn){
+
+    if(aliasName === null || aliasName === undefined){
+      return callBackFn("Alias can not be null", null);
+    }
+
+    //TODO: should really do a case insensitive look up of the users alias
+    aliasName = aliasName.trim().toUpperCase();
+
+    if(aliasName === ''){
+      return callBackFn("Alias can not be empty", null);
+    }
+
+    Score.findOneById(scoreId).exec(findScoreFn);
+
+    function findScoreFn(err, score){
+      if(err) { return callBackFn(err, null); }
+
+      if(score.name !== null && score.name !== ''){
+        return callBackFn("Score name is not empty", null);
+      } else {
+        //empty name so we can update it
+        score.name = aliasName;
+        score.save(saveScoreFn);
+      }
+    }
+
+    function saveScoreFn(err, updatedScore){
+      if(err) { return callBackFn(err, null); }
+
+      Game.updateScoreAliases(updatedScore.game, updateAliasesResultFn);
+    }
+
+    function updateAliasesResultFn(err) {
+      if(err) { return callBackFn(err, null); }
+
+      //need to get the updated data
+      //populate the alias object as its need for the score table
+      Score.findOneById(scoreId).populate('alias').exec(callBackFn);
+    }
+
+  }
 
 };
 
