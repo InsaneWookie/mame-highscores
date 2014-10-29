@@ -4075,6 +4075,7 @@
     "name":[
       "trackfld"
     ],
+    "fileType": "nv",
     "structure":{
       "blocks":100,
       "skip":1216,
