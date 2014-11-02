@@ -24,7 +24,7 @@ var async = require('async');
 
 var gameInfos = JSON.parse(fs.readFileSync(process.argv[2], {encoding: 'utf-8'})); //require('./game_mappings/gameInfos.json'); 
 var uristring = process.argv[3]; //process.env.MONGOHQ_URL || 'mongodb://localhost/mame-highscores';
-var gameMappings = require('../game_mappings/gameMaps.json'); 
+var gameMappings = require('../api/game_mappings/gameMaps.json');
 
 
 //create a hash map of all the games name we have mappings for

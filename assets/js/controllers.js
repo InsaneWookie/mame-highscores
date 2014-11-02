@@ -410,4 +410,19 @@ angular.module('myApp.controllers', [])
 
 
 
+  }])
+  .controller('AdminCtrl', ['$scope', '$http', function($scope, $http){
+
+    $scope.updateHasMapping = function(){
+      $http.post('/game/update_has_mapping').success(function(updatedGames){
+        $scope.updatedGames = updatedGames;
+
+        if(updatedGames.length > 0){
+          $scope.updateMappingMessage = "Updated " + updatedGames.length + " game(s)";
+        } else {
+          $scope.updateMappingMessage = 'All "has_mapping" flags correct';
+        }
+
+      });
+    }
   }]);

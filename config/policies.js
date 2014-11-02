@@ -31,7 +31,8 @@ module.exports.policies = {
     search_list: true,
     top_players: true,
     upload: true,
-    mapping: true
+    mapping: true,
+    update_has_mapping: true
   },
 
   GamePlayedController: {

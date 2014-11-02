@@ -424,27 +424,29 @@ module.exports = {
    * This function goes through the game mappings and sets game.has_mapping to true
    * if it exists
    */
-  updateHasMapping: function (callback){
+  updateHasMapping: function (callbackFn){
 
     var gameMaps = require('../game_mappings/gameMaps.json');
     var gameNamesToUpdate = [];
 
-    gameMaps.forEach(function(map){
-      gameNamesToUpdate = gameNamesToUpdate.concat(map.name);
+    gameMaps.forEach(function(gameMapping){
+      gameNamesToUpdate = gameNamesToUpdate.concat(gameMapping.name);
     });
 
     Game.update(
       {
+        has_mapping: false,
         or: [
           { name: gameNamesToUpdate },
           { clone_of_name: gameNamesToUpdate }
         ]
+
       },
-      { has_mapping: true },
-      function(err){
-        callback(err);
-      }
-    );
+      { has_mapping: true, decoded_on: new Date() }
+    )
+    .exec(function updateResult(err, updatedGames){
+        callbackFn(err, updatedGames);
+    });
   }
 
 };

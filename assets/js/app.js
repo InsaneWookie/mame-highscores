@@ -24,6 +24,8 @@ config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'SettingsCtrl'});
   $routeProvider.when('/game-upload', {templateUrl: 'partials/game-upload.html', controller: 'GameUploadCtrl'});
 
+  $routeProvider.when('/admin', {templateUrl: 'partials/admin.html', controller: 'AdminCtrl'});
+
 	$routeProvider.when('/games', {templateUrl: 'partials/game-list.html', controller: 'GameListCtrl'});
 	$routeProvider.when('/games/:id', {templateUrl: 'partials/game-detail.html', controller: 'GameDetailCtrl'});
 

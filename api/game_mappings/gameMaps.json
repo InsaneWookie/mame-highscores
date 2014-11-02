@@ -4287,5 +4287,3193 @@
         }
       ]
     }
-  } 
+  },
+  {
+    "name": [
+      "005"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "1944",
+      "1944j",
+      "1944d"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 5,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "00",
+                  "special": {
+                    "34": "!",
+                    "36": "&",
+                    "38": ".",
+                    "40": "♥",
+                    "42": "☺",
+                    "44": " ",
+                    "3A": "@",
+                    "3C": "♂",
+                    "3E": "♀"
+                  }
+                }
+              },
+              {
+                "name": "unusedd",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 5,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "00",
+                  "special": {
+                    "34": "!",
+                    "36": "&",
+                    "38": ".",
+                    "40": "♥",
+                    "42": "☺",
+                    "44": " ",
+                    "3A": "@",
+                    "3C": "♂",
+                    "3E": "♀"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "8ballact",
+      "8ballact2",
+      "8ballat2",
+      "8bpm"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "<unknown:_8ballact>"
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "01",
+            "special": {
+              "00": " "
+            }
+          }
+        },
+        {
+          "name": "unused",
+          "bytes": 7
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "ad2083"
+    ],
+    "structure": {
+      "blocks": 20,
+      "fields": [
+        {
+          "name": "name",
+          "bytes": 2,
+          "format": "<unknown:TwoToThreeEncoding(32)>"
+        },
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "agress",
+      "agressb"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "hexToDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "airwolf",
+      "airwolfa",
+      "skywolf",
+      "skywolf2"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 7,
+          "format": "<unknown:airwolf>"
+        },
+        {
+          "name": "unuseda",
+          "bytes": 1
+        },
+        {
+          "name": "name",
+          "bytes": 10,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "40": " ",
+              "5B": ".",
+              "5C": ",",
+              "5D": "¦",
+              "5E": "‾"
+            }
+          }
+        },
+        {
+          "name": "unusedb",
+          "bytes": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "alphaxz",
+      "m660",
+      "m660b",
+      "m660j"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "2A": "♥"
+                  }
+                }
+              },
+              {
+                "name": "unused",
+                "bytes": 7
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "2A": "♥"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "ambush",
+      "ambusht",
+      "ambushv"
+    ],
+    "structure": {
+      "blocks": 3,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "<unknown:>",
+            "special": {
+              "10": "1",
+              "11": "F",
+              "12": "G",
+              "13": "H",
+              "14": "2",
+              "15": "I",
+              "16": "J",
+              "17": "K",
+              "18": "3",
+              "19": "L",
+              "20": "5",
+              "21": "R",
+              "22": "S",
+              "23": "T",
+              "24": "6",
+              "25": "U",
+              "26": "V",
+              "27": "W",
+              "28": "7",
+              "29": "X",
+              "30": "9",
+              "0A": "A",
+              "0B": "B",
+              "0C": "0",
+              "0D": "C",
+              "0E": "D",
+              "0F": "E",
+              "1A": "M",
+              "1B": "N",
+              "1C": "4",
+              "1D": "O",
+              "1E": "P",
+              "1F": "Q",
+              "2C": "8",
+              "3A": " ",
+              "4A": "Y",
+              "4B": "Z"
+            }
+          }
+        },
+        {
+          "name": "unusedname",
+          "bytes": 6
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "amidar",
+      "amidarb",
+      "amidaro",
+      "amidars",
+      "amidaru",
+      "amigo"
+    ],
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "angelkds"
+    ],
+    "structure": {
+      "blocks": 20,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        },
+        {
+          "name": "scene",
+          "bytes": 1,
+          "format": "hexToDecimal"
+        },
+        {
+          "name": "name",
+          "bytes": 10,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "39": "♀",
+              "00": " ",
+              "3A": "♥",
+              "3B": "★",
+              "3C": "·"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "animaljr"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "character",
+          "bytes": 1,
+          "format": "<unknown:Switch>"
+        },
+        {
+          "name": "score",
+          "bytes": 1,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "apb",
+      "apb1",
+      "apb2",
+      "apb3",
+      "apb4",
+      "apb5",
+      "apbf",
+      "apbg"
+    ],
+    "structure": {
+      "blocks": 25,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reversedHexToDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "arkarea"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 6,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "26": "‰",
+                    "27": "♥",
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "<unknown:arkarea>"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "arkretrn"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "hexToDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 4,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upperNumeric",
+                  "offset": "0B",
+                  "special": {
+                    "25": "&",
+                    "26": ".",
+                    "27": "?",
+                    "28": "-",
+                    "00": " "
+                  }
+                }
+              },
+              {
+                "name": "space",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upperNumeric",
+                  "offset": "0B",
+                  "special": {
+                    "25": "&",
+                    "26": ".",
+                    "27": "?",
+                    "28": "-",
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "asteroid",
+      "asteroib",
+      "asteroi1",
+      "asteroi2",
+      "asterock",
+      "meteorts",
+      "meteorho"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 2,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "0B",
+                  "special": {
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "athena"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 7,
+                "format": "ascii"
+              },
+              {
+                "name": "unknowna",
+                "bytes": 3
+              },
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "<unknown:athena>"
+              },
+              {
+                "name": "unknownb",
+                "bytes": 3
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 7,
+                "format": "ascii"
+              },
+              {
+                "name": "unknowna",
+                "bytes": 3
+              },
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "<unknown:athena>"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "atlantis",
+      "atlantis2",
+      "atlants2"
+    ],
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "balonfgt"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "bcd"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "0A",
+                  "special": {
+                    "24": " ",
+                    "2B": ".",
+                    "2D": "-"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "barrier"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "<unknown:barrier>"
+        },
+        {
+          "name": "name",
+          "bytes": 6,
+          "format": "<unknown>",
+          "settings": {
+            "charMap": "upper"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "batsugun",
+      "batsugna",
+      "batugnsp"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 8,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 8,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 6,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "29",
+                  "special": {
+                    "15": "-",
+                    "16": "."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "battlcry"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 6,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "5B": " "
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 6,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "hexToDecimal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "battlex"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "1B",
+                  "special": {
+                    "37": "=",
+                    "39": ".",
+                    "00": " ",
+                    "3A": ","
+                  }
+                }
+              },
+              {
+                "name": "unuseda",
+                "bytes": 1
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "battlnts",
+      "battlntsj",
+      "battlntj"
+    ],
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "asIs"
+        },
+        {
+          "name": "stage",
+          "bytes": 1,
+          "format": "hexToDecimal"
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "40": " ",
+              "3C": "-",
+              "3D": ".",
+              "3E": "!",
+              "5B": "'"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "bioatack"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "blockout",
+      "blockoutj",
+      "blockout2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upperNumeric",
+                  "offset": "1F",
+                  "special": {
+                    "53": " ",
+                    "0D": "."
+                  }
+                }
+              },
+              {
+                "name": "unused",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "bloodbro",
+      "weststry",
+      "bloodbra"
+    ],
+    "structure": {
+      "blocks": 20,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "asIs"
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "20": " ",
+              "21": "!",
+              "2E": "."
+            }
+          }
+        },
+        {
+          "name": "area",
+          "bytes": 1,
+          "format": "<unknown:bloodbroArea>"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "blueprnt",
+      "blueprnj"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "91",
+                  "special": {
+                    "90": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "bombjack",
+      "bombjac2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "rank",
+                "bytes": 2
+              },
+              {
+                "name": "name",
+                "bytes": 6,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "41",
+                  "special": {
+                    "00": " ",
+                    "2E": "."
+                  }
+                }
+              },
+              {
+                "name": "separator",
+                "bytes": 2
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "boomrang",
+      "boomranga",
+      "boomrana"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "81",
+                  "special": {
+                    "00": " ",
+                    "6C": ",",
+                    "6E": "."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "brkthru",
+      "forcebrk",
+      "brkthruj"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 6,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 6,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "24",
+                  "special": {
+                    "00": " ",
+                    "06": "."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "brubber",
+      "bnj",
+      "caractn",
+      "cburnrub",
+      "cbnj",
+      "cburnrub2",
+      "cburnrb2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 100,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 100,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "3B",
+                  "special": {
+                    "55": "!",
+                    "56": ":",
+                    "57": ",",
+                    "58": ".",
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "btime",
+      "btime2",
+      "btimem"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "0B",
+                  "special": {
+                    "00": " ",
+                    "CC": "-",
+                    "CD": ",",
+                    "CE": "?",
+                    "CF": "‼"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "bzone",
+      "bzonec",
+      "bzone2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 2,
+                "format": "reverseDecimal"
+              },
+              {
+                "name": "unused",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "<unknown:>",
+                  "special": {
+                    "16": "A",
+                    "18": "B",
+                    "20": "F",
+                    "22": "G",
+                    "24": "H",
+                    "26": "I",
+                    "28": "J",
+                    "30": "N",
+                    "32": "O",
+                    "34": "P",
+                    "36": "Q",
+                    "38": "R",
+                    "40": "V",
+                    "42": "W",
+                    "44": "X",
+                    "46": "Y",
+                    "48": "Z",
+                    "1A": "C",
+                    "1C": "D",
+                    "1E": "E",
+                    "2A": "K",
+                    "2C": "L",
+                    "2E": "M",
+                    "3A": "S",
+                    "3C": "T",
+                    "3E": "U",
+                    "4A": " ",
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "carnival",
+      "carnvckt"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 30,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 2,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 3,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "cclimber",
+      "cclimbrj",
+      "ccboot",
+      "ccboot2"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        },
+        {
+          "name": "name",
+          "bytes": 10,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "0A",
+            "special": {
+              "52": " ",
+              "2C": " "
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "centiped",
+      "centipb2",
+      "centipd2",
+      "centtime",
+      "centipdd"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 3,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 3,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "01",
+                  "special": {
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "01",
+                  "special": {
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "crash"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "crzrally",
+      "crzralla",
+      "crzrallg"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "00": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "darthvdr"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "ddribble"
+    ],
+    "structure": {
+      "blocks": 8,
+      "fields": [
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "11",
+            "special": {
+              "0A": "."
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "deadeye"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "bcd"
+        },
+        {
+          "name": "checkbyte",
+          "bytes": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "digdug",
+      "digdugb",
+      "digdugat",
+      "dzigzag",
+      "digduga1"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "1A",
+                  "special": {
+                    "35": ".",
+                    "37": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "digdug2",
+      "digdug2a",
+      "digdug2o"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "<unknown:digdug2>"
+        },
+        {
+          "name": "name",
+          "bytes": 6,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "5B": "."
+            }
+          }
+        },
+        {
+          "name": "unuseda",
+          "bytes": 3
+        },
+        {
+          "name": "round",
+          "bytes": 1,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "dkong3",
+      "dkong3j",
+      "dkong3b"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "unuseda",
+          "bytes": 7
+        },
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "<unknown:dkong3>"
+        },
+        {
+          "name": "unusedb",
+          "bytes": 2
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "ascii",
+          "settings": {
+            "special": {
+              "40": " ",
+              "66": ".",
+              "5F": "-"
+            }
+          }
+        },
+        {
+          "name": "unusedc",
+          "bytes": 11
+        },
+        {
+          "name": "shortscore",
+          "bytes": 3
+        },
+        {
+          "name": "unusedd",
+          "bytes": 2
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "dommy"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "dotron"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 2,
+                "format": "ascii"
+              },
+              {
+                "name": "unusedb",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 2,
+                "format": "ascii"
+              },
+              {
+                "name": "unusedb",
+                "bytes": 11
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "fileType": "nv"
+  },
+  {
+    "name": [
+      "dotrone"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 9,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 2,
+                "format": "ascii"
+              },
+              {
+                "name": "unusedb",
+                "bytes": 1
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 1,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 2,
+                "format": "ascii"
+              },
+              {
+                "name": "unusedb",
+                "bytes": 11
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "fileType": "nv"
+  },
+  {
+    "name": [
+      "elevator",
+      "elevatorb",
+      "elevatob"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "exerion",
+      "exerionb",
+      "exeriont"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 100,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 2,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "40": " ",
+                    "00": " ",
+                    "5B": ".",
+                    "5F": ":"
+                  }
+                }
+              },
+              {
+                "name": "extraname",
+                "bytes": 5
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "fnkyfish"
+    ],
+    "structure": {
+      "blocks": 3,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "frogs"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "bcd"
+        },
+        {
+          "name": "hiscore",
+          "bytes": 6
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "funkybee",
+      "funkybeeb",
+      "funkbeeb"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "bcd"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "0A",
+                  "special": {
+                    "28": ".",
+                    "29": "-",
+                    "FF": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "galaxian",
+      "galmidw",
+      "superg",
+      "galaxb",
+      "galapx",
+      "galap1",
+      "galap4",
+      "galturbo",
+      "swarm",
+      "uniwars",
+      "gteikoku",
+      "spacbatt",
+      "redufo",
+      "galaxiaj",
+      "galmidwo",
+      "galaxbsf",
+      "galtaito"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "gberet",
+      "gberetb",
+      "rushatck"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "11",
+                  "special": {
+                    "2B": ".",
+                    "2C": "!"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "geebee",
+      "geebeeb",
+      "geebeeg"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "gijoe",
+      "gijoej",
+      "gijoeu"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "11",
+                  "special": {
+                    "2B": ".",
+                    "2C": "!"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "hexa"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reversedHexToDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "indianbt"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "invaders",
+      "earthinv",
+      "spaceatt",
+      "sinvemag",
+      "sitv",
+      "sicv",
+      "sisv",
+      "sisv2",
+      "alieninv",
+      "spceking",
+      "spcewars",
+      "spacewr3",
+      "invader4",
+      "invadrmr",
+      "cosmicmo",
+      "cosmicm2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "kick",
+      "kickc",
+      "kickman"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "fileType": "nv"
+  },
+  {
+    "name": [
+      "killcom"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "kingball",
+      "kingbalj"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        },
+        {
+          "name": "p1lastscore",
+          "bytes": 3
+        },
+        {
+          "name": "p2played",
+          "bytes": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "levers"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "loverboy"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "11",
+                  "special": {
+                    "10": " ",
+                    "31": "!",
+                    "32": "\"",
+                    "33": "#",
+                    "34": "$",
+                    "35": "%",
+                    "36": "&",
+                    "37": "'",
+                    "38": "(",
+                    "39": ")",
+                    "3A": "*",
+                    "3B": "+",
+                    "3C": "`",
+                    "3D": "-",
+                    "3E": ".",
+                    "3F": "/"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "m79amb"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 1,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "mermaid",
+      "yachtmn"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "bcd"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "metafox"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 8,
+                "format": "reversedBcd"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upperNumeric",
+                  "offset": "15",
+                  "special": {
+                    "10": "♠",
+                    "11": "♥",
+                    "12": "♣",
+                    "13": "♦",
+                    "14": " ",
+                    "0B": "↑",
+                    "0C": ".",
+                    "0D": "!",
+                    "0E": "?",
+                    "0F": "☼"
+                  }
+                }
+              },
+              {
+                "name": "unuseda",
+                "bytes": 3
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "metlclsh"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 20,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "5B": "·",
+                    "5C": "#",
+                    "5D": "♂",
+                    "5E": "♀"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 20,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "mmonkey"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "21",
+                  "special": {
+                    "3B": ".",
+                    "3C": ","
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "mole"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 2,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 16,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "01",
+                  "special": {
+                    "00": " ",
+                    "D4": "!",
+                    "F8": ".",
+                    "F9": "-"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "monsterb",
+      "monsterb2",
+      "monster2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "montecar"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 1,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "mrgoemon"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "11",
+                  "special": {
+                    "2B": ".",
+                    "2C": "!"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "mrviking",
+      "mrvikingj",
+      "mrvikngj",
+      "mrvikinj"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 7,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii",
+                "settings": {
+                  "special": {
+                    "5B": "."
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 7,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "navarone"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "orbitron"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "paradise"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "pisces",
+      "piscesb"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "rocnrope",
+      "rocnropk",
+      "rocnropek"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        },
+        {
+          "name": "stage",
+          "bytes": 1,
+          "format": "hexToDecimal"
+        },
+        {
+          "name": "unuseda",
+          "bytes": 4
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "rompers",
+      "romperso"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 8,
+                "format": "bcd"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "sasuke"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "satansat",
+      "satansata",
+      "satansaa",
+      "zarzon"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "seawolf"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 1,
+          "format": "asIs"
+        },
+        {
+          "name": "unknown",
+          "bytes": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "sheriff"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "snowbro2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "character",
+                "bytes": 1,
+                "format": "<unknown:Switch>"
+              },
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "41",
+                  "special": {
+                    "5F": "_",
+                    "5E": "^",
+                    "5B": "[",
+                    "5D": "]"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "spectar",
+      "spectar1",
+      "panzer",
+      "phantom",
+      "phantoma",
+      "rallys"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "superbug"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 1,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "suprmous",
+      "funnymou",
+      "suprmou2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "tankbatt"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "targ",
+      "targc"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "theend",
+      "theends"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "various",
+          "bytes": 15
+        },
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "tinstar",
+      "tinstar2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 2,
+          "format": "reverseDecimal"
+        },
+        {
+          "name": "unknown",
+          "bytes": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "videopin"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "waterski"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "reverseDecimal"
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "zoar"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 3,
+                "format": "reverseDecimal"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "ascii"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "zodiack"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 6,
+                "format": "bcd"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 5,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 5,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "0A",
+                  "special": {
+                    "24": " ",
+                    "28": ",",
+                    "29": "."
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "zzyzzyxx",
+      "zzyzzyxx2",
+      "brix",
+      "zzyzzyx2"
+    ],
+    "structure": {
+      "blocks": 1,
+      "fields": [
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "score",
+                "bytes": 4,
+                "format": "asIs"
+              }
+            ]
+          }
+        },
+        {
+          "structure": {
+            "blocks": 10,
+            "fields": [
+              {
+                "name": "name",
+                "bytes": 3,
+                "format": "fromCharMap",
+                "settings": {
+                  "charMap": "upper",
+                  "offset": "91",
+                  "special": {
+                    "90": " "
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
 ]

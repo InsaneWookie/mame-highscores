@@ -144,8 +144,20 @@ module.exports = {
     }
 
 
+  },
+
+  /**
+   * TODO: convert this into a Grunt task
+   * @param req
+   * @param res
+   */
+  update_has_mapping: function(req, res) {
+
+    Game.updateHasMapping(function(err, updatedGames){
+      if(err) { return res.serverError(err); }
+
+      res.json(updatedGames);
+    });
   }
-
-
 };
 
