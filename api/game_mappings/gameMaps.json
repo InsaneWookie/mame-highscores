@@ -6039,10 +6039,12 @@
     }
   },
   {
+    "fileType": "nv",
     "name": [
       "dotron"
     ],
     "structure": {
+      "skip": 1360,
       "blocks": 1,
       "fields": [
         {
@@ -6090,8 +6092,7 @@
           }
         }
       ]
-    },
-    "fileType": "nv"
+    }
   },
   {
     "name": [

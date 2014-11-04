@@ -148,7 +148,15 @@ ScoreDecoder.prototype.decode_internal = function(gameName, gameMappingStructure
           scoreData[gameName] = subDecode[gameName];
         } else {
           subDecode[gameName].forEach(function(entry, index){
-            scoreData[gameName][index] = _.extend(scoreData[gameName][index], entry);
+            //only want to extend the object if the key does not exist at this index
+            //TODO: might have to rethink this, it makes alot of assumptions about the data
+            if(!(Object.keys(entry)[0] in scoreData[gameName][index])){
+              scoreData[gameName][index] = _.extend(scoreData[gameName][index], entry);
+            } else {
+              //if the key does exist then we want to append the record to the end of the scoreData that we have so far
+              scoreData[gameName].push(entry);
+            }
+
           });
         }
       } else {
