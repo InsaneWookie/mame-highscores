@@ -189,8 +189,7 @@ angular.module('myApp.controllers', [])
     });
 
     $scope.latestScoresLoading = $sails.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
-
-      $scope.lastestScores = data.sort(function(a, b) { return a.rank - b.rank; });
+      $scope.lastestScores = data
     });
 
     $scope.topPlayersLoading = $sails.get('/game/top_players').success(function (data){
