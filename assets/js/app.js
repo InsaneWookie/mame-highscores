@@ -42,4 +42,8 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'partials/loading-indicator.html',
     delay: 200,
     minDuration: 300
-});
+}).constant('angularMomentConfig', {
+    //nothing at the moment
+}).run(function(amMoment) {
+    amMoment.changeLocale('en-au'); //no nz locale so australia is close enough
+  });

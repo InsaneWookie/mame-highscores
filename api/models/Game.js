@@ -22,6 +22,7 @@ module.exports = {
     order: 'string',
     sort: 'string',
     year: 'string',
+    decoded_on: 'datetime',
 
     scores: {
       collection: 'Score',
