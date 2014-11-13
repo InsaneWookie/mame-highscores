@@ -1,15 +1,28 @@
 
 
 <div class="row">
-  <div class="col-md-5" style="font-family: courier, monospace" >
-    <span ng-repeat="b in rawscore.byteArray track by $index"  ng-mouseup="updateSelected()"
-        >{{b}} <br ng-if="($index + 1) % 16 == 0"></span>
+
+  <div class="col-md-9">
+    <tabset justified="true">
+      <tab ng-repeat="rawscore in rawscores" heading="{{rawscore.createdAt | amDateFormat:'L LT'}}">
+
+        <div class="row">
+          <div class="col-md-8" style="font-family: courier, monospace" >
+            <span ng-repeat="b in rawscore.byteArray track by $index"  ng-mouseup="updateSelected()">
+              {{b}} <br ng-if="($index + 1) % 16 == 0">
+            </span>
+          </div>
+          <div class="col-md-4" style="font-family: courier, monospace">
+            <span ng-repeat="b in rawscore.asciiDecoded track by $index">
+              {{b}}<br ng-if="($index + 1) % 16 == 0">
+            </span>
+          </div>
+        </div>
+      </tab>
+
+    </tabset>
   </div>
 
-  <div class="col-md-2" style="font-family: courier, monospace">
-    <span ng-repeat="b in asciiDecoded track by $index"
-          >{{b}}<br ng-if="($index + 1) % 16 == 0"></span>
-  </div>
 
   <div class="col-md-3">
     <h3>{{game.full_name}} ({{game.name}})</h3>
@@ -32,7 +45,15 @@
 </div>
 
 <div class="row">
-  <h3>Edit Mapping <button ng-click="decodeScores()">Decode</button></h3>
+  <h3>Edit Mapping <button ng-click="decodeScores()">Decode</button>
+    File type:
+    <label class="checkbox-inline">
+      <input type="radio" ng-model="fileType" value="hi" ng-change="getMapping()">.hi
+    </label>
+    <label class="checkbox-inline">
+      <input type="radio" ng-model="fileType" value="nv" ng-change="getMapping()">.nv
+    </label>
+  </h3>
   <div class="col-md-6">
     <textarea style='width: 100%; height: 500px' ng-model="decodeMapping"></textarea>
   </div>

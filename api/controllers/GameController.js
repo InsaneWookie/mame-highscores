@@ -95,8 +95,14 @@ module.exports = {
     });
   },
 
+  /**
+   *
+   * @param {IncomingMessage} req
+   * @param {ServerResponse} res
+   */
   mapping: function (req, res) {
     var gameId = req.param('id');
+    var fileType = req.param('file_type');
 
     //yeah, yeah this shouldn't be a post for this route
     if (req.method === 'POST') {
@@ -120,26 +126,40 @@ module.exports = {
 
         res.json(decodedScores);
       });
+
     } else {
       Game.findOneById(gameId).exec(function (err, game) {
 
         if(err) { return res.serverError(err); }
 
-        //for now just send a simple default structure
-        var exampleStructure = {
-          "name": [
-            game.name
-          ],
-          "structure": {
-            "blocks": 5,
-            "fields": [
-              {"name": "score", "bytes": 4, "format": "reverseDecimal", "settings": {"append": "0"}},
-              {"name": "name", "bytes": 3, "format": "ascii"}
-            ]
-          }
-        };
+        if(!game.has_mapping){
+          //if the game doesn't have a mapping then just return and example mapping
+          var exampleDecodeStructure = {
+            "name": [
+              game.name
+            ],
+            "structure": {
+              "blocks": 5,
+              "fields": [
+                {"name": "score", "bytes": 4, "format": "reverseDecimal", "settings": {"append": "0"}},
+                {"name": "name", "bytes": 3, "format": "ascii"}
+              ]
+            }
+          };
 
-        res.json(exampleStructure);
+          res.json(exampleDecodeStructure);
+
+        } else {
+          //this game should have a mapping so try and find it based on the file type provided
+
+          var mappings = require('../game_mappings/gameMaps.json');
+          var decodeStructure = ScoreDecoder.getGameMapping(mappings, game.name, fileType);
+
+          //if we couldn't find a mapping then its probably because of the wrong filetype so just return null
+
+          res.json(decodeStructure);
+        }
+
       });
     }
 

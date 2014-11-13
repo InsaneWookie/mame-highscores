@@ -3,6 +3,12 @@
 var fs = require('fs');
 var path = require('path');
 
+/**
+ * @global
+ * @class ScoreDecoder
+ * @type {{decode: Function, decodeFromFile: Function, getGameMappingStructure: Function}}
+ */
+
 module.exports = {
 
 	decode: function(gameSaveMappings, buffer, gameName, fileType){ //TODO: need to pass the file type in, ie .hi or .nv
@@ -31,25 +37,31 @@ module.exports = {
 	
 	//TODO: really need to clean this up
 	getGameMappingStructure: function(gameSaveMappings, gameName, fileType){
-		//console.log(this.gameSaveMappings);
+		var mapping = this.getGameMapping();
+
+		return (mapping) ? mapping.structure : null;
+	},
+
+	getGameMapping: function(gameSaveMappings, gameName, fileType){
+
 		for(var gameMapping in gameSaveMappings){
-			
-			var gameMappingNames = gameSaveMappings[gameMapping].name; 
-			
+
+			var gameMappingNames = gameSaveMappings[gameMapping].name;
+
 			for(var gameMappingName in gameMappingNames){
 				if(gameName === gameMappingNames[gameMappingName]){
 
 					//found a game but is it the right format
 					//if doesnt have a file type and the file we are decoding is a .hi then use this mapping
 					if(gameSaveMappings[gameMapping].fileType === undefined && fileType === 'hi'){
-						return gameSaveMappings[gameMapping].structure;
+						return gameSaveMappings[gameMapping];
 
-					//else if the file types match use this mapping (probably could turn this into a single if statement)
+						//else if the file types match use this mapping (probably could turn this into a single if statement)
 					} else if (gameSaveMappings[gameMapping].fileType === fileType){
-						return gameSaveMappings[gameMapping].structure;
+						return gameSaveMappings[gameMapping];
 					} else if(fileType === undefined){
 						//if no file type provided just return any
-						return gameSaveMappings[gameMapping].structure;
+						return gameSaveMappings[gameMapping];
 					}
 					//else keep looking
 				}

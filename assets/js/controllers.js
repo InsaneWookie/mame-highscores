@@ -295,6 +295,8 @@ angular.module('myApp.controllers', [])
     var gameId = $routeParams.id;
     $scope.game = {};
 
+    $scope.rawscore = [];
+
     $scope.rawscore = {};
     $scope.asciiDecoded = "";
 
@@ -304,6 +306,7 @@ angular.module('myApp.controllers', [])
     $scope.selectedBytes = "";
 
     $scope.decodeMapping = "";
+    $scope.fileType = 'hi';
 
     $scope.decodedScores = "";
 
@@ -349,7 +352,8 @@ angular.module('myApp.controllers', [])
 
         var postData = {
           gameMapping: mappingJson,
-          rawBytes: $scope.rawscore.bytes
+          rawBytes: $scope.rawscore.bytes,
+          fileType: $scope.fileType
         };
 
         $http.post('/game/' + gameId + '/mapping', postData).success(function(data){
@@ -361,52 +365,44 @@ angular.module('myApp.controllers', [])
       }
     };
 
-//    $scope.selectByte = function(selection){
-//      console.log(selection);
-//      if($scope.startByte === null){
-//        $scope.startByte = selection;
-//      } else if ($scope.startByte !== null && $scope.endByte === null) {
-//        $scope.endByte = selection;
-//
-//        $scope.selectedBytes = [];
-//        for(var i = $scope.startByte; i < $scope.endByte + 1; i++){
-//          $scope.selectedBytes.push($scope.rawscore.byteArray[i]);
-//        }
-//
-//        //convert the byte array into a hex string
-//        var hexString = $scope.selectedBytes.join('');
-//        //run the hex string through all the formats
-//        for (var key in $scope.decodings) {
-//          if($scope.decodings.hasOwnProperty(key)){
-//            $scope.decodings[key] = mamedecoder.decodeBytes(hexString, key);
-//          }
-//        }
-//
-//        //$scope.decoded = parseInt($scope.selectedBytes.join(''), 10).toString().replace(/^0+/,'');
-//
-//      } else {
-//        $scope.startByte = selection;
-//        $scope.endByte = null;
-//      }
-//    };
 
     $http.get('/game/' + gameId).success(function(game){
       $scope.game = game;
     });
 
     $http.get('/rawscore', { params: {game_id: gameId, sort: 'createdAt DESC' }}).success(function(data){
-      $scope.rawscore = data[0];
-      $scope.rawscore.byteArray = $scope.rawscore.bytes.match(/.{1,2}/g);
-      $scope.rawscore.formattedBytes = $scope.rawscore.bytes.match(/.{1,2}/g).join(' ').match(/.{1,48}/g).join('\n');
 
-      console.log(hexToAscii($scope.rawscore.bytes));
+      data.forEach(function(rawScore){
+        rawScore.byteArray = rawScore.bytes.match(/.{1,2}/g);
+        rawScore.formattedBytes = rawScore.bytes.match(/.{1,2}/g).join(' ').match(/.{1,48}/g).join('\n');
+        rawScore.asciiDecoded = hexToAscii(rawScore.bytes);
+      });
 
-      $scope.asciiDecoded = hexToAscii($scope.rawscore.bytes)
+      $scope.rawscores = data;
+
+      //console.log(hexToAscii($scope.rawscore.bytes));
+
+
     });
 
-    $http.get('/game/' + gameId + '/mapping').success(function(data){
-      $scope.decodeMapping = JSON.stringify(data, null, 2);
-    });
+    //var getMappingHttpPromise = $http.get('/game/' + gameId + '/mapping', { params: { file_type: $scope.fileType }, cache: false});
+
+    function handleMappingResponse (data){
+      if(data != 'null'){
+        $scope.decodeMapping = JSON.stringify(data, null, 2);
+      } else {
+        $scope.decodeMapping = '';
+        alert("No mapping for this file type");
+      }
+
+    }
+
+    $http.get('/game/' + gameId + '/mapping', { params: { file_type: $scope.fileType }, cache: false}).success(handleMappingResponse);
+
+    $scope.getMapping = function(){
+      $http.get('/game/' + gameId + '/mapping', { params: { file_type: $scope.fileType }, cache: false}).success(handleMappingResponse)
+    };
+
 
 
 
