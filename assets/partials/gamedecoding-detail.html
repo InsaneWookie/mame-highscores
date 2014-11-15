@@ -4,18 +4,20 @@
 
   <div class="col-md-9">
     <tabset justified="true">
-      <tab ng-repeat="rawscore in rawscores" heading="{{rawscore.createdAt | amDateFormat:'L LT'}}">
+      <tab ng-repeat="rawscore in rawscores" heading="{{rawscore.createdAt | amDateFormat:'L LT'}}" select="tabSelected(rawscore)">
 
         <div class="row">
-          <div class="col-md-8" style="font-family: courier, monospace" >
-            <span ng-repeat="b in rawscore.byteArray track by $index"  ng-mouseup="updateSelected()">
-              {{b}} <br ng-if="($index + 1) % 16 == 0">
-            </span>
+          <div class="col-md-8" style="font-family: courier, monospace" ng-mouseup="updateSelected()">
+            <pre>{{rawscore.formattedBytes}}</pre>
+            <!--<span ng-repeat="b in rawscore.byteArray track by $index"  >-->
+              <!--{{b}} <br ng-if="($index + 1) % 16 == 0">-->
+            <!--</span>-->
           </div>
           <div class="col-md-4" style="font-family: courier, monospace">
-            <span ng-repeat="b in rawscore.asciiDecoded track by $index">
-              {{b}}<br ng-if="($index + 1) % 16 == 0">
-            </span>
+            <pre>{{rawscore.asciiDecoded}}</pre>
+            <!--<span ng-repeat="b in rawscore.asciiDecoded track by $index">-->
+              <!--{{b}}<br ng-if="($index + 1) % 16 == 0">-->
+            <!--</span>-->
           </div>
         </div>
       </tab>

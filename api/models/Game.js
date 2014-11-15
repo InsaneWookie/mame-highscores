@@ -201,6 +201,7 @@ module.exports = {
       });
   },
 
+
   sendBeatenScoreEmails: function(game, createdScores, callback){
 
     Score.find({game_id: game.id}).populate('alias').exec(function (err, allScores) {
