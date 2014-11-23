@@ -253,12 +253,25 @@ angular.module('myApp.controllers', [])
       $scope.user.points = data.total_points;
     });
 
+    $sails.get('/usermachine', { populate: ['machine', 'group'], user: userId }).success(function(data){
+      $scope.usermachines = data;
+    });
+
+    //$sails.get('/machine?populate=[]').success(function(data){
+    //
+    //  $scope.machines = data;
+    //});
+
   }])
   .controller('SettingsCtrl', ['$scope', '$sails', function($scope, $sails) {
     //do nothin fo now, settings page is just for enabling notifications
   }])
-  .controller('GameUploadCtrl', ['$scope', '$sails', function($scope, $sails) {
-    
+  .controller('GameUploadCtrl', ['$scope', '$http', function($scope, $http) {
+    $scope.machines = [];
+
+    $http.get('/machine?populate=[]', { populate: [] }).success(function(machines){
+      $scope.machines = machines;
+    })
   }])
   .controller('UserListCtrl', ['$scope', '$sails', function($scope, $sails) {
 
@@ -434,4 +447,19 @@ angular.module('myApp.controllers', [])
 
       });
     }
+  }])
+  .controller('MachineCreateCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
+
+    var userId = $routeParams.id;
+
+    $scope.machine = {
+      usermachine: { alias: null, user: userId}
+    };
+
+    $scope.create = function(machine){
+      $http.post('/machine', $scope.machine).success(function(resposeData){
+        $location.path('/users/' + userId);
+      });
+    }
+
   }]);

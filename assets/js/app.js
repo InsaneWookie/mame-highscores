@@ -42,6 +42,17 @@ angular.module('myApp', [
         controller: 'UserDetailCtrl'
       });
 
+      $routeProvider.when('/users/:id/machine-create', {
+        templateUrl: 'partials/machine-create.html',
+        controller: 'MachineCreateCtrl'
+      });
+
+      $routeProvider.when('/sign-up', {
+        templateUrl: 'partials/sign-up.html',
+        controller: 'SignUpCtrl'
+      });
+
+
       $routeProvider.otherwise({redirectTo: '/home'});
     }]).value('cgBusyDefaults', {
       backdrop: true,
@@ -51,5 +62,5 @@ angular.module('myApp', [
     }).constant('angularMomentConfig', {
       //nothing at the moment
     }).run(function (amMoment) {
-      amMoment.changeLanguage('en-au'); //no nz locale so australia is close enough
+      amMoment.changeLocale('en-au'); //no nz locale so australia is close enough
     });

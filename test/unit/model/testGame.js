@@ -368,13 +368,14 @@ describe('Game', function () {
           Game.create(gameData).exec(function(err, game){
 
             User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).exec(function(err, user){
-              Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
-                User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).exec(function(err, user){
-                  Alias.create({user_id: user.id, name: 'DEF'}).exec(function(err, alias){
-                    done(err);
-                  });
-                });
-              });
+              //Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
+              //  User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).exec(function(err, user){
+              //    Alias.create({user_id: user.id, name: 'DEF'}).exec(function(err, alias){
+              //      done(err);
+              //    });
+              //  });
+              //});
+              done(err);
             });
           });
 

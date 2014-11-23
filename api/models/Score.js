@@ -17,10 +17,15 @@ module.exports = {
       columnName: 'game_id'
     },
 
-    alias: {
-      model: 'Alias',
-      columnName: 'alias_id'
+    machine: {
+      model: 'Machine',
+      columnName: 'machine_id'
     }
+
+    //alias: {
+    //  model: 'Alias',
+    //  columnName: 'alias_id'
+    //}
 
 //    toJSON: function () {
 //      var obj = this.toObject();
@@ -40,6 +45,7 @@ module.exports = {
    * this currently only supports scores that are numbers
    * @param gameId
    * @param cb
+   * //TODO: this needs to take into account the groups the user is in
    */
   updateRanks: function(gameId, cb){
     var query =
@@ -52,13 +58,9 @@ module.exports = {
         WHERE game_id = $1) r \
       WHERE s.id = r.id";
 
-    //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
       Score.query(query, [gameId], function (err, result) {
-     //   Game.query('SELECT pg_advisory_unlock(1234)', [], function() {
           cb(err, result);
-      //  });
       });
-   // });
 
   },
 
@@ -83,44 +85,45 @@ module.exports = {
    */
   claim: function(scoreId, aliasName, callBackFn){
 
-    if(aliasName === null || aliasName === undefined){
-      return callBackFn("Alias can not be null", null);
-    }
-
-    //TODO: should really do a case insensitive look up of the users alias
-    aliasName = aliasName.trim().toUpperCase();
-
-    if(aliasName === ''){
-      return callBackFn("Alias can not be empty", null);
-    }
-
-    Score.findOneById(scoreId).exec(findScoreFn);
-
-    function findScoreFn(err, score){
-      if(err) { return callBackFn(err, null); }
-
-      if(score.name !== null && score.name !== ''){
-        return callBackFn("Score name is not empty", null);
-      } else {
-        //empty name so we can update it
-        score.name = aliasName;
-        score.save(saveScoreFn);
-      }
-    }
-
-    function saveScoreFn(err, updatedScore){
-      if(err) { return callBackFn(err, null); }
-
-      Game.updateScoreAliases(updatedScore.game, updateAliasesResultFn);
-    }
-
-    function updateAliasesResultFn(err) {
-      if(err) { return callBackFn(err, null); }
-
-      //need to get the updated data
-      //populate the alias object as its need for the score table
-      Score.findOneById(scoreId).populate('alias').exec(callBackFn);
-    }
+    callBackFn("TODO");
+    //if(aliasName === null || aliasName === undefined){
+    //  return callBackFn("Alias can not be null", null);
+    //}
+    //
+    ////TODO: should really do a case insensitive look up of the users alias
+    //aliasName = aliasName.trim().toUpperCase();
+    //
+    //if(aliasName === ''){
+    //  return callBackFn("Alias can not be empty", null);
+    //}
+    //
+    //Score.findOneById(scoreId).exec(findScoreFn);
+    //
+    //function findScoreFn(err, score){
+    //  if(err) { return callBackFn(err, null); }
+    //
+    //  if(score.name !== null && score.name !== ''){
+    //    return callBackFn("Score name is not empty", null);
+    //  } else {
+    //    //empty name so we can update it
+    //    score.name = aliasName;
+    //    score.save(saveScoreFn);
+    //  }
+    //}
+    //
+    //function saveScoreFn(err, updatedScore){
+    //  if(err) { return callBackFn(err, null); }
+    //
+    //  Game.updateScoreAliases(updatedScore.game, updateAliasesResultFn);
+    //}
+    //
+    //function updateAliasesResultFn(err) {
+    //  if(err) { return callBackFn(err, null); }
+    //
+    //  //need to get the updated data
+    //  //populate the alias object as its need for the score table
+    //  Score.findOneById(scoreId).populate('alias').exec(callBackFn);
+    //}
 
   }
 

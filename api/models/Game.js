@@ -91,7 +91,7 @@ module.exports = {
 
   /**
    * Gets scores beaten for use in sending email
-   * IMPORTANT: this assumes bother addedScores and afterAddedScores are sorted high to low
+   * IMPORTANT: this assumes both addedScores and afterAddedScores are sorted high to low
    * TODO: currently this only handles single alias, if a user sets a score on the same game with
    * a different alias it will think they have beaten them self
    * @param {Array} addedScores
@@ -102,10 +102,14 @@ module.exports = {
    *    //game: {Game}
    *    beatenBy: { Score }
    *    beaten: [
-   *      { Score ,
+   *      { Score }, // array of score objects
    *      ...
    *    ]
    *  }
+   *
+   *  TODO: need to redo this for new data model
+   *  Beaten scores need to take into account the group
+   *  Only send beaten emails to users that are in the same group
    */
   getBeatenScores: function (addedScores, afterAddedScores) {
     var foundCreatedScore = false;
@@ -202,6 +206,12 @@ module.exports = {
   },
 
 
+  /**
+   * TODO: this will be broken because getBeatenScores is broken
+   * @param game
+   * @param createdScores
+   * @param callback
+   */
   sendBeatenScoreEmails: function(game, createdScores, callback){
 
     Score.find({game_id: game.id}).populate('alias').exec(function (err, allScores) {
@@ -254,13 +264,13 @@ module.exports = {
   uploadScores: function (rawBytes, fileType, game, callback) {
 
 
-    if(typeof game != 'object'){
+    if (typeof game != 'object') {
       callback("game must be an object", null);
       return;
     }
     var gameMaps = require('../game_mappings/gameMaps.json');
 
-    Game.updatePlayedCount(game, function(err, playCount){
+    Game.updatePlayedCount(game, function (err, playCount) {
       //don't care about the response at the moment.
     });
 
@@ -273,57 +283,40 @@ module.exports = {
 
       var newScores = decodedScores[game.name];
 
-      //need to create a lock so we dont get multiple uploads at the same time
-      //other wise we end up creating duplicate scores
-      //this is mega hacky
-      //Game.query('SELECT pg_advisory_lock(1234)', [], function(){
-        //console.log(err,result);
-       // if(err) { return callback(err, null); }
 
-//        if(!result.rows[0].pg_try_advisory_lock){
-//          return callback(null, [])
-//        }
+      Game.addScores(game, newScores, function (err, createdScores) {
 
-        Game.addScores(game, newScores, function (err, createdScores) {
+        if (err) {
+          console.log(err);
+          return callback(err, null);
+        }
 
-          if(err) {
-            console.log(err);
-            //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
-              //if(err) { console.log(err); }
-              return callback(err, null);
-           // });
-          }
+        if (createdScores.length > 0) {
+          //we created some scores so notify users
 
-          if (createdScores.length > 0) {
-            //we created some scores so notify users
-
-
-            //notify socket subscribers
-            Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
-              if (err) {
-                console.log(err);
-                return;
-              }
-              //notify everyone that we created a score
-              //TODO: only notify the people that were beaten
-              Score.publishCreate(notifyScore);
-            });
-
-            //also want to send an email
-            //workout if the top created score beat any other user's scores
-            Game.sendBeatenScoreEmails(game, createdScores, function(err){
+          //notify socket subscribers
+          Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
+            if (err) {
               console.log(err);
-            });
-          }
+              return;
+            }
+            //notify everyone that we created a score
+            //TODO: only notify the people that were beaten
+            Score.publishCreate(notifyScore);
+          });
 
-          //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
-          //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
-            //if(err) { console.log(err); }
-            callback(err, createdScores);
+          //also want to send an email
+          //workout if the top created score beat any other user's scores
+          //TODO: fix this (broken by new data model)
+          //Game.sendBeatenScoreEmails(game, createdScores, function (err) {
+          //  console.log(err);
           //});
+        }
 
-        });
-      //});
+        //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
+        callback(err, createdScores);
+      });
+
 
     } else {
 
@@ -373,25 +366,27 @@ module.exports = {
           //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
           if(createdScores.length) {
 
-              //TODO: pull this out so it can be reused
-              Game.updateScoreAliases(game, function (err) {
-                if(err) { return callback(err, null); }
-
-                //we need to refetch the created scores so we have the updated alias data
-                var scoreIds = [];
-                createdScores.forEach(function(score){
-                  scoreIds.push(score.id);
-                });
-
-                //created some scores so update the score rank
-                Score.updateRanks(gameId, function(err){
-                  if(err) { return callback(err, null); }
-
-                  Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
-                    callback(err, updateCreatedScores);
-                  });
-                });
-              });
+              //TODO: shouldnt need to update the aliases anymore
+              //TODO: need to sort out how to update the rank with groups
+              //Game.updateScoreAliases(game, function (err) {
+              //  if(err) { return callback(err, null); }
+              //
+              //  //we need to refetch the created scores so we have the updated alias data
+              //  var scoreIds = [];
+              //  createdScores.forEach(function(score){
+              //    scoreIds.push(score.id);
+              //  });
+              //
+              //  //created some scores so update the score rank
+              //  Score.updateRanks(gameId, function(err){
+              //    if(err) { return callback(err, null); }
+              //
+              //    Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
+              //      callback(err, updateCreatedScores);
+              //    });
+              //  });
+              //});
+            callback(err, createdScores);
           } else {
             callback(err, createdScores);
           }
@@ -414,12 +409,12 @@ module.exports = {
    */
   updateScoreAliases: function (game, callback) {
 
-    var query = "UPDATE score SET alias_id = a.id FROM alias a " +
-      "WHERE lower(score.name) = lower(a.name) AND score.game_id = $1";
-
-    Score.query(query, [game.id], function (err, result) {
-      callback(err);
-    });
+    //var query = "UPDATE score SET alias_id = a.id FROM alias a " +
+    //  "WHERE lower(score.name) = lower(a.name) AND score.game_id = $1";
+    //
+    //Score.query(query, [game.id], function (err, result) {
+    //  callback(err);
+    //});
   },
 
   /**

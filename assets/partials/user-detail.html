@@ -3,21 +3,41 @@
 <h4> Aliases: <span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></h4>
 <h4> Points: {{user.points}}</h4>
 
+<a href="/#/users/{{user.id}}/machine-create">Add Arcade Machine</a><br>
 
-<div>
-  <!--<h3><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h3>-->
-    
-     <table class="table table-striped">
-        <tr>
-          <th>Game</th>
-          <th>Top Rank</th>
-          <th>Top Score</th>
-        </tr>
-        <tr ng-repeat="game in topGames">
-          <td><a href="#/games/{{game.id}}">{{game.full_name}}</a></td>
-          <td>{{game.top_score.rank}}</td>
-          <td>{{game.top_score.score}}</td>
-        </tr>
-      </table>
-</div>
+    <tabset>
+      <tab heading="Top Scores">
+        <div>
+          <table class="table table-striped">
+            <tr>
+              <th>Game</th>
+              <th>Top Rank</th>
+              <th>Top Score</th>
+            </tr>
+            <tr ng-repeat="game in topGames">
+              <td><a href="#/games/{{game.id}}">{{game.full_name}}</a></td>
+              <td>{{game.top_score.rank}}</td>
+              <td>{{game.top_score.score}}</td>
+            </tr>
+          </table>
+        </div>
+      </tab>
+      <tab heading="Machines">
+        <div>
+          <table class="table table-striped">
+            <tr>
+              <th>Machine</th>
+              <th>Group</th>
+              <th>Alias</th>
+            </tr>
+            <tr ng-repeat="usermachine in usermachines">
+              <td><a href="#/machine/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
+              <td>{{usermachine.group.name}}</td>
+              <td>{{usermachine.alias}}</td>
+            </tr>
+          </table>
+        </div>
+
+      </tab>
+    </tabset>
 

@@ -40,23 +40,6 @@ module.exports = {
     });
   },
 
-  /**
-   * Gets the data for the game decode page
-   * TODO: convert this to client side
-   * @param req
-   * @param res
-   */
-  decode_data: function(req, res) {
-
-    var responseData = {};
-
-    var gameId = req.param('id');
-
-    Game.findById(gameId).populate('rawscores').exec(function(err, game){
-
-    });
-
-  },
 
   upload: function (req, res) {
 

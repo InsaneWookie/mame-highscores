@@ -31,11 +31,11 @@ describe('Score', function () {
             cb(err, user);
           });
         },
-        function(user, cb){
-          Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
-            cb(err);
-          });
-        }
+        //function(user, cb){
+        //  Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
+        //    cb(err);
+        //  });
+        //}
       ], function(err, result){
         done(err);
       });
