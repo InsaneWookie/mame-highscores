@@ -4505,6 +4505,7 @@
     ],
     "structure": {
       "blocks": 3,
+      "skip": 3,
       "fields": [
         {
           "name": "score",
@@ -4514,9 +4515,8 @@
         {
           "name": "name",
           "bytes": 3,
-          "format": "fromCharMap",
+          "format": "specialOnly",
           "settings": {
-            "charMap": "<unknown:>",
             "special": {
               "10": "1",
               "11": "F",
@@ -4591,6 +4591,7 @@
     ],
     "structure": {
       "blocks": 20,
+      "skip": 3,
       "fields": [
         {
           "name": "score",
