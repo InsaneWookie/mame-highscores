@@ -47,6 +47,11 @@ angular.module('myApp', [
         controller: 'MachineCreateCtrl'
       });
 
+      $routeProvider.when('/users/:id/group-create', {
+        templateUrl: 'partials/group-create.html',
+        controller: 'GroupCreateCtrl'
+      });
+
       $routeProvider.when('/sign-up', {
         templateUrl: 'partials/sign-up.html',
         controller: 'SignUpCtrl'

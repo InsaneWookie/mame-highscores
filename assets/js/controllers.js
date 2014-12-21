@@ -241,7 +241,7 @@ angular.module('myApp.controllers', [])
     $scope.topGames = [];
 
 
-   $sails.get('/user/' + userId ).success(function (data){
+    $sails.get('/user/' + userId ).success(function (data){
       $scope.user = data;
     });
 
@@ -257,6 +257,9 @@ angular.module('myApp.controllers', [])
       $scope.usermachines = data;
     });
 
+    $sails.get('/usergroup', { populate: ['group'], user: userId }).success(function(data){
+      $scope.usergroups = data;
+    });
     //$sails.get('/machine?populate=[]').success(function(data){
     //
     //  $scope.machines = data;
@@ -458,6 +461,23 @@ angular.module('myApp.controllers', [])
 
     $scope.create = function(machine){
       $http.post('/machine', $scope.machine).success(function(resposeData){
+        $location.path('/users/' + userId);
+      });
+    }
+
+  }])
+  .controller('GroupCreateCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
+
+    var userId = $routeParams.id;
+
+    $scope.group = {
+      name: '',
+      description: '',
+      usergroups: [{ group: null, user: userId}]
+    };
+
+    $scope.create = function(group){
+      $http.post('/group', $scope.group).success(function(resposeData){
         $location.path('/users/' + userId);
       });
     }

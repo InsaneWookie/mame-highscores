@@ -4,6 +4,7 @@
 <h4> Points: {{user.points}}</h4>
 
 <a href="/#/users/{{user.id}}/machine-create">Add Arcade Machine</a><br>
+<a href="/#/users/{{user.id}}/group-create">Create Group</a><br>
 
     <tabset>
       <tab heading="Top Scores">
@@ -34,6 +35,23 @@
               <td><a href="#/machine/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
               <td>{{usermachine.group.name}}</td>
               <td>{{usermachine.alias}}</td>
+            </tr>
+          </table>
+        </div>
+
+      </tab>
+      <tab heading="Groups">
+        <div>
+          <table class="table table-striped">
+            <tr>
+              <th>Group</th>
+              <th>Description</th>
+              <th>Date Created</th>
+            </tr>
+            <tr ng-repeat="usergroup in usergroups">
+              <td><a href="#/group/{{usergroup.group.id}}">{{usergroup.group.name}}</a></td>
+              <td>{{usergroup.group.description}}</td>
+              <td>{{usergroup.group.createdAt}}</td>
             </tr>
           </table>
         </div>
