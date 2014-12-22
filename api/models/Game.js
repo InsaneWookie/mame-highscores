@@ -259,15 +259,24 @@ module.exports = {
    * @param {Buffer} rawBytes
    * @param {string} fileType
    * @param {Game} game (Game.js)
-   * @param {Game~uploadScoresCallback} callback(err, addedScores)
+   * @param {Machine} machine
+ * @param {Game~uploadScoresCallback} callback(err, addedScores)
    */
-  uploadScores: function (rawBytes, fileType, game, callback) {
+  uploadScores: function (rawBytes, fileType, game, machine, callback) {
 
 
-    if (typeof game != 'object') {
+    if (typeof game !== 'object') {
       callback("game must be an object", null);
       return;
     }
+
+    if (typeof machine !== 'object') {
+      callback("machine must be an object", null);
+      return;
+    }
+
+    //TODO: check that the user has access to this machine??
+
     var gameMaps = require('../game_mappings/gameMaps.json');
 
     Game.updatePlayedCount(game, function (err, playCount) {
@@ -284,7 +293,7 @@ module.exports = {
       var newScores = decodedScores[game.name];
 
 
-      Game.addScores(game, newScores, function (err, createdScores) {
+      Game.addScores(game, machine, newScores, function (err, createdScores) {
 
         if (err) {
           console.log(err);
@@ -295,7 +304,7 @@ module.exports = {
           //we created some scores so notify users
 
           //notify socket subscribers
-          Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
+          Score.findOneById(createdScores[0].id).populate('game').populate('machine').exec(function (err, notifyScore) {
             if (err) {
               console.log(err);
               return;
@@ -337,26 +346,31 @@ module.exports = {
   /**
    *
    * @param game
+   * @param machine
    * @param newScores - decoded scores
    * @param callback (error, [Score])
    */
-  addScores: function (game, newScores, callback) {
+  addScores: function (game, machine, newScores, callback) {
 
     var gameId = game.id;
 
     var filteredScores = [];
     //work out what scores do not exist in the scores that we have been given compared to whats in the database
     //should be able to use Score.findOrCreateEach
-    Score.find({game_id: gameId}).exec(function (err, existingScores) {
+    Score.find({game_id: gameId, machine_id: machine.id}).exec(function (err, existingScores) {
 
       //remove any exiting or invalid scores
       filteredScores = Game.filterScores(newScores, existingScores);
 
+      //console.log(machine);
       //stick the game id on the scores we want to save
       filteredScores.forEach(function (score) {
         score.game_id = gameId;
+       // console.log(machine);
+        score.machine_id = machine.id;
       });
 
+      //console.log(filteredScores);
       //now insert the new scores
       Score.createEach(filteredScores).exec(function (err, createdScores) {
         if (err) {

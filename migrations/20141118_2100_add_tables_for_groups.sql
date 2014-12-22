@@ -68,6 +68,8 @@ UPDATE score SET machine_id = 1;
 ALTER TABLE score DROP CONSTRAINT score_alias_id_fkey;
 ALTER TABLE score ADD COLUMN alias VARCHAR;
 
+-- TODO: need to add machine to raw scores as well
+
 
 UPDATE score s 
 SET alias = a.name

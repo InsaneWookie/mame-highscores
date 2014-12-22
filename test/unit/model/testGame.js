@@ -357,30 +357,43 @@ describe('Game', function () {
 
     beforeEach(function(done){
 
-      Game.query('TRUNCATE TABLE game RESTART IDENTITY CASCADE', [], function(err){
-        User.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', [], function(err){
+      var gameData = {
+        name: 'zerowing',
+        has_mapping: true
+      };
 
-
-          var gameData = {
-            name: 'zerowing',
-            has_mapping: true
-          };
+      async.waterfall([
+        function(cb){
+          Game.query('TRUNCATE TABLE game RESTART IDENTITY CASCADE', [], function(err) { cb(err); });
+        },
+        function(cb){
+          User.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', [], function(err){ cb(err); });
+        },
+        function(cb){
+          User.query('TRUNCATE TABLE "machine" RESTART IDENTITY CASCADE', [], function(err){ cb(err); });
+        },
+        function(cb){
           Game.create(gameData).exec(function(err, game){
-
-            User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).exec(function(err, user){
-              //Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
-              //  User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).exec(function(err, user){
-              //    Alias.create({user_id: user.id, name: 'DEF'}).exec(function(err, alias){
-              //      done(err);
-              //    });
-              //  });
-              //});
-              done(err);
-            });
+            cb(err);
           });
-
-
-        });
+        },
+        function(cb){
+          User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).exec(function(err, user){
+            cb(err, user);
+          });
+        },
+        function(user, cb){
+          Machine.create({name: 'Test machine'}).exec(function(err, machine){
+            cb(err, user, machine);
+          });
+        },
+        function(user, machine, cb){
+          UserMachine.create({group_id: 1, user_id: user.id, machine_id: machine.id, alias: 'ABC'}).exec(function(err, userMachine){
+            cb(err);
+          });
+        }
+      ], function(err, result){
+        done(err);
       });
 
 
@@ -416,22 +429,34 @@ describe('Game', function () {
 
           assert.ok(game, "game not set");
 
-          Game.uploadScores(bytesBuffer, fileType, game, function(err, savedScores){
-            assert.ok(savedScores.length > 0, "should have saved some scores");
+          var expectedMachineId = 1;
 
-            assert.equal(savedScores[0].name, '...');
-            assert.equal(savedScores[0].score, '50000');
+          Machine.findOneById(expectedMachineId).exec(function(err, machine){
 
-            Game.uploadScores(new Buffer(newBytes, 'hex'), fileType, game, function(err, savedScores){
-              assert.ok(savedScores.length === 2, "should have saved 2 scores");
+            assert.equal(err, null);
 
-              assert.equal(savedScores[0].name, 'ABC');
-              assert.equal(savedScores[0].score, '55000');
+           // console.log(machine);
 
-              assert.equal(savedScores[1].name, 'DEF');
-              assert.equal(savedScores[1].score, '54000');
+            Game.uploadScores(bytesBuffer, fileType, game, machine, function(err, savedScores){
+              assert.ok(savedScores.length > 0, "should have saved some scores");
 
-              done(err);
+              //console.log(savedScores);
+              assert.equal(savedScores[0].name, '...');
+              assert.equal(savedScores[0].score, '50000');
+
+              assert.equal(savedScores[0].machine, expectedMachineId);
+
+              Game.uploadScores(new Buffer(newBytes, 'hex'), fileType, game, machine, function(err, savedScores){
+                assert.ok(savedScores.length === 2, "should have saved 2 scores");
+
+                assert.equal(savedScores[0].name, 'ABC');
+                assert.equal(savedScores[0].score, '55000');
+
+                assert.equal(savedScores[1].name, 'DEF');
+                assert.equal(savedScores[1].score, '54000');
+
+                done(err);
+              });
             });
           });
         }
