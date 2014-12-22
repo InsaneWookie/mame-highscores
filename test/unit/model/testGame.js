@@ -443,6 +443,7 @@ describe('Game', function () {
               //console.log(savedScores);
               assert.equal(savedScores[0].name, '...');
               assert.equal(savedScores[0].score, '50000');
+              assert.equal(savedScores[0].alias, '...');
 
               assert.equal(savedScores[0].machine, expectedMachineId);
 
@@ -451,6 +452,8 @@ describe('Game', function () {
 
                 assert.equal(savedScores[0].name, 'ABC');
                 assert.equal(savedScores[0].score, '55000');
+                //alias is used for the foreign keyed on user_machine
+                assert.equal(savedScores[0].alias, 'ABC'); //get uppercased
 
                 assert.equal(savedScores[1].name, 'DEF');
                 assert.equal(savedScores[1].score, '54000');

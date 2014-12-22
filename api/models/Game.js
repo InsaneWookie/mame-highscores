@@ -368,6 +368,7 @@ module.exports = {
         score.game_id = gameId;
        // console.log(machine);
         score.machine_id = machine.id;
+        score.alias = (score.name) ? score.name.toUpperCase() : null; //TODO: probably should make this a trigger or atleast a before create action
       });
 
       //console.log(filteredScores);
