@@ -27,6 +27,12 @@ module.exports = {
    },
 
 
+  profile: function(req, res){
+    //need to clone the object to clean it calling res.json calls Model.toJSON()
+    var profileData = _.clone(req.user.toProfile());
+    res.json(profileData);
+  },
+
   player_scores: function(req, res){
 
     res.json("todo");

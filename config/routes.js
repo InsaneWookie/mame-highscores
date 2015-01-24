@@ -33,6 +33,19 @@ module.exports.routes = {
 
 
   // Custom routes here...
+  'get /login': 'AuthController.login',
+  'get /logout': 'AuthController.logout',
+  'get /register': 'AuthController.register',
+
+  'post /auth/local': 'AuthController.callback',
+  'post /auth/local/:action': 'AuthController.callback',
+
+  //TODO:
+  //'get /auth/:provider': 'AuthController.provider',
+  //'get /auth/:provider/callback': 'AuthController.callback',
+  //'get /auth/:provider/:action': 'AuthController.callback',
+
+
 
   //gets all the games with scores that the user has scores for
   'get /user/:id/games': {

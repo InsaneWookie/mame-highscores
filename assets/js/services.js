@@ -6,6 +6,23 @@
 // Demonstrate how to register services
 // In this case it is a simple value service.
 angular.module('myApp.services', []).
+  service('Session', function () {
+    this.isAuthed = function(){
+      return !!this.userId;
+    };
+
+    this.create = function (sessionId, userId, userRole) {
+      this.id = sessionId;
+      this.userId = userId;
+      //this.userRole = userRole;
+    };
+    this.destroy = function () {
+      this.id = null;
+      this.userId = null;
+      //this.userRole = null;
+    };
+    return this;
+  }).
   factory('mamedecoder', function () {
     return {
       decodeBytes: function(bytes, format){

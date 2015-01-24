@@ -20,6 +20,7 @@
 				<tr>
           <th></th>
           <th>Rank</th>
+          <th>Machine</th>
           <th>Name</th>
 					<th style='text-align:right'>Score</th>
 					<th style='text-align:right'>When set</th>
@@ -27,6 +28,7 @@
 				<tr ng-repeat='score in scores'>
           <td><a href="" ng-if="score.name === '' || score.name === null" ng-click="openClaimScore(score)"><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
+          <td>{{score.machine.name}}</td>
 					<td>
 						<a ng-if="score.alias != null" href='#/users/{{score.alias.user}}'>{{score.name}}</a>
 						<span ng-if="score.alias == null">{{score.name}}</span>

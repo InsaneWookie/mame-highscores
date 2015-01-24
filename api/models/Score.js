@@ -40,6 +40,21 @@ module.exports = {
 
   },
 
+
+  findByUser: function(user, findParams, callbackFn){
+
+    var userId = (typeof user === 'object') ? user.id : user;
+
+    UserGroup.findMachineIdsForUser(userId, function(err, machineIds){
+        if(err) { callbackFn(err, null); }
+
+        _.extend(findParams, { machine: machineIds }); //make sure we overwrite the machine ids
+
+        return Score.find(findParams).populate('machine').populate('game').exec(callbackFn);
+    });
+  },
+
+
   /**
    * Update the rank position for all scores for a given game
    * TODO: put this in a trigger/function in the database

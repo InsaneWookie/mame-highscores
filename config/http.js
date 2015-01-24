@@ -8,10 +8,18 @@
  * For more information on configuration, check out:
  * http://links.sailsjs.org/docs/config/http
  */
-
 module.exports.http = {
 
   middleware: {
+
+
+
+
+
+    // Define another couple of custom HTTP middleware fns with keys `passportInit` and `passportSession`
+    // (notice that this time we're using an existing middleware library from npm)
+   // passportInit    : passport.initialize(),
+  //  passportSession : passport.session(),
 
     // The order in which middleware should be run for HTTP request.
     // (the Sails router is invoked by the "router" middleware below.)
@@ -19,6 +27,9 @@ module.exports.http = {
       'startRequestTimer',
       'cookieParser',
       'session',
+      //'passport',
+      //'passportInit',
+      //'passportSession',
       'bodyParser',
       'handleBodyParserError',
       'compress',

@@ -13,59 +13,74 @@
  * http://sailsjs.org/#!documentation/
  */
 
-
+var isAuthed = ['passport', 'sessionAuth'];
 module.exports.policies = {
 
   // Default policy for all controllers and actions
   // (`true` allows public access)
-  '*': true,
+  '*': false,
+
+  'auth': {
+    '*': ['passport']
+  },
+
+  //AuthController: {
+  //  '*': true
+  //}
 
   AliasController: {
-    find: true,
-    findOne: true
+    find: isAuthed,
+    findOne: isAuthed
   },
 
   GameController: {
-    find: true,
-    findOne: true,
-    search_list: true,
-    top_players: true,
-    upload: true,
-    mapping: true,
-    update_has_mapping: true
+    find: isAuthed,
+    findOne: isAuthed,
+    search_list: isAuthed,
+    top_players: isAuthed,
+    upload: isAuthed,
+    mapping: isAuthed,
+    update_has_mapping: isAuthed,
+    play_count: isAuthed
   },
 
   GamePlayedController: {
-    find: true,
-    findOne: true
+    find: isAuthed,
+    findOne: isAuthed
   },
 
   MappingController: {
-    find: true,
-    findOne: true
+    find: isAuthed,
+    findOne: isAuthed
   },
 
   RawScoreController: {
-    find: true,
-    findOne: true
+    find: isAuthed,
+    findOne: isAuthed
   },
 
   ScoreController: {
-    find: true,
-    findOne: true,
-    claim: true
+    find: isAuthed,
+    findOne: isAuthed,
+    claim: isAuthed
   },
 
   UserController: {
-    find: true,
-    findOne: true,
-    create: true,
+    find: isAuthed,
+    findOne: isAuthed,
+    create: isAuthed,
     //update: true, //TODO: only allow update of a users own details
-    games: true,
-    player_scores: true,
-    points: true
-  }
+    profile: isAuthed,
+    games: isAuthed,
+    player_scores: isAuthed,
+    points: isAuthed
+  },
 
+  MachineController: {
+    find: isAuthed,
+    findOne: isAuthed,
+    create: isAuthed
+  }
 
 
 

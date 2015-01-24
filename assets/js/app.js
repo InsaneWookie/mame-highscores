@@ -20,6 +20,10 @@ angular.module('myApp', [
   //'btford.socket-io'
 ]).
     config(['$routeProvider', function ($routeProvider) {
+
+      $routeProvider.when('/login', {templateUrl: 'partials/auth-login.html', controller: 'AuthLoginCtrl'});
+      //$routeProvider.when('/logout', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'});
+
       $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'});
       $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'SettingsCtrl'});
       $routeProvider.when('/game-upload', {templateUrl: 'partials/game-upload.html', controller: 'GameUploadCtrl'});
@@ -68,4 +72,31 @@ angular.module('myApp', [
       //nothing at the moment
     }).run(function (amMoment) {
       amMoment.changeLocale('en-au'); //no nz locale so australia is close enough
-    });
+    }).run(function($rootScope, $http, Session){
+      $http.get('user/profile').success(function(userData){
+        Session.create(null, userData.id);
+        $rootScope.isAuthed = Session.isAuthed();
+        $rootScope.$emit('user.authed');
+      });
+
+    })
+    .config(['$httpProvider', function($httpProvider) {
+      $httpProvider.interceptors.push(['$location', '$q', 'Session', function($location, $q, Session) {
+
+        return {
+          responseError: function(rejection) {
+            console.log('handled error');
+              switch (rejection.status) {
+                case 401:
+                case 403:
+                  Session.destroy();
+                  $location.path('/login');
+                  break;
+              }
+
+            // otherwise, default behaviour
+            return $q.reject(rejection);
+          }
+        };
+      }]);
+    }]);

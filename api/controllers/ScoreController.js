@@ -7,6 +7,20 @@
 
 module.exports = {
 
+
+  find: function(req, res){
+    console.log(req.allParams());
+
+    var findParams = req.allParams();
+
+    Score.findByUser(1, findParams, function(err, scores){
+      if(err) { return res.serverError(err); }
+      res.json(scores);
+    });
+
+  },
+
+
   /**
    * Claim a score that has no alias with it
    * TODO: add flag to say if game does not have name entering

@@ -3,14 +3,25 @@
 /* Controllers */
 //TODO: separate out the controllers in to their own files
 angular.module('myApp.controllers', [])
-  .controller('GameListCtrl', ['$scope', '$sails', function($scope, $sails) {
+
+  .controller('AuthLoginCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+    $scope.user = { email: '', password: ''};
+
+    $scope.login = function(){
+      $http.post('/auth/login', { email: $scope.user.email, passord: $scope.user.password }).success(function(data){
+        $location.path('#/home');
+      });
+    }
+  }])
+  .controller('GameListCtrl', ['$scope', '$http', function($scope, $http) {
 
 	  	// To easily add new items to the collection.
 	  $scope.newGame = {};
 
 	  $scope.games = [];
 
-    $scope.loadingPromise = $sails.get('/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').success(function (data) {
+    $scope.loadingPromise = $http.get('/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').success(function (data) {
 
       //need to sort the scores so we get the first one
       //probably should do this on the backend
@@ -31,20 +42,20 @@ angular.module('myApp.controllers', [])
     });
 
   }])
-  .controller('GameDetailCtrl', ['$scope', '$routeParams', '$sails', '$modal', function($scope, $routeParams, $sails, $modal) {
+  .controller('GameDetailCtrl', ['$scope', '$routeParams', '$http', '$modal', function($scope, $routeParams, $http, $modal) {
 
     $scope.game = {};
     $scope.scores = [];
     $scope.clones = [];
 
     function getScores(gameId){
-      return $sails.get("/score?sort=rank ASC&game=" + gameId)
+      return $http.get("/score?sort=rank ASC&game=" + gameId)
         .error(function (data) {
           console.error(data);
         });
     }
 
-    $sails.get("/game/" + $routeParams.id, {populate: []}).success(function (game) {
+    $http.get("/game/" + $routeParams.id, {populate: []}).success(function (game) {
 
       //always look up the non clone name otherwise we wont find the image
       var imgName = (game.clone_of_name) ? game.clone_of_name : game.name;
@@ -56,7 +67,7 @@ angular.module('myApp.controllers', [])
       });
 
 
-      $sails.get('/game?clone_of=' + game.id, {populate: []}).success(function (clones) {
+      $http.get('/game?clone_of=' + game.id, {populate: []}).success(function (clones) {
 
         clones.forEach(function (clone) {
 
@@ -74,7 +85,7 @@ angular.module('myApp.controllers', [])
     });
 
 
-//      $sails.on("game", function (message) {
+//      $http.on("game", function (message) {
 //        console.log('got game detail message');
 //        console.log(message);
 //
@@ -84,7 +95,7 @@ angular.module('myApp.controllers', [])
 //
 //        } else if (message.verb === 'addedTo') {
 //          //for now just refetch the game TODO: just fetch the score that was added
-//          $sails.get("/game/" + message.id).success(function (data) {
+//          $http.get("/game/" + message.id).success(function (data) {
 //            $scope.game = data;
 //          })
 //          .error(function (data) {
@@ -97,7 +108,7 @@ angular.module('myApp.controllers', [])
 
 
 
-//    $sails.on("score", function (message) {
+//    $http.on("score", function (message) {
 //      console.log('got score detail message');
 //      console.log(message);
 //
@@ -122,7 +133,7 @@ angular.module('myApp.controllers', [])
 
       modalInstance.result.then(function (scoreToClaim) {
         //need to save the score
-        $sails.post('/score/' + scoreToClaim.id + '/claim', { alias: scoreToClaim.name.trim() }).success(function(updatedScore){
+        $http.post('/score/' + scoreToClaim.id + '/claim', { alias: scoreToClaim.name.trim() }).success(function(updatedScore){
           //probably a correct binding way of doing this
           if($scope.game.id === updatedScore.game){
             getScores(updatedScore.game).success(function(scores){
@@ -165,7 +176,7 @@ angular.module('myApp.controllers', [])
       $modalInstance.dismiss('cancel');
     };
   }])
-  .controller('HomeCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
+  .controller('HomeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
     $scope.selectedGame = {};
 
@@ -174,7 +185,7 @@ angular.module('myApp.controllers', [])
     $scope.lastestScores = [];
     $scope.topPlayers = [];
 
-    $sails.get('/game?limit=500&sort=full_name ASC&populate=[]&where={"has_mapping":true,"clone_of":null}').success(function (data) {
+    $http.get('/game?limit=500&sort=full_name ASC&populate=[]&where={"has_mapping":true,"clone_of":null}').success(function (data) {
         $scope.games = data;
         $scope.selectedGame = $scope[0];
 
@@ -185,36 +196,36 @@ angular.module('myApp.controllers', [])
         });
     });
 
-    $scope.lastPlayedLoading = $sails.get('/game?sort=last_played DESC&limit=10&where={"has_mapping": true,"last_played": {"!": null}}&populate=[]').success(function (data){
+    $scope.lastPlayedLoading = $http.get('/game/play_count').success(function (data){
       $scope.lastPlayedGames = data;
     });
 
-    $scope.latestScoresLoading = $sails.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
+    $scope.latestScoresLoading = $http.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
       $scope.lastestScores = data
     });
 
-    $scope.topPlayersLoading = $sails.get('/game/top_players').success(function (data){
+    $scope.topPlayersLoading = $http.get('/game/top_players').success(function (data){
       //just want the top 10 for now
       $scope.topPlayers = data.slice(0,10);
     });
 
-    $sails.on("game", function (message) {
-      console.log('got home game message');
-      console.log(message);
-      if (message.verb === "updated") {
-        //$scope.lastPlayedGames.unshift(message.data);
-        //for now lest just refresh the full list when we get an updated record
-        $sails.get('/game?sort=last_played ASC&limit=5').success(function (data){
-          $scope.lastPlayedGames = data;
-        });
-      }
-    });
+    //$http.on("game", function (message) {
+    //  console.log('got home game message');
+    //  console.log(message);
+    //  if (message.verb === "updated") {
+    //    //$scope.lastPlayedGames.unshift(message.data);
+    //    //for now lest just refresh the full list when we get an updated record
+    //    $http.get('/game?sort=last_played ASC&limit=5').success(function (data){
+    //      $scope.lastPlayedGames = data;
+    //    });
+    //  }
+    //});
 
 
 
 
   }])
-  .controller('UserCreateCtrl', ['$scope', '$sails', '$location', function($scope, $sails, $location) {
+  .controller('UserCreateCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
     $scope.user = {};
 
@@ -228,12 +239,12 @@ angular.module('myApp.controllers', [])
       var newUser = angular.copy(user);
       newUser.aliases = aliases;
 
-      $sails.post('/user', newUser).success(function (data){
+      $http.post('/user', newUser).success(function (data){
         $location.path('/users/' + data.id );
       });
     };
   }])
-  .controller('UserDetailCtrl', ['$scope', '$routeParams', '$sails', function($scope, $routeParams, $sails) {
+  .controller('UserDetailCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
 
     var userId = $routeParams.id;
 
@@ -241,32 +252,32 @@ angular.module('myApp.controllers', [])
     $scope.topGames = [];
 
 
-    $sails.get('/user/' + userId ).success(function (data){
+    $http.get('/user/' + userId ).success(function (data){
       $scope.user = data;
     });
 
-    $sails.get('/user/player_scores/' + userId ).success(function (data){
+    $http.get('/user/player_scores/' + userId ).success(function (data){
       $scope.topGames = data;
     });
 
-    $sails.get('/user/' + userId + '/points').success(function(data){
+    $http.get('/user/' + userId + '/points').success(function(data){
       $scope.user.points = data.total_points;
     });
 
-    $sails.get('/usermachine', { populate: ['machine', 'group'], user: userId }).success(function(data){
+    $http.get('/usermachine', { populate: ['machine', 'group'], user: userId }).success(function(data){
       $scope.usermachines = data;
     });
 
-    $sails.get('/usergroup', { populate: ['group'], user: userId }).success(function(data){
+    $http.get('/usergroup', { populate: ['group'], user: userId }).success(function(data){
       $scope.usergroups = data;
     });
-    //$sails.get('/machine?populate=[]').success(function(data){
+    //$http.get('/machine?populate=[]').success(function(data){
     //
     //  $scope.machines = data;
     //});
 
   }])
-  .controller('SettingsCtrl', ['$scope', '$sails', function($scope, $sails) {
+  .controller('SettingsCtrl', ['$scope', '$http', function($scope, $http) {
     //do nothin fo now, settings page is just for enabling notifications
   }])
   .controller('GameUploadCtrl', ['$scope', '$http', function($scope, $http) {
@@ -276,19 +287,28 @@ angular.module('myApp.controllers', [])
       $scope.machines = machines;
     })
   }])
-  .controller('UserListCtrl', ['$scope', '$sails', function($scope, $sails) {
+  .controller('UserListCtrl', ['$scope', '$http', function($scope, $http) {
 
       $scope.users = [];
 
-      $sails.get("/user").success(function (data) {
+      $http.get("/user").success(function (data) {
         $scope.users = data;
-      })
-      .error(function (data) {
-        console.error(data);
       });
+      //.error(function (data) {
+      //  console.error(data);
+      //});
 
   }])
-  .controller('SearchCtrl', ['$scope', '$sails', '$http', '$location', function($scope, $sails, $http, $location) {
+  .controller('NavCtrl', ['$rootScope', '$scope', '$location', 'Session', function($rootScope, $scope, $location, Session) {
+
+    $scope.$on('user.authed', function(){
+      console.log('got user.authed event');
+      //$scope.isAuthed = true; //todo: put this higher up in a parent controller/scope
+    });
+
+
+  }])
+  .controller('SearchCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
     $scope.selected = null;
 
@@ -307,7 +327,7 @@ angular.module('myApp.controllers', [])
     });
 
   }])
-  .controller('GameDecodeDetailCtrl', ['$scope', '$sails', '$http', '$routeParams', 'mamedecoder', function($scope, $sails, $http, $routeParams, mamedecoder) {
+  .controller('GameDecodeDetailCtrl', ['$scope', '$http', '$routeParams', 'mamedecoder', function($scope, $http, $routeParams, mamedecoder) {
 
     var gameId = $routeParams.id;
     $scope.game = {};
