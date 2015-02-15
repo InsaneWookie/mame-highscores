@@ -11,7 +11,7 @@ module.exports = {
   attributes: {
 		username: { type: 'string'/*, required: true*/ },
 		password: 'string',
-		email: 'string',
+		email: { type: 'string', required: true },
 
     user_groups: {
       collection: 'UserGroup',
@@ -34,17 +34,30 @@ module.exports = {
   },
 
   beforeCreate: function(user, cb) {
+
+    if(!user.email || user.email.trim() === ''){
+      return cb("Email address cannot be empty");
+    }
+
+    if(user.password !== user.repeatPassword){
+      return cb("Passwords do not match");
+    }
+
+    User.hashPassword(user.password, salt, function(err, hash) {
+      if (err) { return cb(err); }
+
+      user.password = hash;
+      cb(null, user);
+
+    });
+  },
+
+  hashPassword: function(password, callbackFn){
     bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(user.password, salt, function(err, hash) {
+      if(err) { callbackFn(err); }
 
-        if (err) {
-          console.log(err);
-          cb(err);
-        }else{
-          user.password = hash;
-          cb(null, user);
-        }
-
+      bcrypt.hash(password, salt, function(err, hash) {
+       callbackFn(err, hash);
       });
     });
   },
@@ -91,6 +104,17 @@ module.exports = {
     //
     //  fnCallback(null, results.rows);
     //});
+  },
+
+  /**
+   * Check to see if the user has been setup correctly
+   * @param user
+   * @param callbackFn
+   */
+  isUserSetup: function(user, callbackFn){
+    UserGroup.findOne({user_id: user.id}).exec(function(err, userGroup){
+      callbackFn(err, !!userGroup)
+    });
   }
 
 

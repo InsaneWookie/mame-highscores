@@ -39,8 +39,8 @@ module.exports.sockets = {
   transports: [
     //'websocket', //for now disable websockets as openshift needs them run on a different port
     //'htmlfile',
-    'xhr-polling',
-    'jsonp-polling'
+    //'xhr-polling',
+    //'jsonp-polling'
   ],
 
 
@@ -141,7 +141,7 @@ module.exports.sockets = {
   origins: '*:*',
 
   // Should we use heartbeats to check the health of Socket.IO connections?
-  heartbeats: true,
+  heartbeats: false,
 
   // When client closes connection, the # of seconds to wait before attempting a reconnect.
   // This value is sent to the client after a successful handshake.

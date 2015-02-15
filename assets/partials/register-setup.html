@@ -1,0 +1,64 @@
+<h1>Setup</h1>
+
+<div>
+  <form class="form-horizontal" role="form">
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Group to join</label>
+      <div class="col-sm-10">
+        <select class="form-control" ng-options="group.id as group.name for group in groups track by group.id" ng-model="selectedGroup"></select>
+      </div>
+    </div>
+
+    <h3>Pick Aliases on Machine</h3>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Available Machines</label>
+      <div class="col-sm-10">
+        <select class="form-control" ng-options="machine.id as machine.name for machine in machines track by machine.id" ng-model="selectedMachine"></select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Aliases for this machine (Comma separated)</label>
+      <div class="col-sm-10">
+        <input class="form-control" ng-model="aliases"/>
+      </div>
+    </div>
+
+    <!--<h3>Add Machine</h3>-->
+
+    <!--<div class="form-group">-->
+      <!--<label class="col-sm-2 control-label">Name</label>-->
+      <!--<div class="col-sm-10">-->
+        <!--<input class="form-control" ng-model="machine.name"/>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="form-group">-->
+      <!--<label class="col-sm-2 control-label">Description</label>-->
+      <!--<div class="col-sm-10">-->
+        <!--<input class="form-control" ng-model="machine.description"/>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="form-group">-->
+      <!--<label class="col-sm-2 control-label">Alias</label>-->
+      <!--<div class="col-sm-10">-->
+        <!--<input class="form-control" ng-model="machine.usermachine.alias"/>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <!--<div class="form-group">-->
+    <!--<label class="col-sm-2 control-label">Group</label>-->
+    <!--<div class="col-sm-10">-->
+    <!--<input class="form-control" ng-model="machine.usermachine.group"/>-->
+    <!--</div>-->
+    <!--</div>-->
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button class="btn btn-default" ng-click="save()">Save</button>
+      </div>
+    </div>
+  </form>
+</div>

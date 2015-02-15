@@ -130,14 +130,9 @@ exports.connect = function (req, res, next) {
  * @param {Function} next
  */
 exports.login = function (req, identifier, password, next) {
-  var isEmail = true; //validator.isEmail(identifier);
   var query   = {};
 
-  if (isEmail) {
-    query.email = identifier;
-  } else {
-    query.username = identifier;
-  }
+  query.email = identifier;
 
   User.findOne(query, function (err, user) {
     if (err) {
@@ -145,16 +140,9 @@ exports.login = function (req, identifier, password, next) {
     }
 
     if (!user) {
-      if (isEmail) {
-        req.flash('error', 'Error.Passport.Email.NotFound');
-      } else {
-        req.flash('error', 'Error.Passport.Username.NotFound');
-      }
-
+      req.flash('error', 'Error.Passport.Username.NotFound');
       return next(null, false);
     }
-
-    //TODO: check password bcrypt.compare(password, this.password, next);
 
     return bcrypt.compare(password, user.password, function(err, isValidPassword){
       if(!err && isValidPassword){

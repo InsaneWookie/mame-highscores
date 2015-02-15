@@ -68,18 +68,26 @@ module.exports.policies = {
   UserController: {
     find: isAuthed,
     findOne: isAuthed,
-    create: isAuthed,
+    create: ['passport'],
     //update: true, //TODO: only allow update of a users own details
     profile: isAuthed,
     games: isAuthed,
     player_scores: isAuthed,
-    points: isAuthed
+    points: isAuthed,
+    register_setup: isAuthed
   },
 
   MachineController: {
     find: isAuthed,
     findOne: isAuthed,
     create: isAuthed
+  },
+
+  GroupController: {
+    find: isAuthed,
+    findOne: isAuthed,
+    create: isAuthed,
+    machine: isAuthed
   }
 
 

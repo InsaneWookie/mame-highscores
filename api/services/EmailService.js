@@ -6,6 +6,8 @@ var path           = require('path')
   , nodemailer     = require('nodemailer');
 var stubTransport = require('nodemailer-stub-transport');
 
+var crypto = require('crypto');
+
 /**
  *
  * @param {Game} game
@@ -28,6 +30,38 @@ exports.sendBeatenEmail = function (game, beatenBy, beaten, emailOptions, callba
   this.sendEmail('beaten', templateData, emailOptions, callback);
 };
 
+
+exports.resetPassword = function (user, callbackFn){
+
+  crypto.randomBytes(10, function(err, bytes){
+    if(err) { return callbackFn(err); }
+
+    var password = bytes.toString('base64');
+
+    //TODO: probably shouldnt be doing the password hashing here, should just pass the hashed password in
+    User.hashPassword(password, function(err, hash){
+      if(err) { return callbackFn(err); }
+
+      User.update(user.id, { password: hash }).exec(function(err, users){
+        if(err) { return callbackFn(err); }
+
+        var emailOptions = {
+          to: user.email,
+          subject: "Mame Highscores Password Reset"
+        };
+
+        var templateData = {
+          password: password
+        };
+
+        EmailService.sendEmail('reset-password', templateData, emailOptions, callbackFn);
+
+      });
+    });
+
+  });
+};
+
 /**
  *
  * @param templateDir
@@ -40,7 +74,7 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
   if(!options.to || options.to.trim() === ''){
     //no email so do nothing
     console.log("no to email set");
-    callback(null, null); //TODO: returning null for both params is not right
+    callback("no to address set", null);
     return;
   }
 

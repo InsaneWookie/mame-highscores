@@ -33,9 +33,9 @@ module.exports.routes = {
 
 
   // Custom routes here...
-  'get /login': 'AuthController.login',
+  //'get /login': 'AuthController.login',
   'get /logout': 'AuthController.logout',
-  'get /register': 'AuthController.register',
+  //'get /register': 'AuthController.register',
 
   'post /auth/local': 'AuthController.callback',
   'post /auth/local/:action': 'AuthController.callback',
@@ -76,6 +76,16 @@ module.exports.routes = {
   'post /score/:id/claim': {
     controller: 'score',
     action: 'claim'
+  },
+
+  'get /group/:id/machine': {
+    controller: 'group',
+    action: 'machine'
+  },
+
+  'get /group/:id/user': {
+    controller: 'group',
+    action: 'user'
   }
 
   // If a request to a URL doesn't match any of the custom routes above,

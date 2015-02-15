@@ -6,13 +6,85 @@ angular.module('myApp.controllers', [])
 
   .controller('AuthLoginCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
-    $scope.user = { email: '', password: ''};
+    //$scope.user = { email: '', password: ''};
 
-    $scope.login = function(){
-      $http.post('/auth/login', { email: $scope.user.email, passord: $scope.user.password }).success(function(data){
-        $location.path('#/home');
+    //$scope.login = function(){
+    //  $http.post('/auth/login', { email: $scope.user.email, password: $scope.user.password }).success(function(data){
+    //    $location.path('#/home');
+    //  });
+    //}
+  }])
+  .controller('AuthResetCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+    $scope.identifier = null;
+    $scope.emailSent = false;
+
+    $scope.reset = function(){
+      $http.post('/auth/reset', { email: $scope.identifier }).success(function(data){
+        $scope.emailSent = true;
       });
     }
+  }])
+  .controller('RegisterCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+    $scope.user = {};
+
+    $scope.update = function(user) {
+      //var newUser = angular.copy(user);
+      //newUser.aliases = aliases;
+
+      $http.post('/user', user).success(function (data){
+        //$location.path('/users/' + data.id );
+
+        //select group and add machine
+
+        $http.post('/auth/local', { identifier: $scope.user.email, password: $scope.user.password }).success(function(data){
+          $location.path('/register-setup');
+        });
+
+
+      });
+    };
+
+
+  }])
+  .controller('RegisterSetupCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+
+    $scope.groups = [];
+    $scope.machines = [];
+    $scope.aliases = [];
+    $scope.selectedGroup = {};
+    $scope.selectedMachine = {};
+    //
+    //$scope.user.aliases.split(',').forEach(function (alias){
+    //  aliases.push({name: alias});
+    //});
+
+    $scope.save = function(){
+      var data = {
+        group: $scope.selectedGroup,
+        machine: $scope.selectedMachine
+      };
+
+      data.machine.aliases = $scope.aliases.split(',');
+
+      $http.post('/user/register_setup', data).success(function(result){
+        $location.path('#/home');
+      });
+    };
+
+    $http.get('/group?populate=[]').success(function(groups){
+      $scope.groups = groups;
+      $scope.selectedGroup = $scope.groups[0];
+
+      //TODO: fetch other machines on group change
+      $http.get('/group/' + $scope.selectedGroup.id + '/machine').success(function(machines){
+        $scope.machines = machines;
+        $scope.selectedMachine = $scope.machines[0];
+      });
+    });
+
+
   }])
   .controller('GameListCtrl', ['$scope', '$http', function($scope, $http) {
 
@@ -244,15 +316,27 @@ angular.module('myApp.controllers', [])
       });
     };
   }])
-  .controller('UserDetailCtrl', ['$scope', '$routeParams', '$http', function($scope, $routeParams, $http) {
+  .controller('UserDetailCtrl', ['$scope', '$location', '$routeParams', '$http', 'Session', function($scope, $location, $routeParams, $http, Session) {
 
-    var userId = $routeParams.id;
+
+    var userId = null;
+    var userDataUrl = '';
+
+    //hacky hack
+    if($location.path() === '/users/profile'){
+      userId = Session.userId;
+      userDataUrl = '/user/profile'
+    } else {
+      userId = $routeParams.id;
+      userDataUrl = '/user/' + userId
+    }
+
 
     $scope.user = {};
     $scope.topGames = [];
 
 
-    $http.get('/user/' + userId ).success(function (data){
+    $http.get(userDataUrl).success(function (data){
       $scope.user = data;
     });
 
@@ -264,11 +348,11 @@ angular.module('myApp.controllers', [])
       $scope.user.points = data.total_points;
     });
 
-    $http.get('/usermachine', { populate: ['machine', 'group'], user: userId }).success(function(data){
+    $http.get('/usermachine', { params: {populate: ['machine', 'group'], user: userId }}).success(function(data){
       $scope.usermachines = data;
     });
 
-    $http.get('/usergroup', { populate: ['group'], user: userId }).success(function(data){
+    $http.get('/usergroup', { params: { populate: ['group'], user: userId } }).success(function(data){
       $scope.usergroups = data;
     });
     //$http.get('/machine?populate=[]').success(function(data){
@@ -501,5 +585,21 @@ angular.module('myApp.controllers', [])
         $location.path('/users/' + userId);
       });
     }
+
+  }])
+  .controller('GroupDetailCtrl', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams){
+
+    var groupId = $routeParams.id;
+
+    $scope.group = {};
+    $scope.users = [];
+
+    $http.get('/group/' + groupId).success(function(group){
+      $scope.group = group;
+    });
+
+    $http.get('/group/' + groupId +  '/user').success(function(users){
+      $scope.users = users;
+    });
 
   }]);

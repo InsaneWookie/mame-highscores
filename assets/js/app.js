@@ -10,7 +10,7 @@ angular.module('myApp', [
 
   'cgBusy',
 
-  'ngSails',
+  //'ngSails',
   'myApp.filters',
   'myApp.services',
   'myApp.directives',
@@ -23,6 +23,7 @@ angular.module('myApp', [
 
       $routeProvider.when('/login', {templateUrl: 'partials/auth-login.html', controller: 'AuthLoginCtrl'});
       //$routeProvider.when('/logout', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'});
+      $routeProvider.when('/login/reset', {templateUrl: 'partials/auth-reset.html', controller: 'AuthResetCtrl'});
 
       $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'HomeCtrl'});
       $routeProvider.when('/settings', {templateUrl: 'partials/settings.html', controller: 'SettingsCtrl'});
@@ -41,6 +42,7 @@ angular.module('myApp', [
       $routeProvider.when('/create-user', {templateUrl: 'partials/user-create.html', controller: 'UserCreateCtrl'});
       $routeProvider.when('/users', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
       $routeProvider.when('/users/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
+      $routeProvider.when('/users/profile', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
       $routeProvider.when('/users/alias/:aliasId', {
         templateUrl: 'partials/user-detail.html',
         controller: 'UserDetailCtrl'
@@ -56,9 +58,19 @@ angular.module('myApp', [
         controller: 'GroupCreateCtrl'
       });
 
-      $routeProvider.when('/sign-up', {
-        templateUrl: 'partials/sign-up.html',
-        controller: 'SignUpCtrl'
+      $routeProvider.when('/groups/:id', {
+        templateUrl: 'partials/group-detail.html',
+        controller: 'GroupDetailCtrl'
+      });
+
+      $routeProvider.when('/register', {
+        templateUrl: 'partials/user-create.html',
+        controller: 'RegisterCtrl'
+      });
+
+      $routeProvider.when('/register-setup', {
+        templateUrl: 'partials/register-setup.html',
+        controller: 'RegisterSetupCtrl'
       });
 
 

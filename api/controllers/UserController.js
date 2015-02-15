@@ -82,6 +82,50 @@ module.exports = {
 
       res.json(userPoints[0]);
     });
+  },
+
+  register_setup: function(req,res){
+
+    var params = req.allParams();
+
+    //add the user to the group
+
+    var loggedInUser = req.user;
+
+    var groupId = params.group.id;
+    var machineId = params.machine.id;
+    var aliases = _.map(params.machine.aliases, function (val) { return val.toUpperCase(); } );
+
+    var userGroup = {
+      group_id: groupId,
+      user_id: loggedInUser.id
+    };
+
+    var userMachine = {
+      group_id: groupId,
+      user_id: loggedInUser.id,
+      machine_id: machineId
+    };
+
+    var userMachines = [];
+
+    aliases.forEach(function(alias){
+      var um = _.clone(userMachine);
+      um.alias = alias;
+      userMachines.push(um)
+    });
+
+
+    UserGroup.create(userGroup).exec(function(err, newUserGroup){
+      if(err) { return res.serverError(err); }
+      //add the aliases to the machine for this group
+      UserMachine.create(userMachines).exec(function(err, newUserMachines){
+        if(err) { return res.serverError(err); }
+
+         res.ok({});
+      });
+      
+    });
   }
 
 };

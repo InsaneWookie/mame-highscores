@@ -32,7 +32,7 @@
               <th>Alias</th>
             </tr>
             <tr ng-repeat="usermachine in usermachines">
-              <td><a href="#/machine/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
+              <td><a href="#/machines/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
               <td>{{usermachine.group.name}}</td>
               <td>{{usermachine.alias}}</td>
             </tr>
@@ -49,7 +49,7 @@
               <th>Date Created</th>
             </tr>
             <tr ng-repeat="usergroup in usergroups">
-              <td><a href="#/group/{{usergroup.group.id}}">{{usergroup.group.name}}</a></td>
+              <td><a href="#/groups/{{usergroup.group.id}}">{{usergroup.group.name}}</a></td>
               <td>{{usergroup.group.description}}</td>
               <td>{{usergroup.group.createdAt}}</td>
             </tr>
