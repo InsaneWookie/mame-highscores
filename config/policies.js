@@ -14,6 +14,7 @@
  */
 
 var isAuthed = ['passport', 'sessionAuth'];
+// var isAuthed = ['passport'];
 module.exports.policies = {
 
   // Default policy for all controllers and actions
@@ -80,7 +81,8 @@ module.exports.policies = {
   MachineController: {
     find: isAuthed,
     findOne: isAuthed,
-    create: isAuthed
+    create: isAuthed,
+    new_key: isAuthed
   },
 
   GroupController: {
@@ -88,6 +90,16 @@ module.exports.policies = {
     findOne: isAuthed,
     create: isAuthed,
     machine: isAuthed
+  },
+
+  UserMachine: {
+    find: isAuthed,
+    findOne: isAuthed
+  },
+
+  UserGroup: {
+    find: isAuthed,
+    findOne: isAuthed
   }
 
 

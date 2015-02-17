@@ -1,3 +1,5 @@
+
+var uuid = require('node-uuid');
 /**
 * Machine.js
 *
@@ -10,6 +12,8 @@ module.exports = {
   attributes: {
     name: 'string',
     description: 'string',
+    api_key: 'string',
+    secret_key: 'string',
 
     scores: {
       collection: 'Score',
@@ -19,7 +23,17 @@ module.exports = {
     usermachine: {
       collection: "UserMachine",
       via: 'machine'
+    },
+
+    toJSON: function() {
+      var obj = this.toObject();
+      delete obj.secret_key;
+      return obj;
     }
+  },
+
+  generateApiKey: function(){
+    return uuid.v4();
   }
 };
 

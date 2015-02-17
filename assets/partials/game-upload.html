@@ -8,7 +8,7 @@
       <div class="form-group">
         <input class="form-control" type='file' name='game'/>
         <select class="form-control" name="apikey">
-          <option ng-repeat="machine in machines" value="machine.id">{{machine.name}}</option>
+          <option ng-repeat="machine in machines" value="{{machine.api_key}}">{{machine.name}}</option>
         </select>
       </div>
       <div class="form-group">

@@ -86,6 +86,11 @@ module.exports.routes = {
   'get /group/:id/user': {
     controller: 'group',
     action: 'user'
+  },
+
+  'post /machine/:id/new_key': {
+    controller: 'machine',
+    action: 'new_key'
   }
 
   // If a request to a URL doesn't match any of the custom routes above,

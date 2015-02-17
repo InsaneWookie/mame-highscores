@@ -73,6 +73,11 @@ angular.module('myApp', [
         controller: 'RegisterSetupCtrl'
       });
 
+    $routeProvider.when('/machines/:id', {
+      templateUrl: 'partials/machine-detail.html',
+      controller: 'MachineDetailCtrl'
+    });
+
 
       $routeProvider.otherwise({redirectTo: '/home'});
     }]).value('cgBusyDefaults', {

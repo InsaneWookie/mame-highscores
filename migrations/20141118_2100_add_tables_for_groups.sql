@@ -26,7 +26,7 @@ INSERT INTO user_group (group_id, user_id, "createdAt", "updatedAt") SELECT 1, i
 
 CREATE TABLE machine (
   id serial PRIMARY KEY,
-  api_key TEXT,
+  api_key TEXT UNIQUE,
   secret_key TEXT,
   name TEXT,
   description TEXT,

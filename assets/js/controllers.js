@@ -366,9 +366,11 @@ angular.module('myApp.controllers', [])
   }])
   .controller('GameUploadCtrl', ['$scope', '$http', function($scope, $http) {
     $scope.machines = [];
+    $scope.selectedMachine = {};
 
-    $http.get('/machine?populate=[]', { populate: [] }).success(function(machines){
+    $http.get('/machine', { params: { populate: [], where: {api_key: {'!': null} } } }).success(function(machines){
       $scope.machines = machines;
+      $scope.selectedMachine = $scope.machines[0]
     })
   }])
   .controller('UserListCtrl', ['$scope', '$http', function($scope, $http) {
@@ -568,6 +570,24 @@ angular.module('myApp.controllers', [])
         $location.path('/users/' + userId);
       });
     }
+
+  }])
+  .controller('MachineDetailCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
+
+    var machineId = $routeParams.id;
+
+    $scope.machine = {};
+
+
+    $scope.generate = function(){
+      $http.post('/machine/' + machineId + '/new_key', {}).success(function(machine){
+        $scope.machine = machine;
+      });
+    };
+
+    $http.get('/machine/' + machineId).success(function(machine){
+      $scope.machine = machine
+    });
 
   }])
   .controller('GroupCreateCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){

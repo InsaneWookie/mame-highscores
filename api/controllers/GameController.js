@@ -64,7 +64,7 @@ module.exports = {
 
     req.file('game').upload(function (err, files) {
 
-      if (err) return res.serverError(err);
+      if (err) { return res.serverError(err); }
 
       var file = files[0]; //hopefully only one file
 
@@ -80,11 +80,9 @@ module.exports = {
         gameName = fileName.substring(0, fileName.lastIndexOf('.'));
       }
 
-
-      //TODO: need to find the machine by api key but for now just get it by id
       async.parallel({
         machine: function(next){
-          Machine.findOneById(1).exec(function(err, machine){
+          Machine.findOne({ api_key: apiKey }).exec(function(err, machine){
             next(err, machine);
           });
         },
@@ -95,21 +93,20 @@ module.exports = {
         }
       },
       function(error, results){
-        if(error){
-          res.notFound("Game or machine does not exist");
-        } else {
-          var game = results.game;
-          var machine = results.machine;
+        if(error){ return res.notFound("Game or machine does not exist"); }
 
-          fs.readFile(filePath, {}, function(err, rawBuffer){
+        var game = results.game;
+        var machine = results.machine;
 
-            if(err) return res.serverError("Problem reading file");
+        fs.readFile(filePath, {}, function(err, rawBuffer){
 
-            Game.uploadScores(rawBuffer, fileType, game, machine, function(err, savedScores){
-              if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
-            });
+          if(err) return res.serverError("Problem reading file");
+
+          Game.uploadScores(rawBuffer, fileType, game, machine, function(err, savedScores){
+            if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
           });
-        }
+        });
+
       });
 
     });
