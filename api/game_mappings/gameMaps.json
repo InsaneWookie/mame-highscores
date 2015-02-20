@@ -4435,70 +4435,16 @@
           "format": "fromCharMap",
           "settings": {
             "charMap": "upper",
-            "convert2To3": true
-
+            "offset": "01",
+            "convert2To3": true,
+            "reverse": true,
+            "special": {"FF": ""}
           }
         },
         {
           "name": "score",
           "bytes": 3,
           "format": "reverseDecimal"
-        }
-      ]
-    }
-  },
-  {
-    "name": [
-      "agress",
-      "agressb"
-    ],
-    "structure": {
-      "blocks": 1,
-      "fields": [
-        {
-          "name": "score",
-          "bytes": 4,
-          "format": "hexToDecimal"
-        }
-      ]
-    }
-  },
-  {
-    "name": [
-      "airwolf",
-      "airwolfa",
-      "skywolf",
-      "skywolf2"
-    ],
-    "structure": {
-      "blocks": 5,
-      "fields": [
-        {
-          "name": "score",
-          "bytes": 7,
-          "format": "<unknown:airwolf>"
-        },
-        {
-          "name": "unuseda",
-          "bytes": 1
-        },
-        {
-          "name": "name",
-          "bytes": 10,
-          "format": "ascii",
-          "settings": {
-            "special": {
-              "40": " ",
-              "5B": ".",
-              "5C": ",",
-              "5D": "¦",
-              "5E": "‾"
-            }
-          }
-        },
-        {
-          "name": "unusedb",
-          "bytes": 1
         }
       ]
     }
@@ -4520,14 +4466,15 @@
               {
                 "name": "score",
                 "bytes": 3,
-                "format": "asIs"
+                "format": "asIs",
+                "settings": { "append": "0" }
               }
             ]
           }
         },
         {
           "structure": {
-            "blocks": 9,
+            "blocks": 10,
             "fields": [
               {
                 "name": "name",
@@ -4545,24 +4492,8 @@
               }
             ]
           }
-        },
-        {
-          "structure": {
-            "blocks": 1,
-            "fields": [
-              {
-                "name": "name",
-                "bytes": 3,
-                "format": "ascii",
-                "settings": {
-                  "special": {
-                    "2A": "♥"
-                  }
-                }
-              }
-            ]
-          }
         }
+
       ]
     }
   },
@@ -4574,6 +4505,7 @@
     ],
     "structure": {
       "blocks": 3,
+      "skip": 3,
       "fields": [
         {
           "name": "score",
@@ -4583,9 +4515,8 @@
         {
           "name": "name",
           "bytes": 3,
-          "format": "fromCharMap",
+          "format": "specialOnly",
           "settings": {
-            "charMap": "<unknown:>",
             "special": {
               "10": "1",
               "11": "F",
@@ -4660,6 +4591,7 @@
     ],
     "structure": {
       "blocks": 20,
+      "skip": 3,
       "fields": [
         {
           "name": "score",
@@ -7437,6 +7369,32 @@
               }
             ]
           }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "zookeep"
+    ],
+    "fileType": "nv",
+    "structure": {
+      "blocks": 10,
+      "skip": 608,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "packedBcd"
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "ascii"
+        },
+        {
+          "name": "skip",
+          "bytes": 1
         }
       ]
     }

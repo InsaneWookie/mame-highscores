@@ -224,6 +224,9 @@ ScoreDecoder.prototype.decodeBytes = function(bytes, format, settings){
 		case 'ascii':
 			value = this.decodeAscii(bytes, settings); 
 			break;
+		case 'specialOnly':
+			value = this.decodeSpecialOnly(bytes, settings);
+			break;
 		case 'fromCharMap':
 			value = this.decodeFromCharMap(bytes, settings.charMap, settings);
 			break;
@@ -353,7 +356,7 @@ ScoreDecoder.prototype.addDivider = function(bytes, settings){
 	}
 
 	return bytes;
-}
+};
 
 
 ScoreDecoder.prototype.postProcessValue = function(value, settings){
@@ -470,7 +473,35 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	return name;
 };
 
+//TODO: this function is very similar to decodeFromCharMap
+ScoreDecoder.prototype.decodeSpecialOnly = function(byteArray, specialOptions){
 
+	var specialChars = ('special' in specialOptions) ? specialOptions.special : null;
+
+	if(!specialChars){
+		console.log('no special chars');
+		return "";
+	}
+
+	var name = "";
+
+	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
+
+		var specialCharValue = new Buffer(1);
+		specialCharValue[0] = byteArray[mapIndex];
+
+		var value = specialCharValue.toString('hex').toUpperCase();
+
+		if(value in specialChars){
+			name += this.getSpecialChar(specialChars, value);
+		} else {
+				console.log("invalid char");
+				name += "[" + value + "]"; //just print the orginal byte from the file (this may have been offset tho)
+		}
+	}
+
+	return name;
+};
 
 
 ScoreDecoder.prototype.decodeHexToDecimal = function(hexString, specialSettings){
@@ -498,12 +529,6 @@ ScoreDecoder.prototype.decodeReverseDecimal = function(hexString, specialSetting
 
 	return reversedString.replace(/^0+/,'');
 };
-
-
-ScoreDecoder.prototype.decodeSpecialOnly = function(){
-	//TODO: probably not worth worring about this one at the moment
-};
-
 
 
 ScoreDecoder.prototype.decodeCustom = function(bytes, gameName){
