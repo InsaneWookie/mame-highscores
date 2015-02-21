@@ -1,4 +1,4 @@
-BEGIN; 
+BEGIN;
 
 CREATE TABLE "group" (
   id serial PRIMARY KEY,
@@ -59,6 +59,7 @@ CREATE TABLE user_machine (
 INSERT INTO user_machine (user_id, group_id, machine_id, alias, "createdAt", "updatedAt")
 SELECT user_id, 1, 1, name, NOW(), NOW() FROM alias;
 
+ALTER TABLE "user" ADD COLUMN is_admin boolean DEFAULT false NOT NULL;
 
 -- need a machine id on the score so we know what machine a score is for
 ALTER TABLE score ADD COLUMN machine_id integer REFERENCES machine(id);
@@ -67,6 +68,8 @@ UPDATE score SET machine_id = 1;
 -- convert the alias id into a var char as we are useding the name of the alias as the id now
 ALTER TABLE score DROP CONSTRAINT score_alias_id_fkey;
 ALTER TABLE score ADD COLUMN alias VARCHAR;
+
+ALTER TABLE score DROP COLUMN rank;
 
 
 ALTER TABLE rawscore ADD COLUMN machine_id integer REFERENCES machine(id);

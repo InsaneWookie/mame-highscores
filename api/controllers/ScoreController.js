@@ -12,11 +12,28 @@ module.exports = {
     console.log(req.allParams());
 
     var findParams = req.allParams();
+    var gameId = findParams.game;
 
-    Score.findByUser(1, findParams, function(err, scores){
+    //Score.findByUser(1, findParams, function(err, scores){
+    //  if(err) { return res.serverError(err); }
+    //  res.json(scores);
+    //});
+
+
+
+    var query = "SELECT *, rank() \
+    OVER (PARTITION BY s.game_id, mgroup.group_id \
+    ORDER BY (0 || regexp_replace(s.score, E'[^0-9]+','','g'))::bigint DESC ) as rank \
+    FROM score s, \
+      (SELECT DISTINCT group_id, machine_id FROM user_machine um) mgroup \
+    WHERE s.machine_id = mgroup.machine_id AND s.game_id = $1 \
+    ORDER BY rank ASC";
+    User.query(query, [gameId], function(err, scores){
       if(err) { return res.serverError(err); }
-      res.json(scores);
-    });
+
+      res.json(scores.rows);
+    })
+
 
   },
 

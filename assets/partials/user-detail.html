@@ -1,7 +1,12 @@
 <h2> {{user.username}} </h2>
 <h4> Email: {{user.email}} </h4>
 <h4> Aliases: <span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></h4>
-<h4> Points: {{user.points}}</h4>
+<!--<h4> Points: {{user.points}}</h4>-->
+
+<!-- no notifications for now -->
+<!--<div class="row">-->
+  <!--<button type="button" class="btn btn-default" ng-click="enableNotifications()">Enable Notifications</button>-->
+<!--</div>-->
 
 <a href="/#/users/{{user.id}}/machine-create">Add Arcade Machine</a><br>
 <a href="/#/users/{{user.id}}/group-create">Create Group</a><br>
@@ -23,18 +28,18 @@
           </table>
         </div>
       </tab>
-      <tab heading="Machines">
+      <tab heading="Aliases">
         <div>
           <table class="table table-striped">
             <tr>
+              <th>Alias</th>
               <th>Machine</th>
               <th>Group</th>
-              <th>Alias</th>
             </tr>
             <tr ng-repeat="usermachine in usermachines">
-              <td><a href="#/machines/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
-              <td>{{usermachine.group.name}}</td>
               <td>{{usermachine.alias}}</td>
+              <td><a href="#/machines/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
+              <td><a href="#/groups/{{usermachine.group.id}}">{{usermachine.group.name}}</a></td>
             </tr>
           </table>
         </div>

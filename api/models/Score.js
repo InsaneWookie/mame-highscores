@@ -41,6 +41,8 @@ module.exports = {
   },
 
 
+
+
   findByUser: function(user, findParams, callbackFn){
 
     var userId = (typeof user === 'object') ? user.id : user;

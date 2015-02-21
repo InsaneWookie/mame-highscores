@@ -352,6 +352,7 @@ angular.module('myApp.controllers', [])
       $scope.usermachines = data;
     });
 
+
     $http.get('/usergroup', { params: { populate: ['group'], user: userId } }).success(function(data){
       $scope.usergroups = data;
     });
@@ -359,6 +360,16 @@ angular.module('myApp.controllers', [])
     //
     //  $scope.machines = data;
     //});
+
+    //TODO: notifications currently disabled due to socket io being disabled
+    $scope.enableNotifications = function(){
+      Notification.requestPermission(function (status) {
+        // This allows to use Notification.permission with Chrome/Safari
+        if (Notification.permission !== status) {
+          Notification.permission = status;
+        }
+      });
+    };
 
   }])
   .controller('SettingsCtrl', ['$scope', '$http', function($scope, $http) {

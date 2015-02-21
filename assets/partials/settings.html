@@ -1,18 +1,3 @@
   
   <h1>Settings</h1>
 
-  <div class="row">
-    <button type="button" id="enable-notifications" class="btn btn-default">Enable Notifications</button>
-
-    <!-- TODO: this should probaby be done the anular way -->
-    <script type="text/javascript">
-      $('#enable-notifications').click(function(){
-        Notification.requestPermission(function (status) {
-          // This allows to use Notification.permission with Chrome/Safari
-          if (Notification.permission !== status) {
-            Notification.permission = status;
-          }
-        });
-      });
-    </script>
-</div>

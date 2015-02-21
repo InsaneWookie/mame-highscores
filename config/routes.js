@@ -58,6 +58,11 @@ module.exports.routes = {
     action: 'points'
   },
 
+  'get /user/:id/machine': {
+    controller: 'user',
+    action: 'machine'
+  },
+
   'post /game/upload' : {
     controller: 'game',
     action: 'upload'

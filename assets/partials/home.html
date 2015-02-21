@@ -46,10 +46,12 @@
        <table class="table table-striped">
          <tr>
            <th>User</th>
+           <th>Group</th>
            <th>Points</th>
          </tr>
          <tr ng-repeat="player in topPlayers">
              <td><a href='#/users/{{player.id}}'>{{player.username}}</a></td>
+             <td><a href='#/groups/{{player.group_id}}'>{{player.group_name}}</a></td>
              <td>{{player.total_points}}</td>
          </tr>
        </table>
