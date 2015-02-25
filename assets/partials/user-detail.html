@@ -29,17 +29,16 @@
         </div>
       </tab>
       <tab heading="Aliases">
+        <button ng-click="openAddAlias(user)">Add Alias</button>
         <div>
           <table class="table table-striped">
             <tr>
               <th>Alias</th>
               <th>Machine</th>
-              <th>Group</th>
             </tr>
             <tr ng-repeat="usermachine in usermachines">
               <td>{{usermachine.alias}}</td>
               <td><a href="#/machines/{{usermachine.machine.id}}">{{usermachine.machine.name}}</a></td>
-              <td><a href="#/groups/{{usermachine.group.id}}">{{usermachine.group.name}}</a></td>
             </tr>
           </table>
         </div>
@@ -64,3 +63,16 @@
       </tab>
     </tabset>
 
+<script type="text/ng-template" id="user-addalias.html">
+  <div class="modal-header">
+    <h3 class="modal-title">New Alias</h3>
+  </div>
+  <div class="modal-body form-horizontal">
+    <input class="form-control" type="text" name="alias" ng-model="alias" required placeholder="Alias"><br>
+    <label>Machine</label><select class="form-control" name="machine" ng-model="selectedMachine" required ng-options="machine.name for machine in machines" ></select><br>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>

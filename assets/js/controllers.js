@@ -316,7 +316,7 @@ angular.module('myApp.controllers', [])
       });
     };
   }])
-  .controller('UserDetailCtrl', ['$scope', '$location', '$routeParams', '$http', 'Session', function($scope, $location, $routeParams, $http, Session) {
+  .controller('UserDetailCtrl', ['$scope', '$location', '$routeParams', '$http', '$modal', 'Session', function($scope, $location, $routeParams, $http, $modal, Session) {
 
 
     var userId = null;
@@ -348,10 +348,9 @@ angular.module('myApp.controllers', [])
       $scope.user.points = data.total_points;
     });
 
-    $http.get('/usermachine', { params: {populate: ['machine', 'group'], user: userId }}).success(function(data){
+    $http.get('/usermachine', { params: {populate: ['machine'], user: userId }}).success(function(data){
       $scope.usermachines = data;
     });
-
 
     $http.get('/usergroup', { params: { populate: ['group'], user: userId } }).success(function(data){
       $scope.usergroups = data;
@@ -371,6 +370,58 @@ angular.module('myApp.controllers', [])
       });
     };
 
+
+    $scope.openAddAlias = function(user){
+
+      var modalInstance = $modal.open({
+        templateUrl: 'user-addalias.html',
+        controller: 'AddAliasModalInstanceCtrl',
+
+        resolve: {
+          currentUser: function () {
+            return user;
+          }
+        }
+      });
+
+      modalInstance.result.then(function (newAlias) {
+        //need to save the score
+        $http.post('/usermachine/', newAlias).success(function(addedAlias){
+          //console.log(addedAlias);
+          //refresh the alias table
+          $http.get('/usermachine', { params: { populate: ['machine'], user: userId }}).success(function(data){
+            $scope.usermachines = data;
+          });
+
+        });
+      }, function () {
+      });
+
+    };
+
+  }])
+  .controller('AddAliasModalInstanceCtrl', ['$scope', '$modalInstance', '$http', 'currentUser', function($scope, $modalInstance, $http, currentUser){
+
+    $scope.alias = "";
+    $scope.selectedMachine = {};
+    $scope.selectedGroup = {};
+
+    $scope.machines = [];
+    $scope.groups = [];
+
+    $http.get('/machine').success(function(machines){
+      $scope.machines = machines;
+      $scope.selectedMachine = $scope.machines[0];
+    });
+
+    $scope.save = function () {
+      $modalInstance.close({ alias : $scope.alias, machine: $scope.selectedMachine, user: currentUser});
+    };
+
+    $scope.cancel = function () {
+
+      $modalInstance.dismiss('cancel');
+    };
   }])
   .controller('SettingsCtrl', ['$scope', '$http', function($scope, $http) {
     //do nothin fo now, settings page is just for enabling notifications
@@ -571,6 +622,8 @@ angular.module('myApp.controllers', [])
   .controller('MachineCreateCtrl', ['$scope', '$http', '$location', '$routeParams', function($scope, $http, $location, $routeParams){
 
     var userId = $routeParams.id;
+
+    //TODO: allow the multiple aliases
 
     $scope.machine = {
       usermachine: { alias: null, user: userId}

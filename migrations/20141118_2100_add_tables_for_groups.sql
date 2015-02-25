@@ -18,7 +18,8 @@ CREATE TABLE user_group (
   group_id integer NOT NULL REFERENCES "group"(id),
   user_id integer NOT NULL REFERENCES "user"(id),
   "createdAt" timestamp with time zone,
-  "updatedAt" timestamp with time zone
+  "updatedAt" timestamp with time zone,
+  UNIQUE (group_id, user_id)
 );
 
 
@@ -52,7 +53,9 @@ CREATE TABLE user_machine (
   machine_id integer,
   alias varchar,
   "createdAt" timestamp with time zone,
-  "updatedAt" timestamp with time zone
+  "updatedAt" timestamp with time zone,
+  UNIQUE(user_id, machine_id, alias),
+  FOREIGN KEY (group_id, user_id) REFERENCES user_group (group_id, user_id),
 );
 
 -- we are bascally converting the alias table into this with some new columns
@@ -90,6 +93,12 @@ ALTER TABLE score DROP COLUMN alias_id;
 
 -- alias is no longer needed as the user_machine takes care of that
 DROP TABLE alias;
+
+-- view to make queries easier
+CREATE VIEW machine_group AS
+SELECT DISTINCT ug.group_id, um.machine_id
+FROM user_machine um, user_group ug
+WHERE um.user_id = ug.user_id
 
 COMMIT;
 
