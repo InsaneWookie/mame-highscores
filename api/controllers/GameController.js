@@ -26,9 +26,42 @@ module.exports = {
   },
 
   game_list: function(req, res){
-    //TODO: use this it replace the game list as its quite slow
-    //var queryString = 'SELECT g.id, g.name, g.full_name, a.alias, s.score'
-    //Game.query
+    var userId = 1;
+
+    var query = "select g.*, us.id score_id, us.alias, us.score, us.\"createdAt\" \"score_createdAt\" from game g, \
+    (SELECT *, ROW_NUMBER() OVER(PARTITION BY user_id, game_id \
+    ORDER BY user_id, game_id, rank ASC) AS row_num \
+    FROM user_score) us \
+    where g.id = us.game_id \
+    and us.user_id = $1 \
+    and us.row_num = 1\
+    ORDER BY full_name ASC";
+
+    Game.query(query, [userId], function(err, result){
+      if(err) { return res.serverError(err); }
+
+      //make the structure a bit better
+      result.rows.forEach(function(game){
+        game.scores = [];
+
+        game.scores.push({
+          id: game.score_id,
+          alias: game.alias,
+          score: game.score,
+          createdAt: game.score_createdAt
+        });
+
+        delete game.score_id;
+        delete game.alias;
+        delete game.score;
+        delete game.score_createdAt;
+        delete game.row_num;
+
+      });
+
+      res.json(result.rows);
+    });
+
   },
 
   top_players: function (req, res) {
@@ -39,6 +72,8 @@ module.exports = {
       res.json(topPlayers);
     });
   },
+
+
 
   play_count: function(req, res){
     var userId = 1;

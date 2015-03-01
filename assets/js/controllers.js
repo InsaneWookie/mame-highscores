@@ -93,14 +93,15 @@ angular.module('myApp.controllers', [])
 
 	  $scope.games = [];
 
-    $scope.loadingPromise = $http.get('/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').success(function (data) {
+    //$scope.loadingPromise = $http.get('/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').success(function (data) {
+    $scope.loadingPromise = $http.get('/game/game_list').success(function (data) {
 
       //need to sort the scores so we get the first one
       //probably should do this on the backend
       data.forEach(function(game){
-        game.scores.sort(function(a, b){
-          return a.rank - b.rank;
-        });
+        //game.scores.sort(function(a, b){
+        //  return a.rank - b.rank;
+        //});
 
         //games.push({id: game.id, name: game.name, full_name: game.full_name, scores: [game.scores[0]]});
       });
@@ -121,7 +122,7 @@ angular.module('myApp.controllers', [])
     $scope.clones = [];
 
     function getScores(gameId){
-      return $http.get("/score?sort=rank ASC&game=" + gameId)
+      return $http.get("/score?game=" + gameId)
         .error(function (data) {
           console.error(data);
         });
@@ -297,6 +298,28 @@ angular.module('myApp.controllers', [])
 
 
   }])
+  .controller('GameMasonryCtrl', ['$scope', '$routeParams', '$http', '$modal', function($scope, $routeParams, $http, $modal) {
+
+    $scope.latestScores = [];
+
+    $http.get('/game?sort=last_played DESC&limit=30&where={"has_mapping": true, "last_played": {"!": null}}').success(function (data){
+
+      data.forEach(function(game){
+        game.imgUrl = "http://sifty.tk/hiscores/titles/" + (game.clone_of_name ? game.clone_of_name : game.name) + ".png";
+
+        game.scores.sort(function(a, b){
+          return b.score - a.score;
+        });
+
+        //remove all but the top score
+        //game.scores = game.scores.slice(0, 1);
+      });
+
+      $scope.latestScores = data;
+
+
+    });
+  }])
   .controller('UserCreateCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 
     $scope.user = {};
@@ -387,17 +410,37 @@ angular.module('myApp.controllers', [])
       modalInstance.result.then(function (newAlias) {
         //need to save the score
         $http.post('/usermachine/', newAlias).success(function(addedAlias){
-          //console.log(addedAlias);
           //refresh the alias table
           $http.get('/usermachine', { params: { populate: ['machine'], user: userId }}).success(function(data){
             $scope.usermachines = data;
           });
-
         });
-      }, function () {
+      });
+    };
+
+    $scope.openJoinGroup = function(user){
+
+      var modalInstance = $modal.open({
+        templateUrl: 'user-joingroup.html',
+        controller: 'JoinGroupModalInstanceCtrl',
+
+        //resolve: {
+        //  newGroup: function () {
+        //    return group;
+        //  }
+        //}
       });
 
+      modalInstance.result.then(function (selectedGroup) {
+        $http.post('/usergroup', { group: selectedGroup.id, user: userId}).success(function(userGroup){
+          //mmm copy paste
+          $http.get('/usergroup', { params: { populate: ['group'], user: userId } }).success(function(data){
+            $scope.usergroups = data;
+          });
+        });
+      });
     };
+
 
   }])
   .controller('AddAliasModalInstanceCtrl', ['$scope', '$modalInstance', '$http', 'currentUser', function($scope, $modalInstance, $http, currentUser){
@@ -422,6 +465,23 @@ angular.module('myApp.controllers', [])
 
       $modalInstance.dismiss('cancel');
     };
+  }])
+  .controller('JoinGroupModalInstanceCtrl', ['$scope', '$modalInstance', '$http', function($scope, $modalInstance, $http){
+
+    $scope.groups = [];
+    $scope.group = {};
+
+    $http.get('/group').success(function(groups){
+      $scope.groups = groups;
+      $scope.group = $scope.groups[0];
+    });
+
+    $scope.save = function () {
+      $modalInstance.close($scope.group);
+    };
+
+    $scope.cancel = $modalInstance.dismiss;
+
   }])
   .controller('SettingsCtrl', ['$scope', '$http', function($scope, $http) {
     //do nothin fo now, settings page is just for enabling notifications

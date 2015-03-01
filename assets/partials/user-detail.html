@@ -10,6 +10,7 @@
 
 <a href="/#/users/{{user.id}}/machine-create">Add Arcade Machine</a><br>
 <a href="/#/users/{{user.id}}/group-create">Create Group</a><br>
+<a href="" ng-click="openJoinGroup(user)">Join Group</a><br>
 
     <tabset>
       <tab heading="Top Scores">
@@ -74,5 +75,18 @@
   <div class="modal-footer">
     <button class="btn btn-primary" ng-click="save()">Save</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="user-joingroup.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Join Group</h3>
+  </div>
+  <div class="modal-body form-horizontal">
+    <label>Groups</label><select class="form-control" name="group" ng-model="group" ng-options="group.name for group in groups" required></select><br>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="save()">Save</button>
+    <button class="btn btn-warning" ng-click="cancel('cancel')">Cancel</button>
   </div>
 </script>

@@ -8,10 +8,10 @@
 module.exports = {
 
   attributes: {
-    rank: 'integer',
+    //rank: 'integer',
     name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
-    alias: 'string', //this is upercased name used to foreign key on user machine
+    alias: 'string', //this is uppercase name used to foreign key on user machine
 
     game: {
       model: 'Game',

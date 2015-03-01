@@ -10,6 +10,8 @@ angular.module('myApp', [
 
   'cgBusy',
 
+  'wu.masonry',
+
   //'ngSails',
   'myApp.filters',
   'myApp.services',
@@ -32,7 +34,9 @@ angular.module('myApp', [
       $routeProvider.when('/admin', {templateUrl: 'partials/admin.html', controller: 'AdminCtrl'});
 
       $routeProvider.when('/games', {templateUrl: 'partials/game-list.html', controller: 'GameListCtrl'});
+      $routeProvider.when('/games/masonry', {templateUrl: 'partials/game-masonry.html', controller: 'GameMasonryCtrl'});
       $routeProvider.when('/games/:id', {templateUrl: 'partials/game-detail.html', controller: 'GameDetailCtrl'});
+
 
       $routeProvider.when('/games/:id/decode', {
         templateUrl: 'partials/gamedecoding-detail.html',

@@ -100,6 +100,20 @@ SELECT DISTINCT ug.group_id, um.machine_id
 FROM user_machine um, user_group ug
 WHERE um.user_id = ug.user_id
 
+-- gets all the scores for all groups that a user is in (with score rank)
+CREATE OR REPLACE VIEW user_score AS
+SELECT machines_for_user.user_id, s.*, rank()
+OVER (PARTITION BY s.game_id, machines_for_user.user_id
+ORDER BY (0 || regexp_replace(s.score, E'[^0-9]+','','g'))::bigint DESC ) as rank
+FROM
+( SELECT DISTINCT  um.machine_id, ug.user_id
+FROM user_machine um, user_group ug
+WHERE um.user_id = ug.user_id
+order by um.machine_id, ug.user_id) machines_for_user,
+score s
+WHERE
+machines_for_user.machine_id = s.machine_id;
+
 COMMIT;
 
 

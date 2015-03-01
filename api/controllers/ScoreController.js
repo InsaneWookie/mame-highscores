@@ -14,21 +14,19 @@ module.exports = {
     var findParams = req.allParams();
     var gameId = findParams.game;
 
-    //Score.findByUser(1, findParams, function(err, scores){
-    //  if(err) { return res.serverError(err); }
-    //  res.json(scores);
-    //});
-
-
-
     var query = "SELECT *, rank() \
-    OVER (PARTITION BY s.game_id, mgroup.group_id \
+    OVER (PARTITION BY s.game_id \
     ORDER BY (0 || regexp_replace(s.score, E'[^0-9]+','','g'))::bigint DESC ) as rank \
-    FROM score s, \
-      (SELECT DISTINCT group_id, machine_id FROM user_machine um) mgroup \
-    WHERE s.machine_id = mgroup.machine_id AND s.game_id = $1 \
-    ORDER BY rank ASC";
-    User.query(query, [gameId], function(err, scores){
+    FROM \
+    ( SELECT DISTINCT  um.machine_id, ug.user_id \
+    FROM user_machine um, user_group ug \
+    WHERE um.user_id = ug.user_id \
+    order by um.machine_id, ug.user_id) machines_for_user, score s \
+    WHERE machines_for_user.machine_id = s.machine_id \
+    AND machines_for_user.user_id = $1 \
+    AND s.game_id = $2 \
+    ORDER BY rank";
+    User.query(query, [1, gameId], function(err, scores){
       if(err) { return res.serverError(err); }
 
       res.json(scores.rows);
