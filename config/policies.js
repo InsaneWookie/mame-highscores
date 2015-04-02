@@ -14,7 +14,7 @@
  */
 
 var isAuthed = ['passport', 'sessionAuth'];
-// var isAuthed = ['passport'];
+//var isAuthed = true; // ['passport'];
 module.exports.policies = {
 
   // Default policy for all controllers and actions
@@ -39,7 +39,8 @@ module.exports.policies = {
     findOne: isAuthed,
     search_list: isAuthed,
     top_players: isAuthed,
-    upload: isAuthed,
+    game_list: isAuthed,
+    upload: true, //need to allow anyone to upload as it checks the api key
     mapping: isAuthed,
     update_has_mapping: isAuthed,
     play_count: isAuthed
@@ -63,11 +64,12 @@ module.exports.policies = {
   ScoreController: {
     find: isAuthed,
     findOne: isAuthed,
-    claim: isAuthed
+    claim: isAuthed,
+    recent: isAuthed
   },
 
   UserController: {
-    find: isAuthed,
+    find: false,
     findOne: isAuthed,
     create: ['passport'],
     //update: true, //TODO: only allow update of a users own details
@@ -89,7 +91,8 @@ module.exports.policies = {
     find: isAuthed,
     findOne: isAuthed,
     create: isAuthed,
-    machine: isAuthed
+    machine: isAuthed,
+    user: isAuthed
   },
 
   UserMachine: {
@@ -99,7 +102,8 @@ module.exports.policies = {
 
   UserGroup: {
     find: isAuthed,
-    findOne: isAuthed
+    findOne: isAuthed,
+    machine: isAuthed
   }
 
 

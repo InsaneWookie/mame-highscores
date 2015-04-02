@@ -6,7 +6,7 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">Group to join</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-options="group.id as group.name for group in groups track by group.id" ng-model="selectedGroup"></select>
+        <select class="form-control" ng-options="group.name for group in groups" ng-model="selectedGroup"></select>
       </div>
     </div>
 
@@ -14,7 +14,7 @@
     <div class="form-group">
       <label class="col-sm-2 control-label">Available Machines</label>
       <div class="col-sm-10">
-        <select class="form-control" ng-options="machine.id as machine.name for machine in machines track by machine.id" ng-model="selectedMachine"></select>
+        <select class="form-control" ng-options="machine.name for machine in machines" ng-model="selectedMachine"></select>
       </div>
     </div>
 

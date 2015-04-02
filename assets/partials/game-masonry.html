@@ -1,7 +1,7 @@
 <div masonry masonry-options="{ transitionDuration: 0 }" >
 	<div class="masonry-brick" ng-repeat="game in latestScores" style="padding: 5px; margin-bottom: -20px; width:25%">
 		<a href="#/games/{{game.id}}">
-		<img ng-src="{{game.imgUrl}}" alt="A masonry brick" style=" width: 100%">
+		<img ng-src="{{game.imgUrl}}" alt="{{game.full_name}}" style=" width: 100%">
 		<div style="bottom: 20px; position: relative; height:20px; background-color: rgba(255, 255, 255, 0.8); text-align: center">{{game.scores[0].alias}} - {{game.scores[0].score}}</div>
 		</a>
 	</div>

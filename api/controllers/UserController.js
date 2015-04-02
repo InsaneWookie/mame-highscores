@@ -92,38 +92,39 @@ module.exports = {
 
   player_scores: function(req, res){
 
-    var userId = req.param('id');
-
-    var query =
-      "SELECT g.id game_id, g.name game_name, g.full_name game_full_name, a.name alias_name, s.score, s.rank FROM \
-        (SELECT s.game_id, a.user_id, min(s.rank) top_rank FROM score s, alias a WHERE \
-          s.alias_id = a.id \
-          GROUP BY s.game_id, a.user_id) tr, \
-        \"user\" u, alias a, score s, game g \
-      WHERE \
-      tr.user_id = u.id \
-      AND tr.game_id = g.id \
-      AND tr.top_rank = s.rank \
-      AND u.id = a.user_id \
-      AND a.id = s.alias_id \
-      AND s.game_id = g.id \
-      AND u.id = $1 \
-      ORDER BY g.full_name";
-
-    User.query(query, [userId], function(err, topScores){
-      if(err) { return res.serverError(err); }
-
-      //convert it into more of a model structure
-      var games = [];
-      topScores.rows.forEach(function(row){
-        var score = { rank: row.rank, name: row.alias_name, score: row.score };
-        var game = { id: row.game_id, name: row.game_name, full_name: row.game_full_name, top_score: score };
-
-        games.push(game);
-      });
-
-      res.json(games);
-    });
+    res.json([]);
+    //var userId = req.param('id');
+    //
+    //var query =
+    //  "SELECT g.id game_id, g.name game_name, g.full_name game_full_name, a.name alias_name, s.score, s.rank FROM \
+    //    (SELECT s.game_id, a.user_id, min(s.rank) top_rank FROM score s, alias a WHERE \
+    //      s.alias_id = a.id \
+    //      GROUP BY s.game_id, a.user_id) tr, \
+    //    \"user\" u, alias a, score s, game g \
+    //  WHERE \
+    //  tr.user_id = u.id \
+    //  AND tr.game_id = g.id \
+    //  AND tr.top_rank = s.rank \
+    //  AND u.id = a.user_id \
+    //  AND a.id = s.alias_id \
+    //  AND s.game_id = g.id \
+    //  AND u.id = $1 \
+    //  ORDER BY g.full_name";
+    //
+    //User.query(query, [userId], function(err, topScores){
+    //  if(err) { return res.serverError(err); }
+    //
+    //  //convert it into more of a model structure
+    //  var games = [];
+    //  topScores.rows.forEach(function(row){
+    //    var score = { rank: row.rank, name: row.alias_name, score: row.score };
+    //    var game = { id: row.game_id, name: row.game_name, full_name: row.game_full_name, top_score: score };
+    //
+    //    games.push(game);
+    //  });
+    //
+    //  res.json(games);
+    //});
   },
 
   points: function(req, res){
@@ -156,25 +157,27 @@ module.exports = {
       user_id: loggedInUser.id
     };
 
-    var userMachine = {
-      group_id: groupId,
-      user_id: loggedInUser.id,
-      machine_id: machineId
+    var uMachine = {
+      group: groupId,
+      user: loggedInUser.id,
+      machine: machineId
     };
 
-    var userMachines = [];
+    var uMachines = [];
 
     aliases.forEach(function(alias){
-      var um = _.clone(userMachine);
+      var um = _.clone(uMachine);
       um.alias = alias;
-      userMachines.push(um)
+      uMachines.push(um)
     });
 
 
     UserGroup.create(userGroup).exec(function(err, newUserGroup){
       if(err) { return res.serverError(err); }
       //add the aliases to the machine for this group
-      UserMachine.create(userMachines).exec(function(err, newUserMachines){
+      console.log(uMachine);
+      console.log(uMachines);
+      UserMachine.create(uMachines).exec(function(err, newUserMachines){
         if(err) { return res.serverError(err); }
 
          res.ok({});

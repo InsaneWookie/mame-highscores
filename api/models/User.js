@@ -43,7 +43,7 @@ module.exports = {
       return cb("Passwords do not match");
     }
 
-    User.hashPassword(user.password, salt, function(err, hash) {
+    User.hashPassword(user.password, function(err, hash) {
       if (err) { return cb(err); }
 
       user.password = hash;

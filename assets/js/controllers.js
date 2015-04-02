@@ -273,7 +273,7 @@ angular.module('myApp.controllers', [])
       $scope.lastPlayedGames = data;
     });
 
-    $scope.latestScoresLoading = $http.get('/score?sort=updatedAt DESC&limit=10&where={"updatedAt": {"!": null}}').success(function (data){
+    $scope.latestScoresLoading = $http.get('/score/recent').success(function (data){
       $scope.lastestScores = data
     });
 

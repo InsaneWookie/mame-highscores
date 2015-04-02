@@ -26,7 +26,7 @@ module.exports = {
   },
 
   game_list: function(req, res){
-    var userId = 1;
+    var userId = req.user.id;
 
     var query = "select g.*, us.id score_id, us.alias, us.score, us.\"createdAt\" \"score_createdAt\" from game g, \
     (SELECT *, ROW_NUMBER() OVER(PARTITION BY user_id, game_id \
@@ -34,7 +34,7 @@ module.exports = {
     FROM user_score) us \
     where g.id = us.game_id \
     and us.user_id = $1 \
-    and us.row_num = 1\
+    and us.row_num = 1 \
     ORDER BY full_name ASC";
 
     Game.query(query, [userId], function(err, result){
@@ -76,7 +76,7 @@ module.exports = {
 
 
   play_count: function(req, res){
-    var userId = 1;
+    var userId = req.user.id;
 
     var query = "SELECT g.id, g.name, g.full_name, play_count.play_count, play_count.last_played FROM game g, ( \
     SELECT game_id, count(1) play_count, max(date_time) last_played FROM gameplayed gp \
@@ -94,57 +94,71 @@ module.exports = {
     });
   },
 
-
+  /**
+   * TODO: find some way to handle if the same file is uploaded multiple times concurrently
+   * /game/upload
+   * @param req
+   * @param res
+   */
   upload: function (req, res) {
 
-    req.file('game').upload(function (err, files) {
+    var apiKey = req.body.apikey;
+    var gameName = req.body.gamename;
 
-      if (err) { return res.serverError(err); }
+    if(typeof apiKey != 'string'){
+      return res.forbidden("Invalid api key");
+    }
 
-      var file = files[0]; //hopefully only one file
 
-      //TODO: we need to remove the file (can we just read it from memory?)
-      var filePath = file.fd;
-      var fileName = file.filename;
-      var fileType = path.extname(fileName).substring(1);
-      var gameName = req.body.gamename;
-      var apiKey = req.body.apikey;
+    Machine.findOne({ api_key: apiKey }).exec(function(err, machine){
+      if(err) { return res.serverError(err); }
 
-      //invalid game so try and work it out from the file name
-      if (typeof gameName != 'string' || gameName.length === 0) {
-        gameName = fileName.substring(0, fileName.lastIndexOf('.'));
+      if(!machine){
+        return res.forbidden("Invalid api key");
       }
 
-      async.parallel({
-        machine: function(next){
-          Machine.findOne({ api_key: apiKey }).exec(function(err, machine){
-            next(err, machine);
-          });
-        },
-        game: function(next){
-          Game.findOneByName(gameName).exec(function(err, game){
-            next(err, game);
-          });
+      req.file('game').upload(function (err, files) {
+
+        if (err) { return res.serverError(err); }
+
+        var file = files[0]; //hopefully only one file
+
+        if(!file){
+          return res.badRequest("No file provided");
         }
-      },
-      function(error, results){
-        if(error){ return res.notFound("Game or machine does not exist"); }
 
-        var game = results.game;
-        var machine = results.machine;
+        //TODO: we need to remove the file (can we just read it from memory?)
+        var filePath = file.fd;
+        var fileName = file.filename;
+        var fileType = path.extname(fileName).substring(1);
 
-        fs.readFile(filePath, {}, function(err, rawBuffer){
+        //invalid game so try and work it out from the file name
+        if (typeof gameName != 'string' || gameName.length === 0) {
+          gameName = fileName.substring(0, fileName.lastIndexOf('.'));
+        }
 
-          if(err) return res.serverError("Problem reading file");
+        Game.findOneByName(gameName).exec(function(err, game){
 
-          Game.uploadScores(rawBuffer, fileType, game, machine, function(err, savedScores){
-            if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
+          if(err){ return res.notFound("Game or machine does not exist"); }
+
+          fs.readFile(filePath, {}, function(err, rawBuffer){
+
+            if(err) return res.serverError("Problem reading file");
+
+            Game.uploadScores(rawBuffer, fileType, game, machine, function(err, savedScores){
+              if(err) { return res.serverError(err); }
+
+              res.ok(savedScores, '/#/games/' + game.id);
+            });
           });
+
         });
 
       });
-
     });
+
+
+
   },
 
   /**
