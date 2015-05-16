@@ -4,15 +4,23 @@
 //TODO: separate out the controllers in to their own files
 angular.module('myApp.controllers', [])
 
-  .controller('AuthLoginCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
+  .controller('AuthLoginCtrl', ['$scope', '$http', '$window', function($scope, $http, $window) {
 
-    //$scope.user = { email: '', password: ''};
+    $scope.identifier = '';
+    $scope.password = '';
+    $scope.errorMessage = '';
 
-    //$scope.login = function(){
-    //  $http.post('/auth/login', { email: $scope.user.email, password: $scope.user.password }).success(function(data){
-    //    $location.path('#/home');
-    //  });
-    //}
+    $scope.login = function(){
+      $http.post('/auth/local', { identifier: $scope.identifier, password: $scope.password })
+        .success(function(data){
+          //$location.path('/#/home');
+          $window.location.href = '/#/home';
+          $window.location.reload(); //for now a hack way to reload the page so we get the logged in menu bar
+        })
+        .error(function(data){
+          $scope.errorMessage = data.error;
+        });
+    }
   }])
   .controller('AuthResetCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
 

@@ -1,11 +1,11 @@
 <h1>Login</h1>
 
-<form role="form" action="/auth/local" method="post">
-  <input type="text" name="identifier" placeholder="Username or Email">
-  <input type="password" name="password" placeholder="Password">
+<form role="form" ng-submit="login()" method="post">
+  <input type="text" name="identifier" ng-model="identifier"  placeholder="Username or Email">
+  <input type="password" name="password" ng-model="password" placeholder="Password">
   <br>
   <div><button type="submit" class="btn btn-default">Sign in</button></div>
-
+  <div ng-if="errorMessage" class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>{{errorMessage}}</div>
   <br>
   <div><a href="#/login/reset">Reset password</a></div>
 
