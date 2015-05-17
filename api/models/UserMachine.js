@@ -32,8 +32,6 @@ module.exports = {
   beforeCreate: function (values, cb) {
     values.alias = values.alias.toUpperCase();
 
-    //for now everyone gets assigned againts the default group
-    //values.group = 1;
     cb();
   }
 };

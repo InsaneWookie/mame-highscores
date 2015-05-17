@@ -105,7 +105,7 @@ module.exports = {
     var apiKey = req.body.apikey;
     var gameName = req.body.gamename;
 
-    if(typeof apiKey != 'string'){
+    if(typeof apiKey !== 'string'){
       return res.forbidden("Invalid api key");
     }
 
@@ -116,6 +116,8 @@ module.exports = {
       if(!machine){
         return res.forbidden("Invalid api key");
       }
+
+
 
       req.file('game').upload(function (err, files) {
 
@@ -133,7 +135,7 @@ module.exports = {
         var fileType = path.extname(fileName).substring(1);
 
         //invalid game so try and work it out from the file name
-        if (typeof gameName != 'string' || gameName.length === 0) {
+        if (typeof gameName !== 'string' || gameName.length === 0) {
           gameName = fileName.substring(0, fileName.lastIndexOf('.'));
         }
 
@@ -141,15 +143,37 @@ module.exports = {
 
           if(err){ return res.notFound("Game or machine does not exist"); }
 
+
           fs.readFile(filePath, {}, function(err, rawBuffer){
 
             if(err) return res.serverError("Problem reading file");
 
-            Game.uploadScores(rawBuffer, fileType, game, machine, function(err, savedScores){
+            if(machine.is_uploading_files){
+              return res.badRequest("Already uploading files. Try again soon");
+            }
+
+            machine.is_uploading_files = true;
+
+            machine.save(function(err, machine){
               if(err) { return res.serverError(err); }
 
-              res.ok(savedScores, '/#/games/' + game.id);
+              Game.uploadScores(rawBuffer, fileType, game, machine, function(uploadErr, savedScores){
+
+                machine.is_uploading_files = false;
+
+                machine.save(function(err, machine){
+                  if(err) { return res.serverError(err); }
+
+                  if(uploadErr) {
+                    return res.serverError(uploadErr);
+                  }
+
+                  res.ok(savedScores, '/#/games/' + game.id);
+                });
+
+              });
             });
+
           });
 
         });

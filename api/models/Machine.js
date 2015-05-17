@@ -15,6 +15,8 @@ module.exports = {
     api_key: 'string',
     secret_key: 'string',
 
+    is_uploading_files: 'boolean',
+
     scores: {
       collection: 'Score',
       via: 'machine'

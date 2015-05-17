@@ -31,6 +31,7 @@ CREATE TABLE machine (
   secret_key TEXT,
   name TEXT,
   description TEXT,
+  is_uploading_files BOOLEAN DEFAULT false NOT NULL, -- hack so we can allow only one file upload for a machine at a time
   "createdAt" timestamp with time zone,
   "updatedAt" timestamp with time zone
 );
