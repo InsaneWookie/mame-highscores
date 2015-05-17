@@ -1,6 +1,6 @@
 <h2> {{user.username}} </h2>
 <h4 ng-if="user.email"> Email: {{user.email}} </h4>
-<h4> Aliases: <span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></h4>
+<!--<h4> Aliases: <span ng-repeat="alias in user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></h4>-->
 <!--<h4> Points: {{user.points}}</h4>-->
 
 <!-- no notifications for now -->
@@ -8,6 +8,7 @@
   <!--<button type="button" class="btn btn-default" ng-click="enableNotifications()">Enable Notifications</button>-->
 <!--</div>-->
 
+<a ng-if="isOwnUser" href="/#/users/{{user.id}}/change-password">Change Password</a><br>
 <a href="/#/users/{{user.id}}/machine-create">Add Arcade Machine</a><br>
 <a href="/#/users/{{user.id}}/group-create">Create Group</a><br>
 <a href="" ng-click="openJoinGroup(user)">Join Group</a><br>

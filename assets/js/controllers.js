@@ -347,6 +347,31 @@ angular.module('myApp.controllers', [])
       });
     };
   }])
+  .controller('UserChangePasswordCtrl', ['$scope', '$location', '$http', '$routeParams', 'Session', function($scope, $location, $http, $routeParams, Session){
+
+    var userId = $routeParams.id;
+
+    $scope.passwords = {
+      new_password: '',
+      repeat_password: ''
+    };
+
+    //TODO: proper validation system
+
+    $scope.save = function(){
+      if($scope.passwords.new_password !== $scope.passwords.repeat_password){
+        alert("passwords do not match");
+      } else {
+        $http.post('/auth/' + userId + '/change_password', $scope.passwords).done(function(){
+          $location.path('/#/users/profile');
+        }).error(function(){
+          alert("error changing password");
+        });
+      }
+    };
+
+
+  }])
   .controller('UserDetailCtrl', ['$scope', '$location', '$routeParams', '$http', '$modal', 'Session', function($scope, $location, $routeParams, $http, $modal, Session) {
 
 
@@ -362,6 +387,7 @@ angular.module('myApp.controllers', [])
       userDataUrl = '/user/' + userId
     }
 
+    $scope.isOwnUser = (Session.userId === userId);
 
     $scope.user = {};
     $scope.topGames = [];
@@ -492,7 +518,7 @@ angular.module('myApp.controllers', [])
 
   }])
   .controller('SettingsCtrl', ['$scope', '$http', function($scope, $http) {
-    //do nothin fo now, settings page is just for enabling notifications
+    //do nothing fo now, settings page is just for enabling notifications
   }])
   .controller('GameUploadCtrl', ['$scope', '$http', function($scope, $http) {
     $scope.machines = [];

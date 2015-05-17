@@ -47,6 +47,7 @@ angular.module('myApp', [
       $routeProvider.when('/users', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
       $routeProvider.when('/users/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
       $routeProvider.when('/users/profile', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
+      $routeProvider.when('/users/:id/change-password', {templateUrl: 'partials/user-changepassword.html', controller: 'UserChangePasswordCtrl'});
       $routeProvider.when('/users/alias/:aliasId', {
         templateUrl: 'partials/user-detail.html',
         controller: 'UserDetailCtrl'

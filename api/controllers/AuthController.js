@@ -135,7 +135,48 @@ var AuthController = {
       });
 
     });
+  },
+
+  change_password: function(req, res) {
+
+    var loggedInUser = req.user;
+
+    var params = req.allParams();
+
+    //for now only logged in user can change their password
+    if(parseInt(params.id) !== loggedInUser.id){
+      return res.forbidden();
+    }
+
+    if(params.new_password !== params.repeat_password){
+      return res.badRequest("passwords do not match");
+    }
+
+
+    User.findOneById(loggedInUser.id, function (err, user) {
+      if (err) {
+        return res.badRequest(err);
+      }
+
+      if (!user) {
+        return res.badRequest(err);
+      }
+
+      User.hashPassword(params.new_password, function(err, hashedPassword){
+        if(err){
+          return res.serverError("Error saving password");
+        }
+
+        user.password = hashedPassword;
+        user.save(function(err){
+          if(err) { return res.serverError(err); }
+
+          res.ok();
+        })
+      })
+    });
   }
+
 };
 
 module.exports = AuthController;

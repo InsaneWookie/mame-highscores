@@ -45,6 +45,10 @@ module.exports.routes = {
   //'get /auth/:provider/callback': 'AuthController.callback',
   //'get /auth/:provider/:action': 'AuthController.callback',
 
+  'post /auth/:id/change_password': {
+    controller: 'auth',
+    action: 'change_password'
+  },
 
 
   //gets all the games with scores that the user has scores for
@@ -57,6 +61,8 @@ module.exports.routes = {
     controller: 'user',
     action: 'points'
   },
+
+
 
   'get /user/:id/machine': {
     controller: 'user',

@@ -8,8 +8,6 @@
 module.exports = {
 
 
-
-
 	games: function(req, res) {
 		var userId = req.param('id');
 
