@@ -154,14 +154,14 @@ module.exports = {
 
             machine.is_uploading_files = true;
 
-            machine.save(function(err, machine){
+            machine.save(function(err, m){
               if(err) { return res.serverError(err); }
 
               Game.uploadScores(rawBuffer, fileType, game, machine, function(uploadErr, savedScores){
 
                 machine.is_uploading_files = false;
 
-                machine.save(function(err, machine){
+                machine.save(function(err, m){
                   if(err) { return res.serverError(err); }
 
                   if(uploadErr) {

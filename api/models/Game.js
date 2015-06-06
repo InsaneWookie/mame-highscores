@@ -194,15 +194,15 @@ module.exports = {
    * @param game
    * @param callback
    */
-  updatePlayedCount: function (game, callback){
+  updatePlayedCount: function (game, machine, callback){
     //add a played record
-    GamePlayed.create({game_id: game.id}).exec(function (err, newGamePLayed) { });
+    GamePlayed.create({game_id: game.id, machine_id: machine.id}).exec(callback);
 
     //dont technically need to do this as it can be inferred from the gameplayed table
-    Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
-      function (err, result) {
-        callback(err, result);
-      });
+    //Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
+    //  function (err, result) {
+    //    callback(err, result);
+    //  });
   },
 
 
@@ -279,7 +279,7 @@ module.exports = {
 
     var gameMaps = require('../game_mappings/gameMaps.json');
 
-    Game.updatePlayedCount(game, function (err, playCount) {
+    Game.updatePlayedCount(game, machine, function (err, playCount) {
       //don't care about the response at the moment.
     });
 

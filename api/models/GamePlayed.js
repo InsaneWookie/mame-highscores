@@ -13,7 +13,12 @@ module.exports = {
     game: { 
       model: 'Game',
       columnName: 'game_id'
-     }
+     },
+
+    machine: {
+      model: 'Machine',
+      columnName: 'machine_id'
+    }
   }
 
 
