@@ -41,6 +41,7 @@ module.exports.policies = {
     top_players: isAuthed,
     game_list: isAuthed,
     upload: true, //need to allow anyone to upload as it checks the api key
+    upload_test: true,
     mapping: isAuthed,
     update_has_mapping: isAuthed,
     play_count: isAuthed

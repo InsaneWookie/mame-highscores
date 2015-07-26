@@ -56,7 +56,7 @@ CREATE TABLE user_machine (
   "createdAt" timestamp with time zone,
   "updatedAt" timestamp with time zone,
   UNIQUE(user_id, machine_id, alias),
-  FOREIGN KEY (group_id, user_id) REFERENCES user_group (group_id, user_id),
+  FOREIGN KEY (group_id, user_id) REFERENCES user_group (group_id, user_id)
 );
 
 -- we are bascally converting the alias table into this with some new columns
@@ -99,7 +99,7 @@ DROP TABLE alias;
 CREATE VIEW machine_group AS
 SELECT DISTINCT ug.group_id, um.machine_id
 FROM user_machine um, user_group ug
-WHERE um.user_id = ug.user_id
+WHERE um.user_id = ug.user_id;
 
 -- gets all the scores for all groups that a user is in (with score rank)
 CREATE OR REPLACE VIEW user_score AS

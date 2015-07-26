@@ -102,8 +102,10 @@ module.exports = {
    */
   upload: function (req, res) {
 
-    var apiKey = req.body.apikey;
-    var gameName = req.body.gamename;
+    var allParams = req.allParams();
+
+    var apiKey = allParams.apikey; //req.body.apikey;
+    var gameName = allParams.gamename;
 
     if(typeof apiKey !== 'string'){
       return res.forbidden("Invalid api key");
@@ -117,9 +119,7 @@ module.exports = {
         return res.forbidden("Invalid api key");
       }
 
-
-
-      req.file('game').upload(function (err, files) {
+      req.file('file').upload(function (err, files) {
 
         if (err) { return res.serverError(err); }
 
@@ -141,7 +141,7 @@ module.exports = {
 
         Game.findOneByName(gameName).exec(function(err, game){
 
-          if(err){ return res.notFound("Game or machine does not exist"); }
+          if(err || !game){ return res.notFound("Game or machine does not exist"); }
 
 
           fs.readFile(filePath, {}, function(err, rawBuffer){
@@ -185,6 +185,29 @@ module.exports = {
 
   },
 
+
+  upload_test: function(req, res){
+
+    var allParams = req.allParams();
+
+    var apiKey = allParams.apikey; //req.body.apikey;
+
+    if(typeof apiKey !== 'string'){
+      return res.forbidden("Invalid api key");
+    }
+
+    Machine.findOne({ api_key: apiKey }).exec(function(err, machine) {
+      if (err) {
+        return res.serverError(err);
+      }
+
+      if (!machine) {
+        return res.forbidden("Invalid api key");
+      }
+
+      res.ok("Api key valid");
+    });
+  },
   /**
    *
    * @param {IncomingMessage} req

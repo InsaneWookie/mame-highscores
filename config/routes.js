@@ -69,9 +69,14 @@ module.exports.routes = {
     action: 'machine'
   },
 
-  'post /game/upload' : {
+  'post /game/upload/:apikey' : {
     controller: 'game',
     action: 'upload'
+  },
+
+  'get /game/upload_test/:apikey' : {
+    controller: 'game',
+    action: 'upload_test'
   },
 
   'get /game/:id/mapping': {
