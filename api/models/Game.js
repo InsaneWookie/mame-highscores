@@ -17,7 +17,11 @@ module.exports = {
     play_count: 'integer',
     clone_of: 'integer',
     clone_of_name: 'string',
-    last_played: 'datetime',
+    last_played: {
+      type: 'ref',
+      required: true,
+      columnType: 'timestamp'
+    },
     letter: 'string',
     order: 'string',
     sort: 'string',
@@ -33,17 +37,21 @@ module.exports = {
       via: 'game'
     },
 
-    clean_name_func: function(){
-      var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
-      return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
-    },
 
-    toJSON: function(){
-      var obj = this.toObject();
-      obj.clean_name = this.clean_name_func();
-      return obj;
-    }
 
+
+
+  },
+
+  clean_name_func: function(){
+    var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
+    return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
+  },
+
+  customToJSON: function(){
+    var obj = this.toObject();
+    obj.clean_name = this.clean_name_func();
+    return obj;
   },
 
   /**
@@ -230,9 +238,9 @@ module.exports = {
 
                 var beaten = beatenScore;
                 beaten.user = beatenUser;
-                EmailService.sendBeatenEmail(game, beatenBy, beaten, { to: beaten.user.email }, function (err, emailResponse) {
-                  if (err) console.error(err);
-                });
+                // EmailService.sendBeatenEmail(game, beatenBy, beaten, { to: beaten.user.email }, function (err, emailResponse) {
+                //   if (err) console.error(err);
+                // });
               });
             });
           });

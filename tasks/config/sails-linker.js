@@ -1,267 +1,221 @@
 /**
- * Autoinsert script tags (or other filebased tags) in an html file.
+ * `tasks/config/sails-linker`
  *
  * ---------------------------------------------------------------
  *
- * Automatically inject <script> tags for javascript files and <link> tags
- * for css files.  Also automatically links an output file containing precompiled
- * templates using a <script> tag.
+ * Automatically inject <script> tags and <link> tags into the specified
+ * specified HTML and/or EJS files.  The specified delimiters (`startTag`
+ * and `endTag`) determine the insertion points.
  *
- * For usage docs see:
- * 		https://github.com/Zolmeister/grunt-sails-linker
+ * For more information, see:
+ *   https://sailsjs.com/anatomy/tasks/config/sails-linker.js
  *
  */
 module.exports = function(grunt) {
 
-	grunt.config.set('sails-linker', {
-		devJs: {
-			options: {
-				startTag: '<!--SCRIPTS-->',
-				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.ejs': require('../pipeline').jsFilesToInject
-			}
-		},
+  grunt.config.set('sails-linker', {
 
-		devJsRelative: {
-			options: {
-				startTag: '<!--SCRIPTS-->',
-				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.html': require('../pipeline').jsFilesToInject,
-				'views/**/*.ejs': require('../pipeline').jsFilesToInject
-			}
-		},
 
-		prodJs: {
-			options: {
-				startTag: '<!--SCRIPTS-->',
-				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'.tmp/public/**/*.html': ['.tmp/public/min/production.min.js'],
-				'views/**/*.html': ['.tmp/public/min/production.min.js'],
-				'views/**/*.ejs': ['.tmp/public/min/production.min.js']
-			}
-		},
+    //   ╦╔═╗╦  ╦╔═╗╔═╗╔═╗╦═╗╦╔═╗╔╦╗
+    //   ║╠═╣╚╗╔╝╠═╣╚═╗║  ╠╦╝║╠═╝ ║
+    //  ╚╝╩ ╩ ╚╝ ╩ ╩╚═╝╚═╝╩╚═╩╩   ╩
+    //  ┌─    ┌─┐┬  ┬┌─┐┌┐┌┌┬┐  ┌─┐┬┌┬┐┌─┐   ┬┌─┐┬  ┬┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐    ─┐
+    //  │───  │  │  │├┤ │││ │───└─┐│ ││├┤    │├─┤└┐┌┘├─┤└─┐│  ├┬┘│├─┘ │   ───│
+    //  └─    └─┘┴─┘┴└─┘┘└┘ ┴   └─┘┴─┴┘└─┘  └┘┴ ┴ └┘ ┴ ┴└─┘└─┘┴└─┴┴   ┴     ─┘
+    devJs: {
+      options: {
+        startTag: '<!--SCRIPTS-->',
+        endTag: '<!--SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public'
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
+        'views/**/*.html': require('../pipeline').jsFilesToInject,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInject
+      }
+    },
 
-		prodJsRelative: {
-			options: {
-				startTag: '<!--SCRIPTS-->',
-				endTag: '<!--SCRIPTS END-->',
-				fileTmpl: '<script src="%s"></script>',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'.tmp/public/**/*.html': ['.tmp/public/min/production.min.js'],
-				'views/**/*.html': ['.tmp/public/min/production.min.js'],
-				'views/**/*.ejs': ['.tmp/public/min/production.min.js']
-			}
-		},
+    devJsBuild: {
+      options: {
+        startTag: '<!--SCRIPTS-->',
+        endTag: '<!--SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        // relative: true
+        // ^^ Uncomment this if compiling assets for use in PhoneGap, CDN, etc.
+        //    (but be note that this can break custom font URLs)
+      },
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').jsFilesToInject,
+        'views/**/*.html': require('../pipeline').jsFilesToInject,
+        'views/**/*.ejs': require('../pipeline').jsFilesToInject
+      }
+    },
 
-		devStyles: {
-			options: {
-				startTag: '<!--STYLES-->',
-				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
-				appRoot: '.tmp/public'
-			},
+    prodJs: {
+      options: {
+        startTag: '<!--SCRIPTS-->',
+        endTag: '<!--SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public'
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/min/production.min.js'],
+        'views/**/*.html': ['.tmp/public/min/production.min.js'],
+        'views/**/*.ejs': ['.tmp/public/min/production.min.js']
+      }
+    },
 
-			files: {
-				'.tmp/public/**/*.html': require('../pipeline').cssFilesToInject,
-				'views/**/*.html': require('../pipeline').cssFilesToInject,
-				'views/**/*.ejs': require('../pipeline').cssFilesToInject
-			}
-		},
+    prodJsBuild: {
+      options: {
+        startTag: '<!--SCRIPTS-->',
+        endTag: '<!--SCRIPTS END-->',
+        fileTmpl: '<script src="%s"></script>',
+        appRoot: '.tmp/public',
+        // relative: true
+        // ^^ Uncomment this if compiling assets for use in PhoneGap, CDN, etc.
+        //    (but be note that this can break custom font URLs)
+      },
+      files: {
+        '.tmp/public/**/*.html': ['.tmp/public/dist/*.js'],
+        'views/**/*.html': ['.tmp/public/dist/*.js'],
+        'views/**/*.ejs': ['.tmp/public/dist/*.js']
+      }
+    },
 
-		devStylesRelative: {
-			options: {
-				startTag: '<!--STYLES-->',
-				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
-				appRoot: '.tmp/public',
-				relative: true
-			},
 
-			files: {
-				'.tmp/public/**/*.html': require('../pipeline').cssFilesToInject,
-				'views/**/*.html': require('../pipeline').cssFilesToInject,
-				'views/**/*.ejs': require('../pipeline').cssFilesToInject
-			}
-		},
+    //  ╔═╗╔╦╗╦ ╦╦  ╔═╗╔═╗╦ ╦╔═╗╔═╗╔╦╗╔═╗
+    //  ╚═╗ ║ ╚╦╝║  ║╣ ╚═╗╠═╣║╣ ║╣  ║ ╚═╗
+    //  ╚═╝ ╩  ╩ ╩═╝╚═╝╚═╝╩ ╩╚═╝╚═╝ ╩ ╚═╝
+    //  ┌─    ┬┌┐┌┌─┐┬  ┬ ┬┌┬┐┬┌┐┌┌─┐  ╔═╗╔═╗╔═╗   ┬   ┌─┐┌─┐┌┬┐┌─┐┬┬  ┌─┐┌┬┐  ╦  ╔═╗╔═╗╔═╗    ─┐
+    //  │───  │││││  │  │ │ │││││││ ┬  ║  ╚═╗╚═╗  ┌┼─  │  │ ││││├─┘││  ├┤  ││  ║  ║╣ ╚═╗╚═╗  ───│
+    //  └─    ┴┘└┘└─┘┴─┘└─┘─┴┘┴┘└┘└─┘  ╚═╝╚═╝╚═╝  └┘   └─┘└─┘┴ ┴┴  ┴┴─┘└─┘─┴┘  ╩═╝╚═╝╚═╝╚═╝    ─┘
+    devStyles: {
+      options: {
+        startTag: '<!--STYLES-->',
+        endTag: '<!--STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public'
+      },
 
-		prodStyles: {
-			options: {
-				startTag: '<!--STYLES-->',
-				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'.tmp/public/index.html': ['.tmp/public/min/production.min.css'],
-				'views/**/*.html': ['.tmp/public/min/production.min.css'],
-				'views/**/*.ejs': ['.tmp/public/min/production.min.css']
-			}
-		},
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').cssFilesToInject,
+        'views/**/*.html': require('../pipeline').cssFilesToInject,
+        'views/**/*.ejs': require('../pipeline').cssFilesToInject
+      }
+    },
 
-		prodStylesRelative: {
-			options: {
-				startTag: '<!--STYLES-->',
-				endTag: '<!--STYLES END-->',
-				fileTmpl: '<link rel="stylesheet" href="%s">',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'.tmp/public/index.html': ['.tmp/public/min/production.min.css'],
-				'views/**/*.html': ['.tmp/public/min/production.min.css'],
-				'views/**/*.ejs': ['.tmp/public/min/production.min.css']
-			}
-		},
+    devStylesBuild: {
+      options: {
+        startTag: '<!--STYLES-->',
+        endTag: '<!--STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public',
+        // relative: true
+        // ^^ Uncomment this if compiling assets for use in PhoneGap, CDN, etc.
+        //    (but be note that this can break custom font URLs)
+      },
 
-		// Bring in JST template object
-		devTpl: {
-			options: {
-				startTag: '<!--TEMPLATES-->',
-				endTag: '<!--TEMPLATES END-->',
-				fileTmpl: '<script type="text/javascript" src="%s"></script>',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'.tmp/public/index.html': ['.tmp/public/jst.js'],
-				'views/**/*.html': ['.tmp/public/jst.js'],
-				'views/**/*.ejs': ['.tmp/public/jst.js']
-			}
-		},
+      files: {
+        '.tmp/public/**/*.html': require('../pipeline').cssFilesToInject,
+        'views/**/*.html': require('../pipeline').cssFilesToInject,
+        'views/**/*.ejs': require('../pipeline').cssFilesToInject
+      }
+    },
 
-		devJsJade: {
-			options: {
-				startTag: '// SCRIPTS',
-				endTag: '// SCRIPTS END',
-				fileTmpl: 'script(src="%s")',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'views/**/*.jade': require('../pipeline').jsFilesToInject
-			}
-		},
+    prodStyles: {
+      options: {
+        startTag: '<!--STYLES-->',
+        endTag: '<!--STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public'
+      },
+      files: {
+        '.tmp/public/index.html': ['.tmp/public/min/production.min.css'],
+        'views/**/*.html': ['.tmp/public/min/production.min.css'],
+        'views/**/*.ejs': ['.tmp/public/min/production.min.css']
+      }
+    },
 
-		devJsRelativeJade: {
-			options: {
-				startTag: '// SCRIPTS',
-				endTag: '// SCRIPTS END',
-				fileTmpl: 'script(src="%s")',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'views/**/*.jade': require('../pipeline').jsFilesToInject
-			}
-		},
+    prodStylesBuild: {
+      options: {
+        startTag: '<!--STYLES-->',
+        endTag: '<!--STYLES END-->',
+        fileTmpl: '<link rel="stylesheet" href="%s">',
+        appRoot: '.tmp/public',
+        // relative: true
+        // ^^ Uncomment this if compiling assets for use in PhoneGap, CDN, etc.
+        //    (but be note that this can break custom font URLs)
+      },
+      files: {
+        '.tmp/public/index.html': ['.tmp/public/dist/*.css'],
+        'views/**/*.html': ['.tmp/public/dist/*.css'],
+        'views/**/*.ejs': ['.tmp/public/dist/*.css']
+      }
+    },
 
-		prodJsJade: {
-			options: {
-				startTag: '// SCRIPTS',
-				endTag: '// SCRIPTS END',
-				fileTmpl: 'script(src="%s")',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'views/**/*.jade': ['.tmp/public/min/production.min.js']
-			}
-		},
 
-		prodJsRelativeJade: {
-			options: {
-				startTag: '// SCRIPTS',
-				endTag: '// SCRIPTS END',
-				fileTmpl: 'script(src="%s")',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'views/**/*.jade': ['.tmp/public/min/production.min.js']
-			}
-		},
+    //  ╔═╗╦═╗╔═╗╔═╗╔═╗╔╦╗╔═╗╦╦  ╔═╗╔╦╗  ╦ ╦╔╦╗╔╦╗╦    ╔╦╗╔═╗╔╦╗╔═╗╦  ╔═╗╔╦╗╔═╗╔═╗
+    //  ╠═╝╠╦╝║╣ ║  ║ ║║║║╠═╝║║  ║╣  ║║  ╠═╣ ║ ║║║║     ║ ║╣ ║║║╠═╝║  ╠═╣ ║ ║╣ ╚═╗
+    //  ╩  ╩╚═╚═╝╚═╝╚═╝╩ ╩╩  ╩╩═╝╚═╝═╩╝  ╩ ╩ ╩ ╩ ╩╩═╝   ╩ ╚═╝╩ ╩╩  ╩═╝╩ ╩ ╩ ╚═╝╚═╝
+    //  ┌─    ┌─┐┬  ┬┌─┐┌┐┌┌┬┐  ┌─┐┬┌┬┐┌─┐  ┬  ┌─┐┌┬┐┌─┐┌─┐┬ ┬  ┌┬┐┌─┐┌┬┐┌─┐┬  ┌─┐┌┬┐┌─┐┌─┐    ─┐
+    //  │───  │  │  │├┤ │││ │───└─┐│ ││├┤   │  │ │ ││├─┤└─┐├─┤   │ ├┤ │││├─┘│  ├─┤ │ ├┤ └─┐  ───│
+    //  └─    └─┘┴─┘┴└─┘┘└┘ ┴   └─┘┴─┴┘└─┘  ┴─┘└─┘─┴┘┴ ┴└─┘┴ ┴   ┴ └─┘┴ ┴┴  ┴─┘┴ ┴ ┴ └─┘└─┘    ─┘
+    clientSideTemplates: {
+      options: {
+        startTag: '<!--TEMPLATES-->',
+        endTag: '<!--TEMPLATES END-->',
+        fileTmpl: '<script type="text/javascript" src="%s"></script>',
+        appRoot: '.tmp/public'
+      },
+      files: {
+        '.tmp/public/index.html': ['.tmp/public/jst.js'],
+        'views/**/*.html': ['.tmp/public/jst.js'],
+        'views/**/*.ejs': ['.tmp/public/jst.js']
+      }
+    },
+    clientSideTemplatesBuild: {
+      options: {
+        startTag: '<!--TEMPLATES-->',
+        endTag: '<!--TEMPLATES END-->',
+        fileTmpl: '<script type="text/javascript" src="%s"></script>',
+        appRoot: '.tmp/public',
+        // relative: true
+        // ^^ Uncomment this if compiling assets for use in PhoneGap, CDN, etc.
+        //    (but be note that this can break custom font URLs)
+      },
+      files: {
+        '.tmp/public/index.html': ['.tmp/public/jst.js'],
+        'views/**/*.html': ['.tmp/public/jst.js'],
+        'views/**/*.ejs': ['.tmp/public/jst.js']
+      }
+    },
 
-		devStylesJade: {
-			options: {
-				startTag: '// STYLES',
-				endTag: '// STYLES END',
-				fileTmpl: 'link(rel="stylesheet", href="%s")',
-				appRoot: '.tmp/public'
-			},
+  });//</ grunt.config.set() >
 
-			files: {
-				'views/**/*.jade': require('../pipeline').cssFilesToInject
-			}
-		},
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // This Grunt plugin is part of the default asset pipeline in Sails,
+  // so it's already been automatically loaded for you at this point.
+  //
+  // Of course, you can always remove this Grunt plugin altogether by
+  // deleting this file.  But check this out: you can also use your
+  // _own_ custom version of this Grunt plugin.
+  //
+  // Here's how:
+  //
+  // 1. Install it as a local dependency of your Sails app:
+  //    ```
+  //    $ npm install grunt-sails-linker --save-dev --save-exact
+  //    ```
+  //
+  //
+  // 2. Then uncomment the following code:
+  //
+  // ```
+  // // Load Grunt plugin from the node_modules/ folder.
+  // grunt.loadNpmTasks('grunt-sails-linker');
+  // ```
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-		devStylesRelativeJade: {
-			options: {
-				startTag: '// STYLES',
-				endTag: '// STYLES END',
-				fileTmpl: 'link(rel="stylesheet", href="%s")',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-
-			files: {
-				'views/**/*.jade': require('../pipeline').cssFilesToInject
-			}
-		},
-
-		prodStylesJade: {
-			options: {
-				startTag: '// STYLES',
-				endTag: '// STYLES END',
-				fileTmpl: 'link(rel="stylesheet", href="%s")',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'views/**/*.jade': ['.tmp/public/min/production.min.css']
-			}
-		},
-
-		prodStylesRelativeJade: {
-			options: {
-				startTag: '// STYLES',
-				endTag: '// STYLES END',
-				fileTmpl: 'link(rel="stylesheet", href="%s")',
-				appRoot: '.tmp/public',
-				relative: true
-			},
-			files: {
-				'views/**/*.jade': ['.tmp/public/min/production.min.css']
-			}
-		},
-
-		// Bring in JST template object
-		devTplJade: {
-			options: {
-				startTag: '// TEMPLATES',
-				endTag: '// TEMPLATES END',
-				fileTmpl: 'script(type="text/javascript", src="%s")',
-				appRoot: '.tmp/public'
-			},
-			files: {
-				'views/**/*.jade': ['.tmp/public/jst.js']
-			}
-		}
-	});
-
-	grunt.loadNpmTasks('grunt-sails-linker');
 };

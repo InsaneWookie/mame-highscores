@@ -1,46 +1,65 @@
 /**
- * Copy files and folders.
+ * `tasks/config/copy`
  *
  * ---------------------------------------------------------------
  *
- * # dev task config
- * Copies all directories and files, exept coffescript and less fiels, from the sails
- * assets folder into the .tmp/public directory.
+ * Copy files and/or folders.
  *
- * # build task config
- * Copies all directories nd files from the .tmp/public directory into a www directory.
+ * For more information, see:
+ *   https://sailsjs.com/anatomy/tasks/config/copy.js
  *
- * For usage docs see:
- *       https://github.com/gruntjs/grunt-contrib-copy
  */
 module.exports = function(grunt) {
 
-   grunt.config.set('copy', {
-      dev: {
-         files: [{
-            expand: true,
-            cwd: './assets',
-            src: ['**/*.!(coffee|less)'],
-            dest: '.tmp/public'
-         },
-         {
-             nonull: true,
-             expand: true,
-             cwd: './bower_components',
-             src: ['**/*.js', '!**/src/**', '!**/mock/**'],
-             dest: '.tmp/public/js/dependencies',
-             flatten: true
-         }]
-      },
-      build: {
-         files: [{
-            expand: true,
-            cwd: '.tmp/public',
-            src: ['**/*'],
-            dest: 'www'
-         }]
-      }
-   });
+  grunt.config.set('copy', {
+    dev: {
+      files: [{
+        expand: true,
+        cwd: './assets',
+        src: ['**/*.!(coffee|less)'],
+        dest: '.tmp/public'
+      }]
+    },
+    build: {
+      files: [{
+        expand: true,
+        cwd: '.tmp/public',
+        src: ['**/*'],
+        dest: 'www'
+      }]
+    },
+    beforeLinkBuildProd: {
+      files: [{
+        expand: true,
+        cwd: '.tmp/public/hash',
+        src: ['**/*'],
+        dest: '.tmp/public/dist'
+      }]
+    },
+  });
 
-   grunt.loadNpmTasks('grunt-contrib-copy');
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // This Grunt plugin is part of the default asset pipeline in Sails,
+  // so it's already been automatically loaded for you at this point.
+  //
+  // Of course, you can always remove this Grunt plugin altogether by
+  // deleting this file.  But check this out: you can also use your
+  // _own_ custom version of this Grunt plugin.
+  //
+  // Here's how:
+  //
+  // 1. Install it as a local dependency of your Sails app:
+  //    ```
+  //    $ npm install grunt-contrib-copy --save-dev --save-exact
+  //    ```
+  //
+  //
+  // 2. Then uncomment the following code:
+  //
+  // ```
+  // // Load Grunt plugin from the node_modules/ folder.
+  // grunt.loadNpmTasks('grunt-contrib-copy');
+  // ```
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 };
