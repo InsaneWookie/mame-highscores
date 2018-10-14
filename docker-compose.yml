@@ -11,9 +11,11 @@ services:
     working_dir: /home/node/app
     ports: 
     - "1338:1337"
+    - "4200:4200"
     volumes:
       - .:/home/node/app
       - /home/node/app/.tmp
+      - /home/node/app/frontend/node_modules
       - node_modules:/home/node/app/node_modules
   db:
     image: postgres:10.5-alpine

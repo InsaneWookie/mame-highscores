@@ -15,13 +15,9 @@ module.exports = {
     full_name: 'STRING',
     has_mapping: 'boolean',
     play_count: 'integer',
-    clone_of: 'integer',
+    clone_of: 'ref',
     clone_of_name: 'string',
-    last_played: {
-      type: 'ref',
-      required: true,
-      columnType: 'timestamp'
-    },
+    last_played: 'string',
     letter: 'string',
     order: 'string',
     sort: 'string',
@@ -43,16 +39,16 @@ module.exports = {
 
   },
 
-  clean_name_func: function(){
-    var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
-    return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
-  },
-
-  customToJSON: function(){
-    var obj = this.toObject();
-    obj.clean_name = this.clean_name_func();
-    return obj;
-  },
+  // clean_name_func: function(){
+  //   var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
+  //   return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
+  // },
+  //
+  // customToJSON: function(){
+  //   var obj = this.toObject();
+  //   obj.clean_name = this.clean_name_func();
+  //   return obj;
+  // },
 
   /**
    * Removes already existing scores, duplicate new scores and other invalid scores (like empty score)
