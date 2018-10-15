@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { GameService } from "../game.service";
-import { Observable } from "rxjs";
-import { catchError } from "rxjs/operators";
 
 @Component({
   selector: 'app-games',

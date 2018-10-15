@@ -12,6 +12,7 @@ services:
     ports: 
     - "1338:1337"
     - "4200:4200"
+    - "9229:9229"
     volumes:
       - .:/home/node/app
       - /home/node/app/.tmp

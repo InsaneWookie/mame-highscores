@@ -1,0 +1,84 @@
+<div *ngIf="game == null">No game found</div>
+
+<div *ngIf="game != null">
+
+  <div class="row">
+    <h2 class="col-md-12" style="margin-bottom: 50px">{{game.full_name}} ({{game.name}}) <small>[{{game.year}}]</small></h2>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 titleImg">
+      <img [src]="game.imgUrl" style="width:100%" />
+    </div>
+
+    <div class="col-md-8" *ngIf="!game.has_mapping">
+      The game does not currently have a decoding for the high score file<br>
+      <a routerLink='games/{{game.id}}/decode'>Edit Decoding</a>
+    </div>
+
+
+    <div class="col-md-8" *ngIf="game.has_mapping">
+      <table class="table table-striped">
+        <tr>
+          <th></th>
+          <th>Rank</th>
+          <th>Name</th>
+          <th style='text-align:right'>Score</th>
+          <th style='text-align:right'>When set</th>
+        </tr>
+        <tr *ngFor='let score of scores'>
+          <td><a  *ngIf="score.name === '' || score.name === null" ><span class="glyphicon glyphicon-pencil"></span></a></td>
+          <td>{{score.rank}}</td>
+          <td>
+            <a *ngIf="score.alias != null" routerLink='/users/{{score.alias.user}}'>{{score.name}}</a>
+            <span *ngIf="score.alias == null">{{score.name}}</span>
+          </td>
+          <td style='text-align:right'>{{score.score}}</td>
+          <td style='text-align:right'><span am-time-ago="score.createdAt"></span></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="game.has_mapping" class="row">
+    <div   *ngFor="let game of clones">
+      <h2><a routerLink="/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h2>
+
+      <div class="col-md-12">
+        <table class="table table-striped">
+          <tr>
+            <th></th>
+            <th>Rank</th>
+            <th>Name</th>
+            <th style='text-align:right'>Score</th>
+            <th style='text-align:right'>When set</th>
+          </tr>
+          <tr *ngFor='let score of game.scores'>
+            <td><a *ngIf="score.name === '' || score.name === null" ><span class="glyphicon glyphicon-pencil"></span></a></td>
+            <td>{{score.rank}}</td>
+            <td>
+              <a *ngIf="score.alias != null" routerLink='/users/{{score.alias.user}}'>{{score.name}}</a>
+              <span *ngIf="score.alias == null">{{score.name}}</span>
+            </td>
+            <td style='text-align:right'>{{score.score}}</td>
+            <td style='text-align:right'><span am-time-ago="score.createdAt"></span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/ng-template" id="score-claim.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Enter your alias</h3>
+  </div>
+  <div class="modal-body">
+    <input type="text" name="score_name" ng-model="score.name" required>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" >Save</button>
+    <button class="btn btn-warning" >Cancel</button>
+  </div>
+</script>
