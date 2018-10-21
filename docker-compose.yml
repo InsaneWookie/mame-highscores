@@ -4,13 +4,13 @@ volumes:
   node_modules:
   pgdata:
 services:
-  sails:
+  app:
     image: node:10.11.0
 #    command: node app.js
     command: tail -f /dev/null
     working_dir: /home/node/app
     ports: 
-    - "1338:1337"
+    - "1337:1337"
     - "4200:4200"
     - "9229:9229"
     volumes:

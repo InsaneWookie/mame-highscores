@@ -11,20 +11,21 @@ import { ScoreService } from "../score.service";
 export class GameDetailComponent implements OnInit {
 
   game: object;
+  scores: object[];
 
 
-  constructor(private gameService: GameService, private scoreService: ScoreService, private route: ActivatedRoute) { }
+  constructor(private gameService: GameService,
+              private scoreService: ScoreService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     const gameId = + this.route.snapshot.paramMap.get('id');
     this.gameService.getGame(gameId).subscribe(game => {
 
-      this.scoreService.get
-      game.scores = [];
-      this.game = game
-
-
+      this.game = game;
     });
+
+    this.scoreService.getScores(gameId).subscribe(scores => this.scores = scores);
   }
 
 }
