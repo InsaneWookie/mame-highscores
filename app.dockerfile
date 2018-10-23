@@ -2,7 +2,7 @@ FROM node:10.12.0-alpine
 
 WORKDIR /home/node/app
 
-COPY package*.json .
+COPY package*.json ./
 
 RUN npm install --only=production
 
