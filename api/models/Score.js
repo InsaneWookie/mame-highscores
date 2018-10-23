@@ -8,6 +8,7 @@
 module.exports = {
 
   attributes: {
+    // game_id: 'integer',
     rank: 'integer',
     name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
@@ -41,7 +42,7 @@ module.exports = {
    * @param gameId
    * @param cb
    */
-  updateRanks: function(gameId, cb){
+  updateRanks: async function(gameId, cb){
     var query =
       "UPDATE score s SET rank = r.rank \
       FROM (SELECT id, rank() \
@@ -52,13 +53,10 @@ module.exports = {
         WHERE game_id = $1) r \
       WHERE s.id = r.id";
 
-    //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
-      Score.query(query, [gameId], function (err, result) {
-     //   Game.query('SELECT pg_advisory_unlock(1234)', [], function() {
-          cb(err, result);
-      //  });
-      });
-   // });
+
+    let result = await sails.sendNativeQuery(query, [gameId]);
+    // console.log(result);
+    cb(null, result);
 
   },
 

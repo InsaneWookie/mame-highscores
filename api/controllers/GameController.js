@@ -20,7 +20,7 @@ module.exports = {
   },
 
   search_list: function(req, res){
-    Game.query('SELECT id, name, full_name FROM game', function(err, results){
+    sails.sendNativeQuery('SELECT id, name, full_name FROM game', function(err, results){
       res.json(results.rows);
     });
   },
@@ -110,7 +110,7 @@ module.exports = {
         try {
           //need to wrap it up in an array as the decoder expects an array of mappings to search through
           var testMapping = [req.body.gameMapping];
-          var rawScore = new Buffer(req.body.rawBytes, 'hex');
+          var rawScore = Buffer.from(req.body.rawBytes, 'hex');
 
           decodedScores = ScoreDecoder.decode(testMapping, rawScore, game.name);
         } catch (ex) {

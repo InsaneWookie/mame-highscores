@@ -355,45 +355,32 @@ describe('Game', function () {
   describe('#uploadScores()', function () {
 
 
-    beforeEach(function(done){
+    beforeEach(async () => {
 
-      Game.query('TRUNCATE TABLE game RESTART IDENTITY CASCADE', [], function(err){
-        User.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', [], function(err){
-
-
-          var gameData = {
-            name: 'zerowing',
-            has_mapping: true
-          };
-          Game.create(gameData).exec(function(err, game){
-
-            User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).exec(function(err, user){
-              Alias.create({user_id: user.id, name: 'ABC'}).exec(function(err, alias){
-                User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).exec(function(err, user){
-                  Alias.create({user_id: user.id, name: 'DEF'}).exec(function(err, alias){
-                    done(err);
-                  });
-                });
-              });
-            });
-          });
+      var result1 = await
+        sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
+      var result = await
+        sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
+      var result2 = await
+        sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
 
 
-        });
-      });
+      var gameData = {
+        name: 'zerowing',
+        has_mapping: true
+      };
 
+      let game = await Game.create(gameData).fetch();
 
-    });
+      let user = await User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).fetch();
+      let alias = await Alias.create({user_id: user.id, name: 'ABC'}).fetch();
 
-    afterEach(function(done){
-      done();
-
+      user = await User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).fetch();
+      alias = await Alias.create({user_id: user.id, name: 'DEF'}).fetch();
     });
 
 
-
-
-    it('should upload scores without error', function (done) {
+    it('should upload scores without error',  (done) => {
 
       var bytes = '0000500000005000000048000000460000004400000042000026002600260000000000000026002600260000000' +
         '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
@@ -403,38 +390,41 @@ describe('Game', function () {
         '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
         '00120011001050';
 
-      var bytesBuffer = new Buffer(bytes, 'hex');
+      var bytesBuffer = Buffer.from(bytes, 'hex');
 
       var fileType = 'hi';
       var gameName = 'zerowing';
 
-      Game.findOneByName(gameName).exec(function(err, game){
-        if(err){
-          done(err);
-        } else {
+      Game.findOne({ name: gameName }).exec(function(err, game){
+        //console.log(game);
 
-          assert.ok(game, "game not set");
+        assert.ok(game, "game not set");
 
-          Game.uploadScores(bytesBuffer, fileType, game, function(err, savedScores){
-            assert.ok(savedScores.length > 0, "should have saved some scores");
+        Game.uploadScores(bytesBuffer, fileType, game, function(err, savedScores){
+          //console.log("Uploaded Scores");
+          //console.log(savedScores);
 
-            assert.equal(savedScores[0].name, '...');
-            assert.equal(savedScores[0].score, '50000');
+          assert.ok(savedScores.length > 0, "should have saved some scores");
 
-            Game.uploadScores(new Buffer(newBytes, 'hex'), fileType, game, function(err, savedScores){
-              assert.ok(savedScores.length === 2, "should have saved 2 scores");
+          assert.equal(savedScores[0].name, '...');
+          assert.equal(savedScores[0].score, '50000');
 
-              assert.equal(savedScores[0].name, 'ABC');
-              assert.equal(savedScores[0].score, '55000');
+          Game.uploadScores(Buffer.from(newBytes, 'hex'), fileType, game, function(err, savedScores){
+            //console.log("Uploaded Scores 2");
+            //console.log(savedScores);
+            assert.ok(savedScores.length === 2, "should have saved 2 scores");
 
-              assert.equal(savedScores[1].name, 'DEF');
-              assert.equal(savedScores[1].score, '54000');
+            assert.equal(savedScores[0].name, 'ABC');
+            assert.equal(savedScores[0].score, '55000');
 
-              done(err);
-            });
+            assert.equal(savedScores[1].name, 'DEF');
+            assert.equal(savedScores[1].score, '54000');
+
+            done(err);
           });
-        }
+        });
       });
+
     });
 
     it.skip('should upload scores concurrently without error', function (done) {
@@ -447,12 +437,12 @@ describe('Game', function () {
         '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
         '00120011001050';
 
-      var bytesBuffer = new Buffer(bytes, 'hex');
+      var bytesBuffer = Buffer.from(bytes, 'hex');
 
       var fileType = 'hi';
       var gameName = 'zerowing';
 
-      Game.findOneByName(gameName).exec(function(err, game){
+      Game.findOne({name: gameName}).exec(function(err, game){
         if(err){
           done(err);
         } else {
@@ -501,24 +491,24 @@ describe('Game', function () {
 
   describe('#updateHasMapping()', function () {
 
-    beforeEach(function(done){
+    beforeEach(async function(){
 
-      Game.query('TRUNCATE TABLE game RESTART IDENTITY CASCADE', [], function(err){
-        User.query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', [], function(err){
+      var result1 = await
+      sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
+      var result = await
+      sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
+      var result2 = await
+      sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
 
-          Game.create({name: 'zerowing', has_mapping: false }).exec(function(err, game){
-           Game.create({ name: 'bob', has_mapping: false }).exec(function(err, game){
-              done(err);
-            });
-          });
-        });
-      });
+      let a = await Game.create({name: 'zerowing', has_mapping: false }).fetch();
+      let b = await Game.create({ name: 'bob', has_mapping: false }).fetch();
+
     });
 
 
     it('should update has_mapping from gameMaps', function (done) {
 
-      Game.findOneByName('zerowing').exec(function(err, game){
+      Game.findOne({name: 'zerowing'}).exec(function(err, game){
         assert.ok(!err);
         assert.ok(game, 'game not found');
         assert.ok(!game.has_mapping);
@@ -526,7 +516,7 @@ describe('Game', function () {
         Game.updateHasMapping(function(err){
           assert.ok(!err);
 
-          Game.findOneByName('zerowing').exec(function(err, game) {
+          Game.findOne({name: 'zerowing'}).exec(function(err, game) {
             assert.ok(!err);
             assert.ok(game.has_mapping);
 

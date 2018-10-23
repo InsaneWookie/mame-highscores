@@ -15,7 +15,7 @@ module.exports = {
 			AND s.alias_id = a.id \
 			AND a.user_id = $1";
 
-		User.query(query, [userId], function(err, games){
+    sails.sendNativeQuery(query, [userId], function(err, games){
 
 
 			res.json(games.rows);
@@ -46,7 +46,7 @@ module.exports = {
       AND u.id = $1 \
       ORDER BY g.full_name";
 
-    User.query(query, [userId], function(err, topScores){
+    sails.sendNativeQuery(query, [userId], function(err, topScores){
       if(err) { return res.serverError(err); }
 
       //convert it into more of a model structure

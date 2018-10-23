@@ -2,21 +2,23 @@
  * Created by rowan on 8/23/14.
  */
 var Sails = require('sails');
-var stubTransport = require('nodemailer-stub-transport');
+//vvar stubTransport = require('nodemailer-stub-transport');
 
 before(function(done) {
+
+  this.timeout(50000);
+
   Sails.lift({
     // configuration for testing purposes
     //TODO: move this config data into a file
-    log: {
-      level: 'silent'
-    },
+    hooks: { grunt: false },
+    log: { level: 'warn' },
 
-    connections: {
-      postgresqlServer: {
+    datastores: {
+      default: {
         adapter: 'sails-postgresql',
-        url: 'postgres://postgres:postgres@localhost:5432/mame-highscores-test',
-        database: 'mame-highscores-test'
+        url: 'postgres://postgres:example@db:5432/mame-highscores',
+        database: 'mame-highscores'
       }
     },
 
@@ -28,9 +30,9 @@ before(function(done) {
     }
 
   }, function(err, sails) {
-    if (err) return done(err);
+    if (err) { return done(err); };
     // here you can load fixtures, etc.
-    done(err, sails);
+    return done();
   });
 });
 
