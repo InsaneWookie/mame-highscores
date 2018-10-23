@@ -10,10 +10,10 @@ services:
       context: ./
       dockerfile: app.dockerfile
     working_dir: /home/node/app
-    #command: tail -f /dev/null
-    command: node app.js
-    environment:
-      NODE_ENV: production
+    command: tail -f /dev/null
+    #command: node app.js
+#    environment:
+#      NODE_ENV: production
 
   db:
     image: postgres:10.5-alpine
