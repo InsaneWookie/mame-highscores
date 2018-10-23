@@ -5,7 +5,7 @@ before_install:
   - export PATH=$PATH:$HOME/.local/bin
   - docker-compose -f docker-compose.prod.yml up --build -d
   - docker ps -a
-  - docker-compose -f docker-compose.prod.yml exec db psql -c "CREATE DATABASE \"mame-highscores\""
+  - docker-compose -f docker-compose.prod.yml exec db psql -U postgres -c "CREATE DATABASE \"mame-highscores\""
 script:
   - docker-compose exec app npm run test-model
 after_success:
