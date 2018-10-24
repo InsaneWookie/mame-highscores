@@ -11,7 +11,7 @@ services:
       dockerfile: app.dockerfile
     working_dir: /home/node/app
     command: tail -f /dev/null
-    #command: node app.js
+#    command: node app.js
 #    environment:
 #      NODE_ENV: production
 
