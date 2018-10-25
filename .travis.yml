@@ -1,15 +1,24 @@
 services:
   - docker
+
 before_install:
-  - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
   - docker-compose -f docker-compose.prod.yml up --build -d
   - docker ps -a
-  - sleep 5
+
+before_script:
+  - sleep 5 #hacky sleep as we need to wait till the db container is up
   - docker-compose -f docker-compose.prod.yml exec db psql -U postgres -c "CREATE DATABASE \"mame-highscores\""
+
 script:
   - docker-compose exec app npm run test-model
-after_success:
+
+before_deploy:
+  - pip install --user awscli
   - eval $(aws ecr get-login --no-include-email --region ap-southeast-2)
-  - docker tag mame_highscores_app:latest 474801623431.dkr.ecr.ap-southeast-2.amazonaws.com/mame-highscores/app:latest
-  - docker push 474801623431.dkr.ecr.ap-southeast-2.amazonaws.com/mame-highscores/app:latest
+
+deploy:
+  provider: script
+  script: bash deploy.sh
+  on:
+    branch: master
