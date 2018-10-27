@@ -79,46 +79,50 @@ module.exports = {
    * @param aliasName
    * @param callBackFn (err, Score)
    */
-  claim: function(scoreId, aliasName, callBackFn){
+  claim: async function(scoreId, aliasName){
 
     if(aliasName === null || aliasName === undefined){
-      return callBackFn("Alias can not be null", null);
+      //return callBackFn("Alias can not be null", null);
+      throw "Alias can not be null";
     }
 
     //TODO: should really do a case insensitive look up of the users alias
     aliasName = aliasName.trim().toUpperCase();
 
     if(aliasName === ''){
-      return callBackFn("Alias can not be empty", null);
+      throw "Alias can not be empty";
     }
 
-    Score.findOneById(scoreId).exec(findScoreFn);
+    let score = await Score.findOne({id: scoreId});
 
-    function findScoreFn(err, score){
-      if(err) { return callBackFn(err, null); }
 
-      if(score.name !== null && score.name !== ''){
-        return callBackFn("Score name is not empty", null);
-      } else {
-        //empty name so we can update it
-        score.name = aliasName;
-        score.save(saveScoreFn);
-      }
+    if(score.name !== null && score.name !== ''){
+      throw "Score name is not empty";
+    } else {
+      //empty name so we can update it
+      //score.name = aliasName;
+      //score.save(saveScoreFn);
+      await Score.update({id: scoreId}, {name: aliasName});
+      let updatedScore = await Score.findOne({id: scoreId}).populate('game');
+      await Game.updateScoreAliases(updatedScore.game, () => {});
+      return await Score.findOne({id: updatedScore.id}).populate('alias');
     }
 
-    function saveScoreFn(err, updatedScore){
-      if(err) { return callBackFn(err, null); }
 
-      Game.updateScoreAliases(updatedScore.game, updateAliasesResultFn);
-    }
 
-    function updateAliasesResultFn(err) {
-      if(err) { return callBackFn(err, null); }
+    // async function saveScoreFn(updatedScore){
+    //   //if(err) { return callBackFn(err, null); }
+    //
+    //
+    // }
 
-      //need to get the updated data
-      //populate the alias object as its need for the score table
-      Score.findOneById(scoreId).populate('alias').exec(callBackFn);
-    }
+    // function updateAliasesResultFn(err) {
+    //   if(err) { return callBackFn(err, null); }
+    //
+    //   //need to get the updated data
+    //   //populate the alias object as its need for the score table
+    //   Score.findOneById(scoreId).populate('alias').exec(callBackFn);
+    // }
 
   }
 
