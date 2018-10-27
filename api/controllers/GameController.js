@@ -33,6 +33,7 @@ module.exports = {
 
   top_players: function (req, res) {
 
+    console.log('top_players endpoint');
     User.points(null, null, function(err, topPlayers){
       if (err) return res.serverError(err);
 
@@ -103,7 +104,7 @@ module.exports = {
 
       var decodedScores = {};
 
-      Game.findOneById(gameId).exec(function (err, game) {
+      Game.findOne({id: gameId}).exec(function (err, game) {
 
         if(err) { return res.serverError(err); }
 
@@ -121,7 +122,7 @@ module.exports = {
         res.json(decodedScores);
       });
     } else {
-      Game.findOneById(gameId).exec(function (err, game) {
+      Game.findOne({id: gameId}).exec(function (err, game) {
 
         if(err) { return res.serverError(err); }
 

@@ -46,6 +46,7 @@ module.exports.routes = {
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
 
   // Custom routes here...
+  'GET /api/v1/game/top_players': 'GameController.top_players',
 
   //gets all the games with scores that the user has scores for
   'get /api/v1/user/:id/games': {

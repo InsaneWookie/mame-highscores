@@ -14,11 +14,13 @@ before(function(done) {
     hooks: { grunt: false },
     log: { level: 'warn' },
 
+    models: { migrate: 'drop' },
+
     datastores: {
       default: {
         adapter: 'sails-postgresql',
-        url: 'postgres://postgres:example@db:5432/mame-highscores',
-        database: 'mame-highscores'
+        url: 'postgres://postgres:example@db:5432/mame-highscores-test',
+        database: 'mame-highscores-test'
       }
     },
 
@@ -30,7 +32,7 @@ before(function(done) {
     }
 
   }, function(err, sails) {
-    if (err) { return done(err); };
+    if (err) { return done(err); }
     // here you can load fixtures, etc.
     return done();
   });

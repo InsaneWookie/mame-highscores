@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import { GameService } from "../game.service";
 
 @Component({
     selector: 'app-home',
@@ -31,10 +32,24 @@ export class HomeComponent implements OnInit {
         }
     ];
 
-    constructor() {
+    constructor(private gameService: GameService) {
+    }
+
+    getGames(): void {
+        this.gameService.getGames2().subscribe(games => this.games = games);
+    }
+
+    getTopPlayers() : void {
+        this.gameService.getTopPlayers().subscribe(topPlayers => this.topPlayers = topPlayers);
+    }
+
+    getLastPlayed() : void {
+        this.gameService.getLastPlayed().subscribe(lastPlayed => this.lastPlayedGames = lastPlayed)
     }
 
     ngOnInit() {
+        this.getTopPlayers();
+        this.getLastPlayed();
     }
 
 }

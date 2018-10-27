@@ -17,7 +17,8 @@ export class GameService {
   constructor(private http: HttpClient) { }
 
   getGames() : Observable<object[]> {
-    return this.http.get<object[]>('/api/v1/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC').pipe(
+    return this.http.get<object[]>('/api/v1/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC')
+      .pipe(
       catchError(this.handleError('getGames', []))
     )
     // return [
@@ -27,6 +28,24 @@ export class GameService {
     //   }
     //
     // ];
+  }
+
+  getGames2() : Observable<object[]> {
+    return this.http.get<object[]>(
+      '/api/v1/game?limit=500&sort=full_name ASC&populate=[]&where={"has_mapping":true,"clone_of":null}'
+    ).pipe(catchError(this.handleError('getGames2', [])));
+  }
+
+  getTopPlayers() : Observable<object[]> {
+    return this.http.get<object[]>(
+      '/api/v1/game/top_players'
+    ).pipe(catchError(this.handleError('getTopPlayers', [])));
+  }
+
+  getLastPlayed() : Observable<object[]> {
+    return this.http.get<object[]>(
+      '/api/v1/game?sort=last_played DESC&limit=10&where={"has_mapping": true,"last_played": {"!": null}}'
+    ).pipe(catchError(this.handleError('getLastPlayed', [])));
   }
 
   getGame(gameId: number): Observable<object>{
