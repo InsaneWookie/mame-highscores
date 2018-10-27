@@ -266,7 +266,7 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 ScoreDecoder.prototype.reverseBytes = function(bytes, settings){
 
   if(settings.reverse !== undefined && settings.reverse == true){
-     return Buffer.from(bytes.toJSON().reverse());
+     return Buffer.from(bytes.toJSON().data.reverse());
   }
 
   return bytes;

@@ -27,7 +27,7 @@
     "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
     "custom-tests": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js test/unit/**/*.js",
     "test-model": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js './test/unit/**/*.js'",
-    "test-model-debug": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js --inspect-brk=0.0.0.0 test/unit/model/testScore.js"
+    "test-model-debug": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js --inspect-brk=0.0.0.0 './test/unit/**/*.js'"
   },
   "main": "app.js",
   "repository": {

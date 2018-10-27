@@ -52,7 +52,7 @@ module.exports = {
 
     var gameId = req.param('id');
 
-    Game.findById(gameId).populate('rawscores').exec(function(err, game){
+    Game.findOne({id: gameId}).populate('rawscores').exec(function(err, game){
 
     });
 
@@ -77,7 +77,7 @@ module.exports = {
         gameName = fileName.substring(0, fileName.lastIndexOf('.'));
       }
 
-      Game.findOneByName(gameName).exec(function(err, game){
+      Game.findOne({name: gameName}).exec(function(err, game){
         if(err){
           res.notFound("Game does not exist");
         } else {

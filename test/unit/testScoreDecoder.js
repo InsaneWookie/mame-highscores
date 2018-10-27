@@ -26,7 +26,7 @@ describe('ScoreDecoder', function () {
         '05900f8769a77042418101000000500050010101010101010101010101010103f00505000fa769c77052418101000000403000010' +
         '101010101010101010101010103f00004300fc76507600000007060500';
 
-      var dkongBuffer = new Buffer(dkongBytes, 'hex');
+      var dkongBuffer = Buffer.from(dkongBytes, 'hex');
 
       var decoding = ScoreDecoder.decode(gameMaps, dkongBuffer, 'dkong', 'hi');
 
@@ -53,7 +53,7 @@ describe('ScoreDecoder', function () {
         '101010101010101010101010103f00004300fc76507600000007060500';
 
 
-      var buffer = new Buffer(bytes, 'hex');
+      var buffer = Buffer.from(bytes, 'hex');
 
       var decoding = ScoreDecoder.decode(gameMaps, buffer, 'ddonpach', 'nv');
 
