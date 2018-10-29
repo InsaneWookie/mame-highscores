@@ -7,16 +7,26 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { GamesComponent } from './games/games.component';
 import { GameDetailComponent } from './game-detail/game-detail.component';
+import { GameUploadComponent } from './game-upload/game-upload.component';
+import { UsersComponent } from './users/users.component';
+import { UserCreateComponent } from './user-create/user-create.component';
+import { UserDetailComponent } from './user-detail/user-detail.component';
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     GamesComponent,
-    GameDetailComponent
+    GameDetailComponent,
+    GameUploadComponent,
+    UsersComponent,
+    UserCreateComponent,
+    UserDetailComponent
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     HttpClientModule
   ],

@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'Mame Highscores';
 
-    ngOnInit() {
-        fetch('/user').then(console.log);
-    }
+  ngOnInit() {
+
+  }
 }
