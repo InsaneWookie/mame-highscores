@@ -88,7 +88,11 @@ module.exports = {
             if(err) return res.serverError("Problem reading file");
 
             Game.uploadScores(rawBuffer, fileType, game, function(err, savedScores){
-              if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
+              if(err) {
+                res.json(err);
+              } else {
+                res.json(savedScores);
+              }
             });
           });
         }

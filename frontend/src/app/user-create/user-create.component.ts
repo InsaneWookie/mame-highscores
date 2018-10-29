@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { UserService } from "../user.service";
 import { Router } from "@angular/router";
+import { User } from "../models/user";
 
 @Component({
   selector: 'app-user-create',
@@ -10,21 +11,20 @@ import { Router } from "@angular/router";
 })
 export class UserCreateComponent implements OnInit {
 
-  user: object = {
-    username: "",
-    email: "",
-    //aliases: []
-  };
+  user: User;
 
   aliases: string = "";
 
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router) {
+  }
 
   ngOnInit() {
   }
 
   onSubmit() {
+
+    console.log("submit clicked");
     let aliases = [];
 
 
@@ -34,7 +34,7 @@ export class UserCreateComponent implements OnInit {
     this.userService.createUser(this.user).subscribe((user) => {
       console.log(user);
 
-      this.aliases.split(',').forEach(function (alias){
+      this.aliases.split(',').forEach(function (alias) {
         aliases.push({name: alias, user: user.id});
       });
 

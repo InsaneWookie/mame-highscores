@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
+import { User } from "./models/user";
 
 @Injectable({
   providedIn: 'root'
@@ -10,19 +11,19 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getUsers() : Observable<object[]> {
-    return this.http.get<object[]>('/api/v1/user')
+  getUsers() : Observable<User[]> {
+    return this.http.get<User[]>('/api/v1/user')
       .pipe(catchError(this.handleError('getUsers', [])));
   }
 
-  getUser(userId: number) : Observable<object>{
-    return this.http.get<object[]>(`/api/v1/user/${userId}`)
-      .pipe(catchError(this.handleError('getUser', [])));
+  getUser(userId: number) : Observable<User>{
+    return this.http.get<User>(`/api/v1/user/${userId}`)
+      .pipe(catchError(this.handleError('getUser', new User)));
   }
 
-  createUser(user: object) : Observable<object[]>{
-    return this.http.post('/api/v1/user', user)
-      .pipe(catchError(this.handleError('createUser', [])));
+  createUser(user: User) : Observable<User>{
+    return this.http.post<User>('/api/v1/user', user)
+      .pipe(catchError(this.handleError('createUser', new User)));
   }
 
   createAlasis(alaseses: object[]) : Observable<object[]> {
