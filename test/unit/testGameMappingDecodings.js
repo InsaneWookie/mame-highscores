@@ -19,7 +19,7 @@ describe('GameMappingDecodings', function () {
       { score: '4300', name: '' }
     ] };
 
-    var dkongBuffer = new Buffer(dkongBytes, 'hex');
+    var dkongBuffer = Buffer.from(dkongBytes, 'hex');
     var decoding = ScoreDecoder.decode(gameMaps, dkongBuffer, 'dkong', 'hi');
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
@@ -33,7 +33,7 @@ describe('GameMappingDecodings', function () {
       '05900f8769a77042418101000000500050010101010101010101010101010103f00505000fa769c77052418101000000403000010' +
       '101010101010101010101010103f00004300fc76507600000007060500';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'bjtwin', 'hi');
 
@@ -60,7 +60,7 @@ describe('GameMappingDecodings', function () {
       '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
       '00120011001050';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'zerowing', 'hi');
 
@@ -80,7 +80,7 @@ describe('GameMappingDecodings', function () {
 
     var hexString = '0100000553534200008000044B454900006000034F4752000040000247574B0000200001544B4E010000';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'arknoid2', 'hi');
 
@@ -100,7 +100,7 @@ describe('GameMappingDecodings', function () {
 
     var hexString = '0000004B524C0000004B524C0000004B524C0000004B524C0000004B524C000000';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'crush', 'hi');
 
@@ -121,7 +121,7 @@ describe('GameMappingDecodings', function () {
     var hexString = '0100000100000100000100000100000100000100000100000100000F0A150C1817FFFF0F0A150C1817FFFF0F0A15' +
       '0C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFF0F0A150C1817FFFFFFFFFF1B1820';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'dorodon', 'hi');
 
@@ -146,7 +146,7 @@ describe('GameMappingDecodings', function () {
     var hexString = '000500000500000500000500000500000500000500000500000500000500000000111111111111111111111' +
       '111111111111111111111111111111111111111111111000005101010101010000000';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'boggy84', 'hi');
 
@@ -174,7 +174,7 @@ describe('GameMappingDecodings', function () {
       '20202020200025004E4F2E352020202020200024004E4F2E362020202020200023004E4F2E372020202020200022004E4F2E38202020' +
       '2020200021004E4F2E392020202020200020004E4F2E31302020202020005000';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'aso', 'hi');
 
@@ -201,7 +201,7 @@ describe('GameMappingDecodings', function () {
     //when the name is entered if the user its end the remaining chars are filled with FF
     var hexString = '4A4F450001F401014B414D000190010146415300012C010145474F0000C801014A414E0000640101';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'actionhw', 'hi');
 
@@ -224,7 +224,7 @@ describe('GameMappingDecodings', function () {
     var hexString = '000000000200000020202020494D4F200000000001080000202020204D4B50200000000001060000202020204D2E4' +
       '820000000000104000020202020592E4B20000000000102000020202020592E46200000000002000000';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'blktiger', 'hi');
 
@@ -245,7 +245,7 @@ describe('GameMappingDecodings', function () {
     //when the name is entered if the user its end the remaining chars are filled with FF
     var hexString = '00001500014A4C4300000500004E4D4B0000040000542E4E0000030000415247000002000047555300001500';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'valtric', 'hi');
 
@@ -265,7 +265,7 @@ describe('GameMappingDecodings', function () {
 
     var hexString = '0002020505010008030602010002030809240008090109240002070808240D0E0A130A220D16120D0E0A13180E000202050501';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'galaga', 'hi');
 
@@ -285,7 +285,7 @@ describe('GameMappingDecodings', function () {
 
     var hexString = '630405029701580127016304';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'frogger', 'hi');
 
@@ -306,7 +306,7 @@ describe('GameMappingDecodings', function () {
 
     var hexString = '49F00030011D3A0025014CBA002001102300150132B0001001041A100801003001';
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'explorer', 'hi');
 

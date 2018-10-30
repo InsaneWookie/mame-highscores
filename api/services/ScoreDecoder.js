@@ -283,13 +283,13 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 			removedCount++;
 		}		
 	}
-	return new Buffer(clean);
+	return Buffer.from(clean);
 };
 
 ScoreDecoder.prototype.reverseBytes = function(bytes, settings){
 
   if(settings.reverse !== undefined && settings.reverse == true){
-     return new Buffer(bytes.toJSON().reverse());
+     return Buffer.from(bytes.toJSON().data.reverse());
   }
 
   return bytes;
@@ -312,7 +312,7 @@ ScoreDecoder.prototype.convertTwoToThree = function(bytes, settings){
   var hexString = bytes.toString('hex').replace(' ', '');
   var intValue = parseInt(hexString, 16);
 
-  var buff = new Buffer(3);
+  var buff = Buffer.alloc(3);
 
   buff[0] = intValue & 0x1F; //mask of the top 11 bits (ie keep the bottom 5)
   buff[1] = (intValue >> 5) & 0x1F;
@@ -325,7 +325,7 @@ ScoreDecoder.prototype.addOffset = function(bytes, settings){
 	//console.log(bytes.length);
 	if(settings.offset !== undefined){
 		for(var i = 0; i < bytes.length; i++){
-			var b = new Buffer(1);
+			var b = Buffer.alloc(1);
 			b[0] = bytes[i];
 
 			if(!this.inSpecialChars(b.toString('hex'), settings)){
@@ -345,7 +345,7 @@ ScoreDecoder.prototype.addDivider = function(bytes, settings){
 	if(settings.divideBy !== undefined){
 		for(var i = 0; i < bytes.length; i++){
 
-			var b = new Buffer(1);
+			var b = Buffer.alloc(1);
 			b[0] = bytes[i];
 
 			//skip of any bytes that are in the special chars array as we decode them later
@@ -391,7 +391,7 @@ ScoreDecoder.prototype.decodeAscii = function(byteArray, settings){
 	var processedString = "";
 	for(var i = 0; i < byteArray.length; i++){
 
-		var specialCharValue = new Buffer(1);
+		var specialCharValue = Buffer.alloc(1);
 		specialCharValue[0] = byteArray[i];
 
 		//see if the ascii representation is actually displayable
@@ -451,7 +451,7 @@ ScoreDecoder.prototype.decodeFromCharMap = function(byteArray, charMapType, spec
 	var name = "";
 	for(var mapIndex = 0; mapIndex < byteArray.length; mapIndex++){
 
-		var specialCharValue = new Buffer(1);
+		var specialCharValue = Buffer.alloc(1);
 		specialCharValue[0] = byteArray[mapIndex];
 
 		var value = specialCharValue.toString('hex').toUpperCase();
@@ -566,9 +566,9 @@ ScoreDecoder.prototype.decodeZerowing = function(bytes){
 		//console.log(scoreBytes);
 		//scoreBytes = this.preProcessBytes(scoreBytes, { ignoreBytes: [3]});
 
-		var nameBytes = new Buffer(bytes.slice(currentNameByte, currentNameByte + 12));
+		var nameBytes = Buffer.from(bytes.slice(currentNameByte, currentNameByte + 12));
 
-		var nameData = new Buffer([nameBytes[0], nameBytes[2], nameBytes[4]]);
+		var nameData = Buffer.from([nameBytes[0], nameBytes[2], nameBytes[4]]);
 		
 		nameData = this.preProcessBytes(nameData, { offset: '0A', special: {'24': "!", '25': ',', '26': '.', '27': '+'} });
 		

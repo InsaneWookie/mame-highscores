@@ -2,71 +2,91 @@
  * Route Mappings
  * (sails.config.routes)
  *
- * Your routes map URLs to views and controllers.
+ * Your routes tell Sails what to do each time it receives a request.
  *
- * If Sails receives a URL that doesn't match any of the routes below,
- * it will check for matching files (images, scripts, stylesheets, etc.)
- * in your assets directory.  e.g. `http://localhost:1337/images/foo.jpg`
- * might match an image file: `/assets/images/foo.jpg`
- *
- * Finally, if those don't match either, the default 404 handler is triggered.
- * See `config/404.js` to adjust your app's 404 logic.
- *
- * Note: Sails doesn't ACTUALLY serve stuff from `assets`-- the default Gruntfile in Sails copies
- * flat files from `assets` to `.tmp/public`.  This allows you to do things like compile LESS or
- * CoffeeScript for the front-end.
- *
- * For more information on routes, check out:
- * http://links.sailsjs.org/docs/config/routes
+ * For more information on configuring custom routes, check out:
+ * https://sailsjs.com/anatomy/config/routes-js
  */
 
 module.exports.routes = {
 
 
-  // Make the view located at `views/homepage.ejs` (or `views/homepage.jade`, etc. depending on your
-  // default view engine) your home page.
-  //
-  // (Alternatively, remove this and add an `index.html` file in your `assets` directory)
-  '/': {
-    view: 'homepage'
-  },
+  //  ╦ ╦╔═╗╔╗ ╔═╗╔═╗╔═╗╔═╗╔═╗
+  //  ║║║║╣ ╠╩╗╠═╝╠═╣║ ╦║╣ ╚═╗
+  //  ╚╩╝╚═╝╚═╝╩  ╩ ╩╚═╝╚═╝╚═╝
 
+  /***************************************************************************
+  *                                                                          *
+  * Make the view located at `views/homepage.ejs` your home page.            *
+  *                                                                          *
+  * (Alternatively, remove this and add an `index.html` file in your         *
+  * `assets` directory)                                                      *
+  *                                                                          *
+  ***************************************************************************/
+
+  // '/': {
+  //   view: 'pages/homepage'
+  // },
+
+
+  /***************************************************************************
+  *                                                                          *
+  * More custom routes here...                                               *
+  * (See https://sailsjs.com/config/routes for examples.)                    *
+  *                                                                          *
+  * If a request to a URL doesn't match any of the routes in this file, it   *
+  * is matched against "shadow routes" (e.g. blueprint routes).  If it does  *
+  * not match any of those, it is matched against static assets.             *
+  *                                                                          *
+  ***************************************************************************/
+
+
+  //  ╔═╗╔═╗╦  ╔═╗╔╗╔╔╦╗╔═╗╔═╗╦╔╗╔╔╦╗╔═╗
+  //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
+  //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
 
   // Custom routes here...
+  'GET /api/v1/game/top_players': 'GameController.top_players',
 
   //gets all the games with scores that the user has scores for
-  'get /user/:id/games': {
+  'get /api/v1/user/:id/games': {
     controller: 'user',
     action: 'games'
   },
 
-  'get /user/:id/points': {
+  'get /api/v1/user/:id/points': {
     controller: 'user',
     action: 'points'
   },
 
-  'post /game/upload' : {
+  'post /api/v1/game/upload' : {
     controller: 'game',
     action: 'upload'
   },
 
-  'get /game/:id/mapping': {
+  'get /api/v1/game/:id/mapping': {
     controller: 'game',
     action: 'mapping'
   },
 
-  'post /game/:id/mapping': {
+  'post /api/v1/game/:id/mapping': {
     controller: 'game',
     action: 'mapping'
   },
 
-  'post /score/:id/claim': {
+  'post /api/v1/score/:id/claim': {
     controller: 'score',
     action: 'claim'
-  }
+  },
 
-  // If a request to a URL doesn't match any of the custom routes above,
-  // it is matched against Sails route blueprints.  See `config/blueprints.js`
-  // for configuration options and examples.
+  //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗
+  //  ║║║║╣ ╠╩╗╠═╣║ ║║ ║╠╩╗╚═╗
+  //  ╚╩╝╚═╝╚═╝╩ ╩╚═╝╚═╝╩ ╩╚═╝
+
+
+  //  ╔╦╗╦╔═╗╔═╗
+  //  ║║║║╚═╗║
+  //  ╩ ╩╩╚═╝╚═╝
+
 
 };

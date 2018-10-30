@@ -15,9 +15,9 @@ module.exports = {
     full_name: 'STRING',
     has_mapping: 'boolean',
     play_count: 'integer',
-    clone_of: 'integer',
+    clone_of: 'ref',
     clone_of_name: 'string',
-    last_played: 'datetime',
+    last_played: 'string',
     letter: 'string',
     order: 'string',
     sort: 'string',
@@ -34,18 +34,22 @@ module.exports = {
       via: 'game'
     },
 
-    clean_name_func: function(){
-      var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
-      return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
-    },
 
-    toJSON: function(){
-      var obj = this.toObject();
-      obj.clean_name = this.clean_name_func();
-      return obj;
-    }
+
+
 
   },
+
+  // clean_name_func: function(){
+  //   var indexLastBracket = (this.full_name) ? this.full_name.lastIndexOf('(') : -1;
+  //   return (indexLastBracket === -1) ? this.full_name : this.full_name.substring(0, indexLastBracket).trim() ;
+  // },
+  //
+  // customToJSON: function(){
+  //   var obj = this.toObject();
+  //   obj.clean_name = this.clean_name_func();
+  //   return obj;
+  // },
 
   /**
    * Removes already existing scores, duplicate new scores and other invalid scores (like empty score)
@@ -195,7 +199,7 @@ module.exports = {
     GamePlayed.create({game_id: game.id}).exec(function (err, newGamePLayed) { });
 
     //dont technically need to do this as it can be inferred from the gameplayed table
-    Game.query('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
+    sails.sendNativeQuery('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
       function (err, result) {
         callback(err, result);
       });
@@ -204,7 +208,7 @@ module.exports = {
 
   sendBeatenScoreEmails: function(game, createdScores, callback){
 
-    Score.find({game_id: game.id}).populate('alias').exec(function (err, allScores) {
+    Score.find({game: game.id}).populate('alias').exec(function (err, allScores) {
 
       if(err) return callback(err);
 
@@ -232,9 +236,9 @@ module.exports = {
 
                 var beaten = beatenScore;
                 beaten.user = beatenUser;
-                EmailService.sendBeatenEmail(game, beatenBy, beaten, { to: beaten.user.email }, function (err, emailResponse) {
-                  if (err) console.error(err);
-                });
+                // EmailService.sendBeatenEmail(game, beatenBy, beaten, { to: beaten.user.email }, function (err, emailResponse) {
+                //   if (err) console.error(err);
+                // });
               });
             });
           });
@@ -269,6 +273,7 @@ module.exports = {
     var decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name, fileType);
 
     //if we have some score data, process it
+    //console.log(decodedScores);
     if (decodedScores !== null) {
 
 
@@ -308,23 +313,24 @@ module.exports = {
           if (createdScores.length > 0) {
             //we created some scores so notify users
 
-
+            //console.log("finding scores");
             //notify socket subscribers
-            Score.findOneById(createdScores[0].id).populate('game').exec(function (err, notifyScore) {
+            Score.findOne({id: createdScores[0].id}).populate('game').exec(function (err, notifyScore) {
+              //console.log(notifyScore);
               if (err) {
                 console.log(err);
                 return;
               }
               //notify everyone that we created a score
               //TODO: only notify the people that were beaten
-              Score.publishCreate(notifyScore);
+              //Score.publishCreate(notifyScore);
             });
 
             //also want to send an email
             //workout if the top created score beat any other user's scores
-            Game.sendBeatenScoreEmails(game, createdScores, function(err){
-              console.log(err);
-            });
+            // Game.sendBeatenScoreEmails(game, createdScores, function(err){
+            //   console.log(err);
+            // });
           }
 
           //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
@@ -365,18 +371,21 @@ module.exports = {
     var filteredScores = [];
     //work out what scores do not exist in the scores that we have been given compared to whats in the database
     //should be able to use Score.findOrCreateEach
-    Score.find({game_id: gameId}).exec(function (err, existingScores) {
+    Score.find({game: gameId}).exec(function (err, existingScores) {
 
+      //console.log(err);
+      //console.log(existingScores);
       //remove any exiting or invalid scores
       filteredScores = Game.filterScores(newScores, existingScores);
 
       //stick the game id on the scores we want to save
       filteredScores.forEach(function (score) {
-        score.game_id = gameId;
+        score.game = gameId;
       });
 
       //now insert the new scores
-      Score.createEach(filteredScores).exec(function (err, createdScores) {
+      Score.createEach(filteredScores).fetch().exec(function (err, createdScores) {
+        // console.log(createdScores);
         if (err) {
           console.log(err);
           callback(err);
@@ -388,6 +397,7 @@ module.exports = {
               Game.updateScoreAliases(game, function (err) {
                 if(err) { return callback(err, null); }
 
+                // console.log(game);
                 //we need to refetch the created scores so we have the updated alias data
                 var scoreIds = [];
                 createdScores.forEach(function(score){
@@ -398,7 +408,9 @@ module.exports = {
                 Score.updateRanks(gameId, function(err){
                   if(err) { return callback(err, null); }
 
-                  Score.find().where({id: scoreIds}).sort('rank ASC').exec(function(err, updateCreatedScores){
+                  Score.find({ where: {id: {in: scoreIds }}, sort: 'rank ASC'}).exec(function(err, updateCreatedScores){
+                    // console.log("Created Scores");
+                    // console.log(updateCreatedScores);
                     callback(err, updateCreatedScores);
                   });
                 });
@@ -423,14 +435,15 @@ module.exports = {
    * @param {Game} game
    * @param callback(err)
    */
-  updateScoreAliases: function (game, callback) {
+  updateScoreAliases: async function (game, callback) {
 
     var query = "UPDATE score SET alias_id = a.id FROM alias a " +
       "WHERE lower(score.name) = lower(a.name) AND score.game_id = $1";
 
-    Score.query(query, [game.id], function (err, result) {
-      callback(err);
-    });
+    let result = await sails.sendNativeQuery(query, [game.id]);
+
+    callback(null);
+
   },
 
   /**

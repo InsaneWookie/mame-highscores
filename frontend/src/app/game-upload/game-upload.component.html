@@ -1,0 +1,19 @@
+<h1>Upload A .hi File</h1>
+
+
+<form action='/api/v1/game/upload' method='post' enctype='multipart/form-data' (ngSubmit)="onSubmit()">
+
+    <div class="form-group">
+        <label for="inputGameFile">File</label>
+        <input type='file' class="form-control" name='game' id="inputGameFile" aria-describedby="" (change)="handleFileInput($event.target.files)"/>
+        <!--<small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+    </div>
+
+    <div class="form-group">
+        <label for="inputGameName">Game Name (optional)</label>
+        <input type='text' class="form-control" name='gamename' placeholder='Enter optional game name' id="inputGameName"/>
+        <span>If the game name is different from the what the file is named, enter it here</span>
+    </div>
+
+    <button type='submit' class="btn btn-primary">Upload</button>
+</form>

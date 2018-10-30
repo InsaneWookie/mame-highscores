@@ -62,7 +62,7 @@ module.exports = {
       extraWhere +
       "ORDER BY total_points DESC";
 
-    User.query(pointsQuery, queryParams, function getPoints(err, results){
+    sails.sendNativeQuery(pointsQuery, queryParams, function getPoints(err, results){
       if(err) return fnCallback(err);
 
       fnCallback(null, results.rows);

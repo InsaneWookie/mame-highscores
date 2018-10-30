@@ -1,49 +1,42 @@
 {
-  "name": "mame-highscores",
+  "name": "app",
   "private": true,
-  "version": "0.16.1",
-  "description": "Mame high score tracking",
+  "version": "0.0.0",
+  "description": "a Sails application",
   "keywords": [],
-  "engines": {
-    "node": "0.10.x"
-  },
   "dependencies": {
-    "bower": "~1.3.9",
-    "ejs": "~0.8.4",
-    "email-templates": "~1.1.1",
-    "gake": "~0.1.2",
-    "grunt": "0.4.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-coffee": "~0.10.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.9.0",
-    "grunt-contrib-jst": "~0.6.0",
-    "grunt-contrib-less": "~0.11.4",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-sails-linker": "~0.9.5",
-    "grunt-sync": "0.0.8",
-    "include-all": "~0.1.3",
-    "jade": "~1.4.2",
-    "nodemailer": "~1.2.1",
-    "nodemailer-stub-transport": "~0.1.4",
-    "rc": "~0.3.5",
-    "sails": "~0.10.3",
-    "sails-disk": "~0.10.3",
-    "sails-migrations": "^0.1.0",
-    "sails-postgresql": "~0.10.7"
+    "@sailshq/connect-redis": "^3.2.1",
+    "@sailshq/lodash": "^3.10.3",
+    "@sailshq/socket.io-redis": "^5.2.0",
+    "async": "2.0.1",
+    "email-templates": "*",
+    "grunt": "1.0.1",
+    "sails": "^1.0.2",
+    "sails-hook-grunt": "^3.0.2",
+    "sails-hook-orm": "^2.0.0-17",
+    "sails-hook-sockets": "^1.4.0",
+    "sails-postgresql": "^1.0.1",
+    "mocha": "^5.2.0"
+  },
+  "devDependencies": {
+    "@sailshq/eslint": "^4.19.3"
   },
   "scripts": {
-    "postinstall": "export HOME=/var/lib/openshift/53d73a6550044601bc0001dd/app-root/runtime/repo; ./node_modules/bower/bin/bower install",
-    "start": "node app.js",
-    "debug": "node debug app.js"
+    "start": "NODE_ENV=production node app.js",
+    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+    "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
+    "custom-tests": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js test/unit/**/*.js",
+    "test-model": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js './test/unit/**/*.js'",
+    "test-model-debug": "node ./node_modules/mocha/bin/mocha test/lifecycle.test.js --inspect-brk=0.0.0.0 './test/unit/**/*.js'"
   },
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "todo"
+    "url": "git://github.com/anonymous node/sails user/app.git"
   },
-  "author": "Rowan",
-  "license": ""
+  "author": "anonymous node/sails user",
+  "license": "",
+  "engines": {
+    "node": ">=10.11"
+  }
 }

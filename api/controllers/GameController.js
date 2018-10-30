@@ -20,7 +20,7 @@ module.exports = {
   },
 
   search_list: function(req, res){
-    Game.query('SELECT id, name, full_name FROM game', function(err, results){
+    sails.sendNativeQuery('SELECT id, name, full_name FROM game', function(err, results){
       res.json(results.rows);
     });
   },
@@ -33,6 +33,7 @@ module.exports = {
 
   top_players: function (req, res) {
 
+    console.log('top_players endpoint');
     User.points(null, null, function(err, topPlayers){
       if (err) return res.serverError(err);
 
@@ -52,7 +53,7 @@ module.exports = {
 
     var gameId = req.param('id');
 
-    Game.findById(gameId).populate('rawscores').exec(function(err, game){
+    Game.findOne({id: gameId}).populate('rawscores').exec(function(err, game){
 
     });
 
@@ -77,7 +78,7 @@ module.exports = {
         gameName = fileName.substring(0, fileName.lastIndexOf('.'));
       }
 
-      Game.findOneByName(gameName).exec(function(err, game){
+      Game.findOne({name: gameName}).exec(function(err, game){
         if(err){
           res.notFound("Game does not exist");
         } else {
@@ -87,7 +88,11 @@ module.exports = {
             if(err) return res.serverError("Problem reading file");
 
             Game.uploadScores(rawBuffer, fileType, game, function(err, savedScores){
-              if(err) { res.json(err); } else { res.ok(savedScores, '/#/games/' + game.id); }
+              if(err) {
+                res.json(err);
+              } else {
+                res.json(savedScores);
+              }
             });
           });
         }
@@ -109,14 +114,14 @@ module.exports = {
 
       var decodedScores = {};
 
-      Game.findOneById(gameId).exec(function (err, game) {
+      Game.findOne({id: gameId}).exec(function (err, game) {
 
         if(err) { return res.serverError(err); }
 
         try {
           //need to wrap it up in an array as the decoder expects an array of mappings to search through
           var testMapping = [req.body.gameMapping];
-          var rawScore = new Buffer(req.body.rawBytes, 'hex');
+          var rawScore = Buffer.from(req.body.rawBytes, 'hex');
 
           decodedScores = ScoreDecoder.decode(testMapping, rawScore, game.name);
         } catch (ex) {
@@ -128,7 +133,7 @@ module.exports = {
       });
 
     } else {
-      Game.findOneById(gameId).exec(function (err, game) {
+      Game.findOne({id: gameId}).exec(function (err, game) {
 
         if(err) { return res.serverError(err); }
 
