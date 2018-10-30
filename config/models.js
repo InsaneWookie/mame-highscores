@@ -69,8 +69,8 @@ module.exports.models = {
   ***************************************************************************/
 
   attributes: {
-    createdAt: { type: 'string', columnType: 'datetime', autoCreatedAt: true, },
-    updatedAt: { type: 'string', columnType: 'datetime', autoUpdatedAt: true, },
+    createdAt: { type: 'string', columnType: 'timestamptz', autoCreatedAt: true, },
+    updatedAt: { type: 'string', columnType: 'timestamptz', autoUpdatedAt: true, },
     id: { type: 'number', autoIncrement: true, },
     //--------------------------------------------------------------------------
     //  /\   Using MongoDB?
