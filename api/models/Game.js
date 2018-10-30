@@ -22,7 +22,10 @@ module.exports = {
     order: 'string',
     sort: 'string',
     year: 'string',
-    decoded_on: 'datetime',
+    // decoded_on: {
+    //   type: 'string',
+    //   columnType: 'timestamp'
+    // },
 
     scores: {
       collection: 'Score',
@@ -205,7 +208,6 @@ module.exports = {
       });
   },
 
-
   sendBeatenScoreEmails: function(game, createdScores, callback){
 
     Score.find({game: game.id}).populate('alias').exec(function (err, allScores) {
@@ -275,17 +277,6 @@ module.exports = {
     //if we have some score data, process it
     //console.log(decodedScores);
     if (decodedScores !== null) {
-
-
-      //if we have decoded the score we still want to save the latest raw mapping in case the decoding is wrong
-      RawScore.destroy({game_id: game.id}).exec(function(){ //just remove them all and add a new one
-        Game.addRawScores(game, rawBytes.toString('hex'), fileType, function (err, newRawScore) {
-          //callback(err, newRawScore);
-        });
-      });
-
-
-
 
       var newScores = decodedScores[game.name];
 
