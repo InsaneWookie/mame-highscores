@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../user.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { User } from "../models/user";
 
 @Component({
   selector: 'app-user-detail',
@@ -9,16 +10,15 @@ import { ActivatedRoute, Router } from "@angular/router";
 })
 export class UserDetailComponent implements OnInit {
 
-  user: object = {
-    alias: []
-  };
+  user: User = new User;
   topGames = [];
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit() {
+
     this.route.params.subscribe(params => {
-      this.getUser(params.id); // --> Name must match wanted parameter
+      this.getUser(params.id);
     });
 
   }

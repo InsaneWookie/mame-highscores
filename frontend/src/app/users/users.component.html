@@ -8,6 +8,6 @@
   </tr>
   <tr *ngFor="let user of users">
     <td><a routerLink="/users/{{user.id}}">{{user.username}}</a></td>
-    <td><span *ngFor="let alias of user.aliases">{{alias.name}}{{$last ? '' : ', '}}</span></td>
+    <td><span *ngFor="let alias of user.aliases; let last = last;">{{alias.name}}{{last ? '' : ', '}}</span></td>
   </tr>
 </table>

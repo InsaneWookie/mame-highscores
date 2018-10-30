@@ -20,17 +20,18 @@ export class UserCreateComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.user = new User();
   }
 
   onSubmit() {
 
-    console.log("submit clicked");
+    // console.log("submit clicked");
     let aliases = [];
 
 
     // this.user.aliases = aliases;
 
-    console.log(this.user);
+    // console.log(this.user);
     this.userService.createUser(this.user).subscribe((user) => {
       console.log(user);
 
