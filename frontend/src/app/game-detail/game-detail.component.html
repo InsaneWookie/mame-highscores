@@ -34,7 +34,7 @@
             <span *ngIf="score.alias == null">{{score.name}}</span>
           </td>
           <td style='text-align:right'>{{score.score}}</td>
-          <td style='text-align:right'><span am-time-ago="score.createdAt"></span></td>
+          <td style='text-align:right'>{{score.createdAt | amTimeAgo}}</td>
         </tr>
       </table>
     </div>

@@ -5,7 +5,7 @@ export class User {
   username: string;
   email: string;
   points: number;
-  aliases: object[] = [];
+  aliases: object[];
 
 
 }

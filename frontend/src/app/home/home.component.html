@@ -1,20 +1,4 @@
 
-<div style="width:100%" class="row center-block">
-  <div class="col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-body text-center">
-        <form class="form-inline" action='/games' method='get' role='form'>
-          <div class="form-group">
-            <select class="form-control" name='game'>
-              <option *ngFor="let game of games" >{{game.name}}</option>
-            </select>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <div class="row">
 
@@ -33,7 +17,7 @@
           <tr *ngFor="let game of lastPlayedGames">
             <td> <a href='#/games/{{game.id}}'>{{game.full_name}} </a></td>
             <td>{{game.play_count}}</td>
-            <td><span am-time-ago="game.last_played"></span></td>
+            <td>{{game.last_played | amTimeAgo}}</td>
           </tr>
         </table>
       </div>

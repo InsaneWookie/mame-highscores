@@ -8,28 +8,21 @@ import { GameService } from "../game.service";
 })
 export class HomeComponent implements OnInit {
 
-    games: Array<Object> = [{
-        id: 1,
-        name: 'Windstorm'
-    }];
+    games: Array<Object> = [];
 
-    lastPlayedGames: Array<Object> = [
-        {id: 1, name: 'Windstorm', clean_name: "bob", play_count: 3, last_played: new Date() }
-    ];
+    lastPlayedGames: Array<Object> = [];
 
-    topPlayers: Array<Object> = [
-        {id: 1, username: "new guy", total_points: 123 }
-    ];
+    topPlayers: Array<Object> = [];
 
     lastestScores: Array<Object> = [
-        {
-            id: 1,
-            rank: 1,
-            name: "ROW",
-            score: 12345,
-            alias: Object({user: 1}),
-            game: Object({ id: 1, full_name: "test" })
-        }
+        // {
+        //     id: 1,
+        //     rank: 1,
+        //     name: "ROW",
+        //     score: 12345,
+        //     alias: Object({user: 1}),
+        //     game: Object({ id: 1, full_name: "test" })
+        // }
     ];
 
     constructor(private gameService: GameService) {

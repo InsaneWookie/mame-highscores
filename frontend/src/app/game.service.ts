@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from "rxjs";
 import { catchError } from "rxjs/operators";
+import { Game } from "./models/game";
 
 
 const httpOptions = {
@@ -16,8 +17,8 @@ export class GameService {
 
   constructor(private http: HttpClient) { }
 
-  getGames() : Observable<object[]> {
-    return this.http.get<object[]>('/api/v1/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC')
+  getGames() : Observable<Game[]> {
+    return this.http.get<Game[]>('/api/v1/game?where={"has_mapping": true, "clone_of":null}&limit=500&sort=full_name ASC')
       .pipe(
       catchError(this.handleError('getGames', []))
     )
@@ -30,14 +31,14 @@ export class GameService {
     // ];
   }
 
-  getGames2() : Observable<object[]> {
-    return this.http.get<object[]>(
+  getGames2() : Observable<Game[]> {
+    return this.http.get<Game[]>(
       '/api/v1/game?limit=500&sort=full_name ASC&populate=[]&where={"has_mapping":true,"clone_of":null}'
     ).pipe(catchError(this.handleError('getGames2', [])));
   }
 
-  getTopPlayers() : Observable<object[]> {
-    return this.http.get<object[]>(
+  getTopPlayers() : Observable<Game[]> {
+    return this.http.get<Game[]>(
       '/api/v1/game/top_players'
     ).pipe(catchError(this.handleError('getTopPlayers', [])));
   }
@@ -48,8 +49,8 @@ export class GameService {
     ).pipe(catchError(this.handleError('getLastPlayed', [])));
   }
 
-  getGame(gameId: number): Observable<object>{
-    return this.http.get<object>(`/api/v1/game/${gameId}`).pipe(catchError(this.handleError('getGame', [])));
+  getGame(gameId: number): Observable<Game> {
+    return this.http.get<Game>(`/api/v1/game/${gameId}`).pipe(catchError(this.handleError('getGame', new Game)));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

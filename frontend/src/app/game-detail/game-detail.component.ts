@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { GameService } from "../game.service";
 import { ActivatedRoute } from "@angular/router";
 import { ScoreService } from "../score.service";
+import { Game } from "../models/game";
+import { Score } from "../models/Score";
 
 @Component({
   selector: 'app-game-detail',
@@ -10,8 +12,8 @@ import { ScoreService } from "../score.service";
 })
 export class GameDetailComponent implements OnInit {
 
-  game: object;
-  scores: object[];
+  game: Game;
+  scores: Score[];
 
 
   constructor(private gameService: GameService,

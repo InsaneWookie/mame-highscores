@@ -12,6 +12,7 @@ import { UsersComponent } from './users/users.component';
 import { UserCreateComponent } from './user-create/user-create.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { FormsModule } from "@angular/forms";
+import { MomentModule } from 'ngx-moment';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormsModule } from "@angular/forms";
     BrowserModule,
     FormsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MomentModule
   ],
   providers: [],
   bootstrap: [AppComponent]
