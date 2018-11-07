@@ -526,4 +526,38 @@ describe('Game', function () {
       });
     });
   });
+
+
+  describe('#addRawScores()', function () {
+
+    beforeEach(async function(){
+
+      var result1 = await
+        sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
+      var result = await
+        sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
+      var result2 = await
+        sails.sendNativeQuery('TRUNCATE TABLE rawscore RESTART IDENTITY CASCADE', []);
+
+      let a = await Game.create({name: 'jackel', has_mapping: false }).fetch();
+
+    });
+
+    it('should add raw scores to game', (done) => {
+      try {
+        Game.findOne({name: 'jackel'}).exec(function(err, game) {
+          console.log(game);
+          Game.addRawScores(game, 'DEADBEEF', 'hi', (err, createdRawScores) => {
+
+            assert.ok(!err);
+            assert.ok(createdRawScores.length > 0);
+            done(err);
+          });
+        });
+      } catch(e){
+        done(e);
+      }
+
+    });
+  });
 });

@@ -416,9 +416,13 @@ module.exports = {
 
   addRawScores: function (game, rawScoreBytesSting, fileType, callback) {
 
-    RawScore.create({game_id: game.id, file_type: fileType, bytes: rawScoreBytesSting}).exec(function (err, newRawScore) {
-      callback(err, newRawScore);
-    });
+    try {
+      RawScore.create({game: game.id, file_type: fileType, bytes: rawScoreBytesSting}).exec(function (err, newRawScore) {
+        callback(err, newRawScore);
+      });
+    } catch (e){
+      callback(e, null);
+    }
   },
 
   /**
