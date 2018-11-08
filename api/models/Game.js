@@ -471,8 +471,7 @@ module.exports = {
 
       },
       { has_mapping: true, decoded_on: new Date() }
-    )
-    .exec(function updateResult(err, updatedGames){
+    ).fetch().exec(function updateResult(err, updatedGames){
         callbackFn(err, updatedGames);
     });
   }
