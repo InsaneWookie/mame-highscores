@@ -16,9 +16,12 @@ module.exports = {
     has_mapping: 'boolean',
     play_count: 'integer',
     clone_of: 'ref',
-    clone_of_name: 'string',
-    last_played: 'string',
-    letter: 'string',
+    clone_of_name: { type: 'string', allowNull: true },
+    letter: { type: 'string', allowNull: true },
+
+
+    last_played: { type: 'ref', columnType: 'timestamptz'},
+
     order: 'string',
     sort: 'string',
     year: 'string',
@@ -38,9 +41,6 @@ module.exports = {
     },
 
 
-
-
-
   },
 
   // clean_name_func: function(){
@@ -53,6 +53,13 @@ module.exports = {
   //   obj.clean_name = this.clean_name_func();
   //   return obj;
   // },
+
+  //
+  // findWithTopScorer: () => {
+  //
+  //
+  //
+  // }
 
   /**
    * Removes already existing scores, duplicate new scores and other invalid scores (like empty score)
@@ -260,11 +267,11 @@ module.exports = {
   uploadScores: function (rawBytes, fileType, game, callback) {
 
 
-    if(typeof game != 'object'){
+    if(typeof game !== 'object'){
       callback("game must be an object", null);
       return;
     }
-    var gameMaps = require('../game_mappings/gameMaps.json');
+    let gameMaps = require('../game_mappings/gameMaps.json');
 
     Game.updatePlayedCount(game, function(err, playCount){
       //don't care about the response at the moment.
@@ -272,13 +279,13 @@ module.exports = {
 
     //need to check if the game exists in the mapping file,
     //and if not then we add it to the database but flag it as missing
-    var decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name, fileType);
+    let decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name, fileType);
 
     //if we have some score data, process it
     //console.log(decodedScores);
     if (decodedScores !== null) {
 
-      var newScores = decodedScores[game.name];
+      let newScores = decodedScores[game.name];
 
       //need to create a lock so we dont get multiple uploads at the same time
       //other wise we end up creating duplicate scores
@@ -417,7 +424,7 @@ module.exports = {
   addRawScores: function (game, rawScoreBytesSting, fileType, callback) {
 
     try {
-      RawScore.create({game: game.id, file_type: fileType, bytes: rawScoreBytesSting}).exec(function (err, newRawScore) {
+      RawScore.create({game: game.id, file_type: fileType, bytes: rawScoreBytesSting}).fetch().exec(function (err, newRawScore) {
         callback(err, newRawScore);
       });
     } catch (e){

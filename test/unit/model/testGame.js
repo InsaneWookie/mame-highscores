@@ -546,18 +546,17 @@ describe('Game', function () {
     it('should add raw scores to game', (done) => {
       try {
         Game.findOne({name: 'jackel'}).exec(function(err, game) {
-          console.log(game);
-          Game.addRawScores(game, 'DEADBEEF', 'hi', (err, createdRawScores) => {
+          Game.addRawScores(game, 'DEADBEEF', 'hi', (err, createdRawScore) => {
 
             assert.ok(!err);
-            assert.ok(createdRawScores.length > 0);
+            assert.ok(createdRawScore.id);
+            assert.ok(createdRawScore.game);
             done(err);
           });
         });
       } catch(e){
         done(e);
       }
-
     });
   });
 });

@@ -346,7 +346,7 @@ describe('GameMappingDecodings', function () {
       "00040100000100020100000100020200000004010400000100060200000101040101000012100301010039300000000000000000000" +
       "00000000000000000000000000000";
 
-    var buffer = new Buffer(hexString, 'hex');
+    var buffer = Buffer.from(hexString, 'hex');
 
     var decoding = ScoreDecoder.decode(gameMaps, buffer, 'zookeep', 'nv');
 
@@ -362,6 +362,27 @@ describe('GameMappingDecodings', function () {
         { score: '7578', name: 'PJR' },
         { score: '6383', name: 'CDS' } ]
     };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode jackal correctly', function () {
+
+    var hexString = "000200001d0d1f0000015000180d1f000001450011111111000136001111111100010000180d2400091109";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'jackal', 'hi');
+
+    var expected = { jackal:
+        [ { score: '20000', name: 'M.O' },
+          { score: '15000', name: 'H.O' },
+          { score: '14500', name: 'AAA' },
+          { score: '13600', name: 'AAA' },
+          { score: '10000', name: 'H.T' } ] };
+
+    // console.log(decoding);
 
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 

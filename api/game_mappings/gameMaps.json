@@ -6431,6 +6431,28 @@
   },
   {
     "name": [
+      "jackal",
+      "jackalj",
+      "jackalr"
+    ],
+    "structure": {
+      "blocks": 5,
+      "fields": [
+        { "name": "score", "bytes": 4, "format": "packedBcd" },
+        { "name": "name", "bytes": 3, "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "11",
+            "special": { "0D": "."}
+          }
+        },
+        { "name": "trash", "bytes": 1 }
+      ]
+    }
+  },
+
+  {
+    "name": [
       "kick",
       "kickc",
       "kickman"

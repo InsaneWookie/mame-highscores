@@ -13,6 +13,7 @@ module.exports = {
     name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
 
+
     game: {
       model: 'Game',
       columnName: 'game_id'
