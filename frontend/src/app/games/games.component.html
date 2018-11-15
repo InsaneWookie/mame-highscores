@@ -1,0 +1,23 @@
+<table class="table table-striped" cg-busy="loadingPromise">
+  <tr>
+    <th> Game</th>
+    <th> Top Name</th>
+    <th> Top Score</th>
+    <th> Set</th>
+  </tr>
+  <tr *ngFor="let game of games">
+    <td>
+      <div *ngIf="game.clone_of"><a routerLink="/games/{{game.clone_of}}">{{game.full_name}}</a></div>
+      <div *ngIf="!game.clone_of"><a routerLink="/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></div>
+    </td>
+    <td *ngIf="game.scores.length > 0">
+      <div *ngIf="game.scores[0].alias"><a routerLink="/users/{{game.top_scorer.id}}">{{game.scores[0].name}}</a></div>
+      <div *ngIf="!game.scores[0].alias">{{game.scores[0].name}}</div>
+    </td >
+    <td *ngIf="game.scores.length > 0">{{game.scores[0].score}}</td>
+    <td *ngIf="game.scores.length > 0">{{game.scores[0].createdAt | amTimeAgo}}</td>
+    <td *ngIf="game.scores.length == 0"></td>
+    <td *ngIf="game.scores.length == 0"></td>
+    <td *ngIf="game.scores.length == 0"></td>
+  </tr>
+</table>

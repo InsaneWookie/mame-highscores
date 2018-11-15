@@ -8,7 +8,11 @@
 module.exports = {
 
   attributes: {
-    date_time: 'datetime',
+    date_time: {
+      type: 'ref',
+      required: true,
+      columnType: 'timestamp'
+    },
 
     game: { 
       model: 'Game',

@@ -1,0 +1,23 @@
+<h2> {{user.username}} </h2>
+<h4> Email:  </h4>
+<h4> Aliases: <span *ngFor="let alias of user.aliases; let last = last">{{alias.name}}{{last ? '' : ', '}}</span></h4>
+<h4> Points: {{user.points}}</h4>
+
+
+<div>
+  <!--<h3><a href="#/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></h3>-->
+
+  <table class="table table-striped">
+    <tr>
+      <th>Game</th>
+      <th>Top Rank</th>
+      <th>Top Score</th>
+    </tr>
+    <tr *ngFor="let game of topGames">
+      <td><a href="#/games/{{game.id}}">{{game.full_name}}</a></td>
+      <td>{{game.top_score.rank}}</td>
+      <td>{{game.top_score.score}}</td>
+    </tr>
+  </table>
+</div>
+

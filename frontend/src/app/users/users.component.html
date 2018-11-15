@@ -1,0 +1,13 @@
+<a href="#/users-create">New User</a>
+<br>
+<br>
+<table class="table table-striped">
+  <tr>
+    <th>User Name</th>
+    <th>Aliases</th>
+  </tr>
+  <tr *ngFor="let user of users">
+    <td><a routerLink="/users/{{user.id}}">{{user.username}}</a></td>
+    <td><span *ngFor="let alias of user.aliases; let last = last;">{{alias.name}}{{last ? '' : ', '}}</span></td>
+  </tr>
+</table>

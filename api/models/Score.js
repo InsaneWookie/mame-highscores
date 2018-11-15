@@ -8,7 +8,8 @@
 module.exports = {
 
   attributes: {
-    //rank: 'integer',
+    // game_id: 'integer',
+    rank: 'integer',
     name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
     alias: 'string', //this is uppercase name used to foreign key on user machine
@@ -65,7 +66,7 @@ module.exports = {
    * @param cb
    * //TODO: this needs to take into account the groups the user is in
    */
-  updateRanks: function(gameId, cb){
+  updateRanks: async function(gameId, cb){
     var query =
       "UPDATE score s SET rank = r.rank \
       FROM (SELECT id, rank() \
@@ -76,9 +77,10 @@ module.exports = {
         WHERE game_id = $1) r \
       WHERE s.id = r.id";
 
-      Score.query(query, [gameId], function (err, result) {
-          cb(err, result);
-      });
+
+    let result = await sails.sendNativeQuery(query, [gameId]);
+    // console.log(result);
+    cb(null, result);
 
   },
 
@@ -101,47 +103,53 @@ module.exports = {
    * @param aliasName
    * @param callBackFn (err, Score)
    */
-  claim: function(scoreId, aliasName, callBackFn){
+  claim: async function(scoreId, aliasName){
 
     callBackFn("TODO");
-    //if(aliasName === null || aliasName === undefined){
-    //  return callBackFn("Alias can not be null", null);
-    //}
+    return;
+
+    if(aliasName === null || aliasName === undefined){
+      //return callBackFn("Alias can not be null", null);
+      throw "Alias can not be null";
+    }
+
+    //TODO: should really do a case insensitive look up of the users alias
+    aliasName = aliasName.trim().toUpperCase();
+
+    if(aliasName === ''){
+      throw "Alias can not be empty";
+    }
+
+    let score = await Score.findOne({id: scoreId});
+
+
+    if(score.name !== null && score.name !== ''){
+      throw "Score name is not empty";
+    } else {
+      //empty name so we can update it
+      //score.name = aliasName;
+      //score.save(saveScoreFn);
+      await Score.update({id: scoreId}, {name: aliasName});
+      let updatedScore = await Score.findOne({id: scoreId}).populate('game');
+      await Game.updateScoreAliases(updatedScore.game, () => {});
+      return await Score.findOne({id: updatedScore.id}).populate('alias');
+    }
+
+
+
+    // async function saveScoreFn(updatedScore){
+    //   //if(err) { return callBackFn(err, null); }
     //
-    ////TODO: should really do a case insensitive look up of the users alias
-    //aliasName = aliasName.trim().toUpperCase();
     //
-    //if(aliasName === ''){
-    //  return callBackFn("Alias can not be empty", null);
-    //}
+    // }
+
+    // function updateAliasesResultFn(err) {
+    //   if(err) { return callBackFn(err, null); }
     //
-    //Score.findOneById(scoreId).exec(findScoreFn);
-    //
-    //function findScoreFn(err, score){
-    //  if(err) { return callBackFn(err, null); }
-    //
-    //  if(score.name !== null && score.name !== ''){
-    //    return callBackFn("Score name is not empty", null);
-    //  } else {
-    //    //empty name so we can update it
-    //    score.name = aliasName;
-    //    score.save(saveScoreFn);
-    //  }
-    //}
-    //
-    //function saveScoreFn(err, updatedScore){
-    //  if(err) { return callBackFn(err, null); }
-    //
-    //  Game.updateScoreAliases(updatedScore.game, updateAliasesResultFn);
-    //}
-    //
-    //function updateAliasesResultFn(err) {
-    //  if(err) { return callBackFn(err, null); }
-    //
-    //  //need to get the updated data
-    //  //populate the alias object as its need for the score table
-    //  Score.findOneById(scoreId).populate('alias').exec(callBackFn);
-    //}
+    //   //need to get the updated data
+    //   //populate the alias object as its need for the score table
+    //   Score.findOneById(scoreId).populate('alias').exec(callBackFn);
+    // }
 
   }
 

@@ -1,0 +1,29 @@
+version: '3'
+
+volumes:
+  node_modules:
+  pgdata:
+services:
+  app:
+    image: node:10.11.0
+#    command: node app.js
+    command: tail -f /dev/null
+    working_dir: /home/node/app
+    ports: 
+    - "1337:1337"
+    - "4200:4200"
+    - "9229:9229"
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/.tmp
+      - /home/node/app/frontend/node_modules
+      - node_modules:/home/node/app/node_modules
+  db:
+    image: postgres:10.5-alpine
+    restart: always
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+    - "5432:5432"

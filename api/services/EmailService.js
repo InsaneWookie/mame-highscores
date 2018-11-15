@@ -4,7 +4,7 @@ var path           = require('path')
   , templatesDir   = path.resolve(__dirname, '../..', 'views/emails')
   , emailTemplates = require('email-templates')
   , nodemailer     = require('nodemailer');
-var stubTransport = require('nodemailer-stub-transport');
+// var stubTransport = require('nodemailer-stub-transport');
 
 var crypto = require('crypto');
 
@@ -78,7 +78,7 @@ exports.sendEmail = function(templateDir, templateData, options, callback) {
     return;
   }
 
-  var transportConfig = (sails.config.email.transport === 'stub') ? stubTransport() : sails.config.email.transport;
+  var transportConfig = null; // (sails.config.email.transport === 'stub') ? stubTransport() : sails.config.email.transport; TODO:
   var fromAddress = sails.config.email.from;
 
   var sendMailConfig = options;

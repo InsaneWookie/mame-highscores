@@ -1,0 +1,19 @@
+version: '3'
+
+volumes:
+  pgdata:
+
+services:
+  app:
+    image: 474801623431.dkr.ecr.ap-southeast-2.amazonaws.com/mame-highscores/app:latest
+    working_dir: /home/node/app
+    command: node app.js
+    environment:
+      NODE_ENV: production
+  db:
+    image: postgres:10.5-alpine
+    restart: always
+    volumes:
+    - pgdata:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD:

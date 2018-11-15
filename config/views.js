@@ -2,32 +2,40 @@
  * View Engine Configuration
  * (sails.config.views)
  *
- * Server-sent views are a classic and effective way to get your app up
- * and running. Views are normally served from controllers.  Below, you can
+ * Server-sent views are a secure and effective way to get your app up
+ * and running. Views are normally served from actions.  Below, you can
  * configure your templating language/framework of choice and configure
  * Sails' layout support.
  *
- * For more information on views and layouts, check out:
- * http://links.sailsjs.org/docs/config/views
+ * For details on available options for configuring server-side views, check out:
+ * https://sailsjs.com/config/views
+ *
+ * For more background information on views and partials in Sails, check out:
+ * https://sailsjs.com/docs/concepts/views
  */
 
 module.exports.views = {
 
-  // View engine (aka template language)
-  // to use for your app's *server-side* views
-  //
-  // Sails+Express supports all view engines which implement
-  // TJ Holowaychuk's `consolidate.js`, including, but not limited to:
-  //
-  // ejs, jade, handlebars, mustache
-  // underscore, hogan, haml, haml-coffee, dust
-  // atpl, eco, ect, jazz, jqtpl, JUST, liquor, QEJS,
-  // swig, templayed, toffee, walrus, & whiskers
+  /***************************************************************************
+  *                                                                          *
+  * Extension to use for your views. When calling `res.view()` in an action, *
+  * you can leave this extension off. For example, calling                   *
+  * `res.view('homepage')` will (using default settings) look for a          *
+  * `views/homepage.ejs` file.                                               *
+  *                                                                          *
+  ***************************************************************************/
 
-  // For more options, check out the docs:
-  // https://github.com/balderdashy/sails-wiki/blob/0.9/config.views.md#engine
+  // extension: 'ejs',
 
-  engine: 'jade',
-  layout: false
-  
+  /***************************************************************************
+  *                                                                          *
+  * The path (relative to the views directory, and without extension) to     *
+  * the default layout file to use, or `false` to disable layouts entirely.  *
+  *                                                                          *
+  * Note that layouts only work with the built-in EJS view engine!           *
+  *                                                                          *
+  ***************************************************************************/
+
+  layout: 'layouts/layout'
+
 };
