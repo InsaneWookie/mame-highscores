@@ -8,7 +8,8 @@
 
   <div class="row">
     <div class="col-md-4 titleImg">
-      <img [src]="game.imgUrl" style="width:100%" />
+      <!--TODO: ideally this should be configurable -->
+      <img src="https://s3-ap-southeast-2.amazonaws.com/mame-highscores-images/titles/{{game.name}}.png" style="width:100%" />
     </div>
 
     <div class="col-md-8" *ngIf="!game.has_mapping">
