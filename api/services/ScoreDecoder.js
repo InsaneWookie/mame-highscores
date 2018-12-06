@@ -279,11 +279,11 @@ ScoreDecoder.prototype.removeIgnoreBytes = function(bytes, settings){
 	if(settings.ignoreBytes !== undefined){
 		for(var i = 0; i < settings.ignoreBytes.length; i++){
 			//because we are editing in place we need to adjust for the elemtents removed
-			clean.splice(settings.ignoreBytes[i] - removedCount, 1); //remove the bytes we dont want
+			clean.data.splice(settings.ignoreBytes[i] - removedCount, 1); //remove the bytes we dont want
 			removedCount++;
 		}		
 	}
-	return Buffer.from(clean);
+	return Buffer.from(clean.data);
 };
 
 ScoreDecoder.prototype.reverseBytes = function(bytes, settings){

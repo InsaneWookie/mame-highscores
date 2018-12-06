@@ -388,6 +388,35 @@ describe('GameMappingDecodings', function () {
 
   });
 
+  it('should decode 1944 correctly', function () {
+
+    var hexString =
+      "0100000001000000009000000080000000700000006000000050000000496372004785800041150100400000000000020000000200000" +
+      "0020000000100000001000000010100000200000001000000010000000000000900000008050000080000000705000007000000060500" +
+      "00070100000607000007020000060000040000001E8004801C801800040000001E8004801C801800040000001E8004801C80180000004" +
+      "4004480008044804400000044004400040000001E";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, '1944', 'hi');
+
+    var expected = { '1944':
+        [ { score: '1000000', name: 'CAP' },
+          { score: '900000', name: 'COM' },
+          { score: '800000', name: 'CAP' },
+          { score: '700000', name: 'COM' },
+          { score: '600000', name: 'CAP' },
+          { score: '500000', name: 'COM' },
+          { score: '496372', name: 'A' },
+          { score: '478580', name: 'A' },
+          { score: '411501', name: 'A' },
+          { score: '400000', name: 'CAP' } ]
+    };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
   it('should decode 1945kiii correctly', function () {
 
     var hexString =
