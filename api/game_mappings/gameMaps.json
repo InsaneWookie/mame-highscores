@@ -4318,6 +4318,7 @@
         {
           "structure": {
             "blocks": 10,
+            "skip": 4,
             "fields": [
               {
                 "name": "score",
@@ -4329,46 +4330,18 @@
         },
         {
           "structure": {
-            "blocks": 9,
+            "blocks": 10,
+            "skip": 80,
             "fields": [
               {
                 "name": "name",
-                "bytes": 5,
+                "bytes": 6,
                 "format": "fromCharMap",
                 "settings": {
                   "charMap": "upper",
                   "offset": "00",
-                  "special": {
-                    "34": "!",
-                    "36": "&",
-                    "38": ".",
-                    "40": "♥",
-                    "42": "☺",
-                    "44": " ",
-                    "3A": "@",
-                    "3C": "♂",
-                    "3E": "♀"
-                  }
-                }
-              },
-              {
-                "name": "unusedd",
-                "bytes": 1
-              }
-            ]
-          }
-        },
-        {
-          "structure": {
-            "blocks": 1,
-            "fields": [
-              {
-                "name": "name",
-                "bytes": 5,
-                "format": "fromCharMap",
-                "settings": {
-                  "charMap": "upper",
-                  "offset": "00",
+                  "ignoreBytes": [0, 2, 4],
+                  "divideBy": 2,
                   "special": {
                     "34": "!",
                     "36": "&",
