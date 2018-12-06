@@ -4390,6 +4390,36 @@
   },
   {
     "name": [
+      "1945kiii"
+    ],
+    "structure": {
+      "blocks": 10,
+
+      "fields": [
+        {
+          "name": "name",
+          "bytes": 4,
+          "format": "fromCharMap",
+          "skipBytes": [0],
+          "settings": {
+            "ignoreBytes": [0],
+            "charMap": "upper",
+            "offset": "00"
+          }
+        },
+        {
+          "name": "score",
+          "bytes": 6,
+          "format": "hexToDecimal",
+          "settings": {
+            "ignoreBytes": [0, 5]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
       "8ballact",
       "8ballact2",
       "8ballat2",

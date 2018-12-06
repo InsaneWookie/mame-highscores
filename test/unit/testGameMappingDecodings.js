@@ -387,4 +387,35 @@ describe('GameMappingDecodings', function () {
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
   });
+
+  it('should decode 1945kiii correctly', function () {
+
+    var hexString =
+      "03171419000007A1200301110E161600" +
+      "0785640302110E16160006ECA8030204" +
+      "00111600061A800302110E16160005B1" +
+      "080302130E1812000493E00301060E12" +
+      "160003A4080001110E160000039C3800" +
+      "010C000D0000030D400001110E160000" +
+      "02F9B8";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, '1945kiii', 'hi');
+
+    var expected = { '1945kiii':
+        [ { name: 'XUZ', score: '500000' },
+          { name: 'ROW', score: '492900' },
+          { name: 'ROW', score: '453800' },
+          { name: 'EAR', score: '400000' },
+          { name: 'ROW', score: '373000' },
+          { name: 'TOY', score: '300000' },
+          { name: 'GOS', score: '238600' },
+          { name: 'ROW', score: '236600' },
+          { name: 'MAN', score: '200000' },
+          { name: 'ROW', score: '195000' } ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
 });
