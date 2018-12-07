@@ -447,4 +447,38 @@ describe('GameMappingDecodings', function () {
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
   });
+
+  it('should decode rfjet correctly', function () {
+
+    var hexString =
+      "474F5200B8543400020000474F5300CC" +
+      "772D00020600524F57007E2B2800020B" +
+      "00524F570056CF2200020800524F5700" +
+      "ECC41C00030010474F530054100A0001" +
+      "00002E2E2E00102700000100012E2E2E" +
+      "00102700000107012E2E2E0010270000" +
+      "0108012E2E2E00102700000109002E2E" +
+      "2E0010270000010A002E2E2E00102700" +
+      "00010B012E2E2E0010270000010C012E" +
+      "2E2E001027000001";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, 'rfjet', 'hi');
+
+    var expected = { rfjet:
+        [ { name: 'GOR', score: '3429560' },
+          { name: 'GOS', score: '2979788' },
+          { name: 'ROW', score: '2632574' },
+          { name: 'ROW', score: '2281302' },
+          { name: 'ROW', score: '1885420' },
+          { name: 'GOS', score: '659540' },
+          { name: '...', score: '10000' },
+          { name: '...', score: '10000' },
+          { name: '...', score: '10000' },
+          { name: '...', score: '10000' } ] };
+
+     assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
 });

@@ -3680,6 +3680,36 @@
   },
   {
     "name": [
+      "rfjet"
+    ],
+    "fileType": "hi",
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "ascii"
+
+        },
+        {
+          "name": "skip",
+          "bytes": 1
+        },
+        {
+          "name": "score",
+          "bytes": 4,
+          "format": "reverseHexToDecimal"
+        },
+        {
+          "name": "skip",
+          "bytes": 3
+        }
+      ]
+    }
+  },
+  {
+    "name": [
       "joinem"
     ],
     "fileType": "hi",
