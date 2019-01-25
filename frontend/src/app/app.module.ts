@@ -13,6 +13,7 @@ import { UserCreateComponent } from './user-create/user-create.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
 import { FormsModule } from "@angular/forms";
 import { MomentModule } from 'ngx-moment';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { MomentModule } from 'ngx-moment';
     GameUploadComponent,
     UsersComponent,
     UserCreateComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,

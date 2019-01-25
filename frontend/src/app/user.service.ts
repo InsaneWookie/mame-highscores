@@ -36,6 +36,16 @@ export class UserService {
     return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
   }
 
+  updateAlasis(alaseses: object[]) : Observable<object[]> {
+
+    let requests = [];
+    alaseses.forEach((a) => {
+      requests.push(this.http.put(`/api/v1/alias/{}`, a));
+    });
+
+    return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
