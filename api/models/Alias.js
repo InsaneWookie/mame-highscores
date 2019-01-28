@@ -20,6 +20,36 @@ module.exports = {
      via: 'alias'
     }
 
+  },
+
+  afterCreate: async (newRecord, proceed) => {
+    await Alias.updateScoreAliasesForUser(newRecord);
+    return proceed();
+  },
+
+  beforeDestroy: async (destroyRecordCriteria, proceed) => {
+    console.log(destroyRecordCriteria);
+    let alias = await Alias.findOne(destroyRecordCriteria.where);
+    console.log(alias);
+    await Alias.removeScoreAliasesForUser(alias);
+    return proceed();
+  },
+
+
+  updateScoreAliasesForUser: async (newRecord) => {
+    let query = "UPDATE score SET alias_id = a.id FROM alias a " +
+      "WHERE lower(score.name) = lower(a.name) AND score.name = $1";
+
+    return await sails.sendNativeQuery(query, [newRecord.name]);
+  },
+
+  removeScoreAliasesForUser: async (removedRecord) => {
+    // let query = "UPDATE score SET alias_id = null FROM alias a " +
+    //   "WHERE lower(score.name) = lower(a.name) AND score.name = $1";
+
+    let query = "UPDATE score SET alias_id = null WHERE score.name = $1";
+
+    return await sails.sendNativeQuery(query, [removedRecord.name]);
   }
 };
 

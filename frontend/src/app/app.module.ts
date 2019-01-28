@@ -11,9 +11,11 @@ import { GameUploadComponent } from './game-upload/game-upload.component';
 import { UsersComponent } from './users/users.component';
 import { UserCreateComponent } from './user-create/user-create.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MomentModule } from 'ngx-moment';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // needed for ngx-chips
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    MomentModule
+    MomentModule,
+    TagInputModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

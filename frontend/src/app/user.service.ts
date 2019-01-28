@@ -30,7 +30,18 @@ export class UserService {
 
     let requests = [];
     alaseses.forEach((a) => {
+      a.name = a.name.toUpperCase();
       requests.push(this.http.post('/api/v1/alias', a));
+    });
+
+    return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
+  }
+
+  removeAliases(aliases: object[]) : Observable<object[]> {
+
+    let requests = [];
+    aliases.forEach((a: object) => {
+      requests.push(this.http.delete(`/api/v1/alias/${a.id}`));
     });
 
     return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
