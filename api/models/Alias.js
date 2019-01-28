@@ -30,7 +30,6 @@ module.exports = {
   beforeDestroy: async (destroyRecordCriteria, proceed) => {
     console.log(destroyRecordCriteria);
     let alias = await Alias.findOne(destroyRecordCriteria.where);
-    console.log(alias);
     await Alias.removeScoreAliasesForUser(alias);
     return proceed();
   },
