@@ -22,6 +22,11 @@ module.exports = {
     alias: {
       model: 'Alias',
       columnName: 'alias_id'
+    },
+
+    machine: {
+      model: 'Machine',
+      columnName: 'machine_id'
     }
 
 //    toJSON: function () {

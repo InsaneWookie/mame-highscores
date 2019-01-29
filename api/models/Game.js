@@ -202,11 +202,12 @@ module.exports = {
   /**
    * TODO: the playcount on the game table should be a db trigger off GamePlayed insert or delete
    * @param game
+   * @param machine
    * @param callback
    */
-  updatePlayedCount: function (game, callback){
+  updatePlayedCount: function (game, machine, callback){
     //add a played record
-    GamePlayed.create({game_id: game.id}).exec(function (err, newGamePLayed) { });
+    GamePlayed.create({game: game.id, machine: machine.id}).exec(function (err, newGamePLayed) { });
 
     //dont technically need to do this as it can be inferred from the gameplayed table
     sails.sendNativeQuery('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
@@ -262,18 +263,27 @@ module.exports = {
    * @param {Buffer} rawBytes
    * @param {string} fileType
    * @param {Game} game (Game.js)
-   * @param {Game~uploadScoresCallback} callback(err, addedScores)
+   * @param {Machine} machine
+ * @param {Game~uploadScoresCallback} callback(err, addedScores)
    */
-  uploadScores: function (rawBytes, fileType, game, callback) {
+  uploadScores: function (rawBytes, fileType, game, machine, callback) {
 
 
-    if(typeof game !== 'object'){
+    if (typeof game !== 'object') {
       callback("game must be an object", null);
       return;
     }
-    let gameMaps = require('../game_mappings/gameMaps.json');
 
-    Game.updatePlayedCount(game, function(err, playCount){
+    if (typeof machine !== 'object') {
+      callback("machine must be an object", null);
+      return;
+    }
+
+    //TODO: check that the user has access to this machine??
+
+    var gameMaps = require('../game_mappings/gameMaps.json');
+
+    Game.updatePlayedCount(game, machine, function (err, playCount) {
       //don't care about the response at the moment.
     });
 
@@ -282,36 +292,30 @@ module.exports = {
     let decodedScores = ScoreDecoder.decode(gameMaps, rawBytes, game.name, fileType);
 
     //if we have some score data, process it
-    //console.log(decodedScores);
     if (decodedScores !== null) {
+
+
+      //if we have decoded the score we still want to save the latest raw mapping in case the decoding is wrong
+      // RawScore.destroy({game_id: game.id}).exec(function(){ //just remove them all and add a new one
+      //   Game.addRawScores(game, rawBytes.toString('hex'), fileType, function (err, newRawScore) {
+      //     //callback(err, newRawScore);
+      //   });
+      // });
+
 
       let newScores = decodedScores[game.name];
 
-      //need to create a lock so we dont get multiple uploads at the same time
-      //other wise we end up creating duplicate scores
-      //this is mega hacky
-      //Game.query('SELECT pg_advisory_lock(1234)', [], function(){
-        //console.log(err,result);
-       // if(err) { return callback(err, null); }
 
-//        if(!result.rows[0].pg_try_advisory_lock){
-//          return callback(null, [])
-//        }
-
-        Game.addScores(game, newScores, function (err, createdScores) {
+      Game.addScores(game, machine, newScores, function (err, createdScores) {
 
           if(err) {
             console.log(err);
-            //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
-              //if(err) { console.log(err); }
               return callback(err, null);
-           // });
           }
 
           if (createdScores.length > 0) {
             //we created some scores so notify users
 
-            //console.log("finding scores");
             //notify socket subscribers
             Score.findOne({id: createdScores[0].id}).populate('game').exec(function (err, notifyScore) {
               //console.log(notifyScore);
@@ -332,13 +336,9 @@ module.exports = {
           }
 
           //fire callback, this will fire before the notifications have gone out (but that's ok as email may take a while)
-          //Game.query('SELECT pg_advisory_unlock(1234)', [], function(){
-            //if(err) { console.log(err); }
             callback(err, createdScores);
-          //});
-
         });
-      //});
+
 
     } else {
 
@@ -359,26 +359,29 @@ module.exports = {
   /**
    *
    * @param game
+   * @param machine
    * @param newScores - decoded scores
    * @param callback (error, [Score])
    */
-  addScores: function (game, newScores, callback) {
+  addScores: function (game, machine, newScores, callback) {
 
-    var gameId = game.id;
+    let groupId = machine.group;
+    let gameId = game.id;
+    let machineIds = [machine.id]; //todo better finding of all scores for the group
 
-    var filteredScores = [];
     //work out what scores do not exist in the scores that we have been given compared to whats in the database
-    //should be able to use Score.findOrCreateEach
-    Score.find({game: gameId}).exec(function (err, existingScores) {
 
-      //console.log(err);
-      //console.log(existingScores);
+    //should be able to use Score.findOrCreateEach
+    var filteredScores = [];
+    Score.find({game: gameId, machine: {'in': machineIds}}).exec(function (err, existingScores) {
+
       //remove any exiting or invalid scores
       filteredScores = Game.filterScores(newScores, existingScores);
 
       //stick the game id on the scores we want to save
       filteredScores.forEach(function (score) {
         score.game = gameId;
+        score.machine = machine.id;
       });
 
       //now insert the new scores
@@ -392,7 +395,7 @@ module.exports = {
           if(createdScores.length) {
 
               //TODO: pull this out so it can be reused
-              Game.updateScoreAliases(game, function (err) {
+              Game.updateScoreAliases(groupId, game, function (err) {
                 if(err) { return callback(err, null); }
 
                 // console.log(game);
@@ -437,12 +440,17 @@ module.exports = {
    * @param {Game} game
    * @param callback(err)
    */
-  updateScoreAliases: async function (game, callback) {
+  updateScoreAliases: async function (groupId, game, callback) {
 
-    var query = "UPDATE score SET alias_id = a.id FROM alias a " +
-      "WHERE lower(score.name) = lower(a.name) AND score.game_id = $1";
+    let query = "UPDATE score SET alias_id = a.id " +
+      "FROM user_group ug, alias a " +
+      "WHERE ug.user_id = a.user_group_id " +
+      "AND lower(score.name) = lower(a.name) " +
+      "AND ug.group_id = $1 " +
+      "AND score.game_id = $2 " +
+      "AND score.machine_id IN (SELECT machine_id FROM machine WHERE group_id = $1)";
 
-    let result = await sails.sendNativeQuery(query, [game.id]);
+    let result = await sails.sendNativeQuery(query, [groupId, game.id]);
 
     callback(null);
 

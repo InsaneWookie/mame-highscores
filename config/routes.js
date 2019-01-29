@@ -46,6 +46,31 @@ module.exports.routes = {
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
 
   // Custom routes here...
+
+  // Custom routes here...
+  //'get /login': 'AuthController.login',
+  // 'get /logout': 'AuthController.logout',
+  //'get /register': 'AuthController.register',
+
+  // 'post /auth/local': 'AuthController.callback',
+  // 'post /auth/local/:action': 'AuthController.callback',
+
+  //TODO:
+  //'get /auth/:provider': 'AuthController.provider',
+  //'get /auth/:provider/callback': 'AuthController.callback',
+  //'get /auth/:provider/:action': 'AuthController.callback',
+
+  // 'post /auth/:id/change_password': {
+  //   controller: 'auth',
+  //   action: 'change_password'
+  // },
+
+  //'GET /login': { view: 'login' },
+  'POST /api/v1/auth/login': 'AuthController.login',
+  '/api/v1/auth/logout': 'AuthController.logout',
+  //'GET /register': { view: 'register' },
+
+
   'GET /api/v1/game/top_players': 'GameController.top_players',
   'GET /api/v1/game/update_has_mapping': 'GameController.update_has_mapping',
 

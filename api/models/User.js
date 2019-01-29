@@ -4,29 +4,80 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
+var bcrypt = require('bcrypt-nodejs');;
 
 module.exports = {
 
   attributes: {
-		username: { type: 'STRING'/*, required: true*/ },
-		//password: 'STRING',
-		email: 'STRING',
+		username: { type: 'string'/*, required: true*/ },
+		password: 'string',
+		email: { type: 'string', required: true },
 
-		aliases: {
-			collection: 'Alias',
-			via: 'user'
-		}
+    // user_groups: {
+    //   collection: 'UserGroup',
+    //   via: 'group'
+    // },
 
+    // toJSON: function() {
+    //   var obj = this.toObject();
+    //   delete obj.email; //don't want the email over the api for now
+    //   delete obj.password;
+    //   return obj;
+    // },
+    //
+    // toProfile: function() {
+    //   var obj = this.toObject();
+    //   delete obj.password;
+    //   return obj;
+    // }
 
+  },
 
-		// scores: { 
-		// 	collection: 'Score',
-		// 	via: 'user'
-		// }
+  customToJSON: function() {
+    return _.omit(this, ['password'])
+  },
+
+  beforeCreate: function(user, cb){
+    bcrypt.genSalt(10, function(err, salt){
+      bcrypt.hash(user.password, salt, null, function(err, hash){
+        if(err) return cb(err);
+        user.password = hash;
+        return cb();
+      });
+    });
+  },
+
+  // beforeCreate: function(user, cb) {
+  //
+  //   if(!user.email || user.email.trim() === ''){
+  //     return cb("Email address cannot be empty");
+  //   }
+  //
+  //   if(user.password !== user.repeatPassword){
+  //     return cb("Passwords do not match");
+  //   }
+  //
+  //   User.hashPassword(user.password, function(err, hash) {
+  //     if (err) { return cb(err); }
+  //
+  //     user.password = hash;
+  //     cb(null, user);
+  //
+  //   });
+  // },
+
+  hashPassword: function(password, callbackFn){
+    bcrypt.genSalt(10, function(err, salt) {
+      if(err) { callbackFn(err); }
+
+      bcrypt.hash(password, salt, function(err, hash) {
+       callbackFn(err, hash);
+      });
+    });
   },
 
   /**
-   *
+   * TODO: need to take into account the group
    * @param user user id or user model
    * @param queryOptions
    * @param fnCallback
@@ -66,6 +117,17 @@ module.exports = {
       if(err) return fnCallback(err);
 
       fnCallback(null, results.rows);
+    });
+  },
+
+  /**
+   * Check to see if the user has been setup correctly
+   * @param user
+   * @param callbackFn
+   */
+  isUserSetup: function(user, callbackFn){
+    UserGroup.findOne({user_id: user.id}).exec(function(err, userGroup){
+      callbackFn(err, !!userGroup)
     });
   }
 

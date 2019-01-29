@@ -370,13 +370,27 @@ describe('Game', function () {
         has_mapping: true
       };
 
+
+      let group = await Group.create({name: "TestGroup"}).fetch();
+      let group2 = await Group.create({name: "TestGroup2"}).fetch();
+
       let game = await Game.create(gameData).fetch();
 
+      let machine = await Machine.create({name: 'Test machine', group: group.id}).fetch();
+      let machine2 = await Machine.create({name: 'Test machine 2', group: group2.id, api_key: "abc123"}).fetch();
+
       let user = await User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).fetch();
-      let alias = await Alias.create({user_id: user.id, name: 'ABC'}).fetch();
+      let userGroup = await UserGroup.create({group: group.id, user: user.id}).fetch();
+      let alias = await Alias.create({user_group: userGroup.id, name: 'ABC'}).fetch();
 
       user = await User.create({username: 'test2', email: 'mamehighscores+test2@gmail.com'}).fetch();
-      alias = await Alias.create({user_id: user.id, name: 'DEF'}).fetch();
+      userGroup = await UserGroup.create({group: group.id, user: user.id}).fetch();
+      alias = await Alias.create({user_group: userGroup.id, name: 'DEF'}).fetch();
+
+
+      let group2User = await User.create({username: 'group2user', email: 'mamehighscores+group2user@gmail.com'}).fetch();
+      let userGroup2 = await UserGroup.create({group: group2.id, user: group2User.id}).fetch();
+      alias = await Alias.create({user_group: userGroup2.id, name: 'ABC'}).fetch();
     });
 
 
@@ -395,12 +409,14 @@ describe('Game', function () {
       var fileType = 'hi';
       var gameName = 'zerowing';
 
+      let machine = {id: 2, group: 2};
+
       Game.findOne({ name: gameName }).exec(function(err, game){
         //console.log(game);
 
         assert.ok(game, "game not set");
 
-        Game.uploadScores(bytesBuffer, fileType, game, function(err, savedScores){
+        Game.uploadScores(bytesBuffer, fileType, game, machine, function(err, savedScores){
           //console.log("Uploaded Scores");
           //console.log(savedScores);
 
@@ -409,7 +425,7 @@ describe('Game', function () {
           assert.equal(savedScores[0].name, '...');
           assert.equal(savedScores[0].score, '50000');
 
-          Game.uploadScores(Buffer.from(newBytes, 'hex'), fileType, game, function(err, savedScores){
+          Game.uploadScores(Buffer.from(newBytes, 'hex'), fileType, game, machine, function(err, savedScores){
             //console.log("Uploaded Scores 2");
             //console.log(savedScores);
             assert.ok(savedScores.length === 2, "should have saved 2 scores");

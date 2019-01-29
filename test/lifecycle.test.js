@@ -14,7 +14,7 @@ before(function(done) {
     hooks: { grunt: false },
     log: { level: 'warn' },
 
-    models: { migrate: 'drop' },
+    models: { migrate: 'safe' },
 
     datastores: {
       default: {
@@ -31,14 +31,29 @@ before(function(done) {
       transport: 'stub'
     }
 
-  }, function(err, sails) {
+  }, async function(err, sails) {
     if (err) { return done(err); }
     // here you can load fixtures, etc.
+
+    await Sails.sendNativeQuery("TRUNCATE score RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE rawscore RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE gameplayed RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE mapping RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE machine RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE \"alias\" RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE game RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE \"user\" RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE user_group RESTART IDENTITY CASCADE");
+    await Sails.sendNativeQuery("TRUNCATE \"group\" RESTART IDENTITY CASCADE");
+
     return done();
   });
 });
 
-after(function(done) {
+after(async function() {
   // here you can clear fixtures, etc.
-  sails.lower(done);
+
+
+
+  await Sails.lower();
 });
