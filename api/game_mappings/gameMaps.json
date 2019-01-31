@@ -3680,6 +3680,41 @@
   },
   {
     "name": [
+      "jailbrek"
+    ],
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs",
+          "settings": {
+            "append": "0"
+          }
+        },
+        {
+          "name": "trash",
+          "bytes": 2
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "11",
+            "special": {
+              "0C": ".",
+              "FF": " "
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
       "joinem"
     ],
     "fileType": "hi",

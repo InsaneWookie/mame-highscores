@@ -447,4 +447,39 @@ describe('GameMappingDecodings', function () {
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
   });
+  it('should decode jailbrek correctly', function () {
+
+    let hexString =
+      "0028900100141a12" +
+      "0026600100141d19" +
+      "0025300200290c23" +
+      "0023700101141a12" +
+      "0021800101141a12" +
+      "0021500101141a12" +
+      "0021400101111b19" +
+      "0020700102101010" +
+      "0020400102141a12" +
+      "0019100102141a12" +
+      "002890";
+
+    let buffer = Buffer.from(hexString, 'hex');
+
+    let decoding = ScoreDecoder.decode(gameMaps, buffer, 'jailbrek', 'hi');
+
+    let expected = { jailbrek:
+        [ { score: '28900', name: 'DJB' },
+          { score: '26600', name: 'D.I' },
+          { score: '25300', name: 'Y.S' },
+          { score: '23700', name: 'DJB' },
+          { score: '21800', name: 'DJB' },
+          { score: '21500', name: 'DJB' },
+          { score: '21400', name: 'AKI' },
+          { score: '20700', name: '' },
+          { score: '20400', name: 'DJB' },
+          { score: '19100', name: 'DJB' } ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
 });
