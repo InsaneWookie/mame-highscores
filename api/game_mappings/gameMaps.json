@@ -3705,7 +3705,7 @@
             "charMap": "upper",
             "offset": "11",
             "special": {
-              "0C": ".",
+              "FB": ".",
               "FF": " "
             }
           }

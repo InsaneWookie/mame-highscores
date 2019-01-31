@@ -468,7 +468,7 @@ describe('GameMappingDecodings', function () {
 
     let expected = { jailbrek:
         [ { score: '28900', name: 'DJB' },
-          { score: '26600', name: 'D.I' },
+          { score: '26600', name: 'DMI' },
           { score: '25300', name: 'Y.S' },
           { score: '23700', name: 'DJB' },
           { score: '21800', name: 'DJB' },
