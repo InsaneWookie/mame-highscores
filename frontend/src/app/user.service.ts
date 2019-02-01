@@ -26,7 +26,7 @@ export class UserService {
       .pipe(catchError(this.handleError('createUser', new User)));
   }
 
-  createAlasis(alaseses: object[]) : Observable<object[]> {
+  createAlasis(alaseses: any[]) : Observable<object[]> {
 
     let requests = [];
     alaseses.forEach((a) => {
@@ -40,7 +40,7 @@ export class UserService {
   removeAliases(aliases: object[]) : Observable<object[]> {
 
     let requests = [];
-    aliases.forEach((a: object) => {
+    aliases.forEach((a: any) => {
       requests.push(this.http.delete(`/api/v1/alias/${a.id}`));
     });
 
