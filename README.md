@@ -33,3 +33,8 @@ Load schema
 
 
 docker-compose exec app npm install
+
+Deploying
+
+Building front end
+`ng build --prod`
