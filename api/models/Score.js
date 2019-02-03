@@ -43,8 +43,8 @@ module.exports = {
    * @param gameId
    * @param cb
    */
-  updateRanks: async function(gameId, cb){
-    var query =
+updateRanks: async function(gameId){
+    let query =
       "UPDATE score s SET rank = r.rank \
       FROM (SELECT id, rank() \
         OVER (PARTITION BY game_id \
@@ -56,8 +56,9 @@ module.exports = {
 
 
     let result = await sails.sendNativeQuery(query, [gameId]);
+    return result;
     // console.log(result);
-    cb(null, result);
+    // cb(null, result);
 
   },
 
