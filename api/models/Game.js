@@ -14,7 +14,7 @@ module.exports = {
     name: 'STRING',
     full_name: 'STRING',
     has_mapping: 'boolean',
-    play_count: 'integer',
+    play_count: 'number',
     clone_of: 'ref',
     clone_of_name: { type: 'string', allowNull: true },
     letter: { type: 'string', allowNull: true },

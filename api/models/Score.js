@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
     // game_id: 'integer',
-    rank: 'integer',
+    rank: 'number',
     name: 'string', //TODO: make name default to empty sting in the database
     score: 'string',
 
