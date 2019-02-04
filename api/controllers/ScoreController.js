@@ -15,14 +15,16 @@ module.exports = {
    * @param res
    */
   claim: function(req, res){
-    var scoreId = req.param('id');
-    var scoreName = req.param('alias');
+    //TODO: currently broken. Needs to take into account the group
 
-    Score.claim(scoreId, scoreName, function(err, score){
-      if(err) { return res.badRequest(err); }
-
-      res.json(score);
-    });
+    // var scoreId = req.param('id');
+    // var scoreName = req.param('alias');
+    //
+    // Score.claim(scoreId, scoreName, function(err, score){
+    //   if(err) { return res.badRequest(err); }
+    //
+    //   res.json(score);
+    // });
   }
 };
 

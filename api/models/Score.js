@@ -79,6 +79,7 @@ updateRanks: async function(gameId){
 //  }
 
   /**
+   * TODO: needs to take into account the group
    * Allows a user to claim a score
    * All we are really doing is setting the alias on a score
    * Returns error if the alias is not empty

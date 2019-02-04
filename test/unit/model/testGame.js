@@ -357,12 +357,12 @@ describe('Game', function () {
 
     beforeEach(async () => {
 
-      var result1 = await
-        sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
-      var result = await
-        sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
-      var result2 = await
-        sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE alias RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE machine RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE', []);
 
 
       var gameData = {
@@ -546,33 +546,34 @@ describe('Game', function () {
 
   describe('#addRawScores()', function () {
 
+    let machine;
     beforeEach(async function(){
 
-      var result1 = await
-        sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
-      var result = await
-        sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
-      var result2 = await
-        sails.sendNativeQuery('TRUNCATE TABLE rawscore RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE alias RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE machine RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE', []);
 
-      let a = await Game.create({name: 'jackel', has_mapping: false }).fetch();
+
+      var gameData = {
+        name: 'zerowing',
+        has_mapping: false
+      };
+
+
+      let group = await Group.create({name: "TestGroup"}).fetch();
+      await Game.create(gameData).fetch();
+      machine = await Machine.create({name: 'Test machine', group: group.id}).fetch();
 
     });
 
-    it('should add raw scores to game', (done) => {
-      try {
-        Game.findOne({name: 'jackel'}).exec(function(err, game) {
-          Game.addRawScores(game, 'DEADBEEF', 'hi', (err, createdRawScore) => {
-
-            assert.ok(!err);
-            assert.ok(createdRawScore.id);
-            assert.ok(createdRawScore.game);
-            done(err);
-          });
-        });
-      } catch(e){
-        done(e);
-      }
+    it('should add raw scores to game', async () => {
+        let game = await Game.findOne({name: 'zerowing'});
+        let createdRawScore = await Game.addRawScores(game, machine, 'DEADBEEF', 'hi');
+        assert.ok(createdRawScore.id);
+        assert.ok(createdRawScore.game);
     });
   });
 });

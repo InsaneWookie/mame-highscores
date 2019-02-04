@@ -417,15 +417,15 @@ module.exports = {
     }
   },
 
-  addRawScores: function (game, rawScoreBytesSting, fileType, callback) {
+  addRawScores: async (game, machine, rawScoreBytesSting, fileType, callback) => {
 
-    try {
-      RawScore.create({game: game.id, file_type: fileType, bytes: rawScoreBytesSting}).fetch().exec(function (err, newRawScore) {
-        callback(err, newRawScore);
-      });
-    } catch (e){
-      callback(e, null);
+    if(!_.isFunction(callback)) {
+      callback = () => {};
     }
+
+    let newRawScore = await RawScore.create({game: game.id, machine: machine.id, file_type: fileType, bytes: rawScoreBytesSting}).fetch();
+    callback(null, newRawScore);
+    return newRawScore;
   },
 
   /**

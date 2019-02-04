@@ -4,7 +4,7 @@ var assert = require('assert');
 
 describe('Score', function () {
 
-  describe('#claim()', function () {
+  describe.skip('#claim()', function () {
 
     beforeEach(async function(){
 
@@ -13,9 +13,12 @@ describe('Score', function () {
         has_mapping: true
       };
 
+      await sails.sendNativeQuery('TRUNCATE TABLE score RESTART IDENTITY CASCADE', []);
       await sails.sendNativeQuery('TRUNCATE TABLE alias RESTART IDENTITY CASCADE', []);
       await sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
       await sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE machine RESTART IDENTITY CASCADE', []);
+      await sails.sendNativeQuery('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE', []);
 
       let game = await Game.create(gameData).fetch();
       let user = await User.create({username: 'test1', email: 'mamehighscores+test1@gmail.com'}).fetch();

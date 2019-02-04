@@ -28,7 +28,7 @@ module.exports = {
   },
 
   beforeDestroy: async (destroyRecordCriteria, proceed) => {
-    console.log(destroyRecordCriteria);
+    // console.log(destroyRecordCriteria);
     let alias = await Alias.findOne(destroyRecordCriteria.where);
     await Alias.removeScoreAliasesForUser(alias);
     return proceed();
@@ -36,19 +36,23 @@ module.exports = {
 
 
   updateScoreAliasesForUser: async (newRecord) => {
-    let query = "UPDATE score SET alias_id = a.id FROM alias a " +
-      "WHERE lower(score.name) = lower(a.name) AND score.name = $1";
+    let query = "UPDATE score " +
+      "SET alias_id = a.id FROM alias a " +
+      "WHERE lower(score.name) = lower(a.name) " +
+      "AND score.name = $1 " +
+      "AND score.id IN (SELECT s.id FROM score s JOIN machine m ON s.machine_id = m.id AND m.group_id = $2) ";
 
-    return await sails.sendNativeQuery(query, [newRecord.name]);
+    let userGroup = await UserGroup.findOne({id: newRecord.user_group});
+    return await sails.sendNativeQuery(query, [newRecord.name, userGroup.group]);
   },
 
   removeScoreAliasesForUser: async (removedRecord) => {
     // let query = "UPDATE score SET alias_id = null FROM alias a " +
     //   "WHERE lower(score.name) = lower(a.name) AND score.name = $1";
 
-    let query = "UPDATE score SET alias_id = null WHERE score.name = $1";
+    let query = "UPDATE score SET alias_id = null WHERE score.alias_id = $1";
 
-    return await sails.sendNativeQuery(query, [removedRecord.name]);
+    return await sails.sendNativeQuery(query, [removedRecord.id]);
   }
 };
 
