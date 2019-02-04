@@ -14,7 +14,13 @@ module.exports = {
     user_groups: {
       collection: 'UserGroup',
       via: 'group'
-    }
+    },
+
+    users: {
+      collection: 'user',
+      via: 'group',
+      through: 'usergroup'
+    },
 
     //users: {
     //  collection: 'User',

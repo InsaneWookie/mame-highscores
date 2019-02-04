@@ -20,7 +20,6 @@ module.exports = {
     user: {
       columnName: 'user_id',
       model: 'User'
-
     }
   },
 

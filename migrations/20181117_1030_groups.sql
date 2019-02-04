@@ -59,15 +59,17 @@ ALTER TABLE alias DROP COLUMN user_id;
 ALTER TABLE "user" ADD COLUMN is_admin boolean DEFAULT false NOT NULL;
 
 -- need a machine id on the score so we know what machine a score is created from
-ALTER TABLE score ADD COLUMN machine_id integer NOT NULL REFERENCES machine(id);
+ALTER TABLE score ADD COLUMN machine_id integer REFERENCES machine(id);
 UPDATE score SET machine_id = 1;
+ALTER TABLE score ALTER COLUMN machine_id SET NOT NULL;
 
 
 ALTER TABLE rawscore ADD COLUMN machine_id integer NOT NULL REFERENCES machine(id);
 UPDATE rawscore SET machine_id = 1;
+ALTER TABLE rawscore ALTER COLUMN machine_id SET NOT NULL;
 
 ALTER TABLE gameplayed ADD COLUMN machine_id integer NOT NULL REFERENCES machine(id);
 UPDATE gameplayed SET machine_id = 1;
-
+ALTER TABLE gameplayed ALTER COLUMN machine_id SET NOT NULL;
 
 COMMIT;

@@ -13,10 +13,16 @@ module.exports = {
 		password: 'string',
 		email: { type: 'string', required: true },
 
-    // user_groups: {
-    //   collection: 'UserGroup',
-    //   via: 'group'
-    // },
+    groups: {
+      collection: 'group',
+      via: 'user',
+      through: 'usergroup'
+    },
+
+    usergroups: {
+		  collection: 'usergroup',
+      via: 'user'
+    }
 
     // toJSON: function() {
     //   var obj = this.toObject();
