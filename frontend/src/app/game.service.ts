@@ -45,7 +45,7 @@ export class GameService {
 
   getLastPlayed() : Observable<object[]> {
     return this.http.get<object[]>(
-      '/api/v1/game?sort=last_played DESC&limit=10&where={"has_mapping": true,"last_played": {"!": null}}'
+      '/api/v1/game?sort=last_played DESC&limit=10&where={"has_mapping": true,"last_played": {"!=": null}}'
     ).pipe(catchError(this.handleError('getLastPlayed', [])));
   }
 

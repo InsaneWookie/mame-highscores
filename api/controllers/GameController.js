@@ -33,7 +33,6 @@ module.exports = {
 
   top_players: function (req, res) {
 
-    console.log('top_players endpoint');
     User.points(null, null, function(err, topPlayers){
       if (err) return res.serverError(err);
 

@@ -13,6 +13,7 @@ describe('Score', function () {
         has_mapping: true
       };
 
+      await sails.sendNativeQuery('TRUNCATE TABLE alias RESTART IDENTITY CASCADE', []);
       await sails.sendNativeQuery('TRUNCATE TABLE game RESTART IDENTITY CASCADE', []);
       await sails.sendNativeQuery('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE', []);
 

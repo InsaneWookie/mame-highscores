@@ -3680,6 +3680,41 @@
   },
   {
     "name": [
+      "jailbrek"
+    ],
+    "structure": {
+      "blocks": 10,
+      "fields": [
+        {
+          "name": "score",
+          "bytes": 3,
+          "format": "asIs",
+          "settings": {
+            "append": "0"
+          }
+        },
+        {
+          "name": "trash",
+          "bytes": 2
+        },
+        {
+          "name": "name",
+          "bytes": 3,
+          "format": "fromCharMap",
+          "settings": {
+            "charMap": "upper",
+            "offset": "11",
+            "special": {
+              "FB": ".",
+              "FF": " "
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
       "joinem"
     ],
     "fileType": "hi",
@@ -4318,6 +4353,7 @@
         {
           "structure": {
             "blocks": 10,
+            "skip": 4,
             "fields": [
               {
                 "name": "score",
@@ -4329,15 +4365,18 @@
         },
         {
           "structure": {
-            "blocks": 9,
+            "blocks": 10,
+            "skip": 80,
             "fields": [
               {
                 "name": "name",
-                "bytes": 5,
+                "bytes": 6,
                 "format": "fromCharMap",
                 "settings": {
                   "charMap": "upper",
                   "offset": "00",
+                  "ignoreBytes": [0, 2, 4],
+                  "divideBy": 2,
                   "special": {
                     "34": "!",
                     "36": "&",
@@ -4350,39 +4389,38 @@
                     "3E": "♀"
                   }
                 }
-              },
-              {
-                "name": "unusedd",
-                "bytes": 1
               }
             ]
           }
+        }
+      ]
+    }
+  },
+  {
+    "name": [
+      "1945kiii"
+    ],
+    "structure": {
+      "blocks": 10,
+
+      "fields": [
+        {
+          "name": "name",
+          "bytes": 4,
+          "format": "fromCharMap",
+          "skipBytes": [0],
+          "settings": {
+            "ignoreBytes": [0],
+            "charMap": "upper",
+            "offset": "00"
+          }
         },
         {
-          "structure": {
-            "blocks": 1,
-            "fields": [
-              {
-                "name": "name",
-                "bytes": 5,
-                "format": "fromCharMap",
-                "settings": {
-                  "charMap": "upper",
-                  "offset": "00",
-                  "special": {
-                    "34": "!",
-                    "36": "&",
-                    "38": ".",
-                    "40": "♥",
-                    "42": "☺",
-                    "44": " ",
-                    "3A": "@",
-                    "3C": "♂",
-                    "3E": "♀"
-                  }
-                }
-              }
-            ]
+          "name": "score",
+          "bytes": 6,
+          "format": "hexToDecimal",
+          "settings": {
+            "ignoreBytes": [0, 5]
           }
         }
       ]

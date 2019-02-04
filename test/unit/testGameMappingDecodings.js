@@ -387,4 +387,99 @@ describe('GameMappingDecodings', function () {
     assert.deepEqual(decoding, expected, "should have decoded the bytes");
 
   });
+
+  it('should decode 1944 correctly', function () {
+
+    var hexString =
+      "0100000001000000009000000080000000700000006000000050000000496372004785800041150100400000000000020000000200000" +
+      "0020000000100000001000000010100000200000001000000010000000000000900000008050000080000000705000007000000060500" +
+      "00070100000607000007020000060000040000001E8004801C801800040000001E8004801C801800040000001E8004801C80180000004" +
+      "4004480008044804400000044004400040000001E";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, '1944', 'hi');
+
+    var expected = { '1944':
+        [ { score: '1000000', name: 'CAP' },
+          { score: '900000', name: 'COM' },
+          { score: '800000', name: 'CAP' },
+          { score: '700000', name: 'COM' },
+          { score: '600000', name: 'CAP' },
+          { score: '500000', name: 'COM' },
+          { score: '496372', name: 'A' },
+          { score: '478580', name: 'A' },
+          { score: '411501', name: 'A' },
+          { score: '400000', name: 'CAP' } ]
+    };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
+  it('should decode 1945kiii correctly', function () {
+
+    var hexString =
+      "03171419000007A1200301110E161600" +
+      "0785640302110E16160006ECA8030204" +
+      "00111600061A800302110E16160005B1" +
+      "080302130E1812000493E00301060E12" +
+      "160003A4080001110E160000039C3800" +
+      "010C000D0000030D400001110E160000" +
+      "02F9B8";
+
+    var buffer = Buffer.from(hexString, 'hex');
+
+    var decoding = ScoreDecoder.decode(gameMaps, buffer, '1945kiii', 'hi');
+
+    var expected = { '1945kiii':
+        [ { name: 'XUZ', score: '500000' },
+          { name: 'ROW', score: '492900' },
+          { name: 'ROW', score: '453800' },
+          { name: 'EAR', score: '400000' },
+          { name: 'ROW', score: '373000' },
+          { name: 'TOY', score: '300000' },
+          { name: 'GOS', score: '238600' },
+          { name: 'ROW', score: '236600' },
+          { name: 'MAN', score: '200000' },
+          { name: 'ROW', score: '195000' } ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+  it('should decode jailbrek correctly', function () {
+
+    let hexString =
+      "0028900100141a12" +
+      "0026600100141d19" +
+      "0025300200290c23" +
+      "0023700101141a12" +
+      "0021800101141a12" +
+      "0021500101141a12" +
+      "0021400101111b19" +
+      "0020700102101010" +
+      "0020400102141a12" +
+      "0019100102141a12" +
+      "002890";
+
+    let buffer = Buffer.from(hexString, 'hex');
+
+    let decoding = ScoreDecoder.decode(gameMaps, buffer, 'jailbrek', 'hi');
+
+    let expected = { jailbrek:
+        [ { score: '28900', name: 'DJB' },
+          { score: '26600', name: 'DMI' },
+          { score: '25300', name: 'Y.S' },
+          { score: '23700', name: 'DJB' },
+          { score: '21800', name: 'DJB' },
+          { score: '21500', name: 'DJB' },
+          { score: '21400', name: 'AKI' },
+          { score: '20700', name: '' },
+          { score: '20400', name: 'DJB' },
+          { score: '19100', name: 'DJB' } ] };
+
+    assert.deepEqual(decoding, expected, "should have decoded the bytes");
+
+  });
+
 });

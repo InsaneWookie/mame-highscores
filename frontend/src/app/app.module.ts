@@ -11,8 +11,16 @@ import { GameUploadComponent } from './game-upload/game-upload.component';
 import { UsersComponent } from './users/users.component';
 import { UserCreateComponent } from './user-create/user-create.component';
 import { UserDetailComponent } from './user-detail/user-detail.component';
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { MomentModule } from 'ngx-moment';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // needed for ngx-chips
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+// import { far } from '@fortawesome/free-regular-svg-icons';
 
 @NgModule({
   declarations: [
@@ -23,16 +31,24 @@ import { MomentModule } from 'ngx-moment';
     GameUploadComponent,
     UsersComponent,
     UserCreateComponent,
-    UserDetailComponent
+    UserDetailComponent,
+    UserProfileComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     AppRoutingModule,
     HttpClientModule,
-    MomentModule
+    MomentModule,
+    TagInputModule,
+    BrowserAnimationsModule,
+    FontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(){
+    library.add(fas);
+  }
+}

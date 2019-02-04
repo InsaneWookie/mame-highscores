@@ -14,7 +14,7 @@ module.exports = {
     name: 'STRING',
     full_name: 'STRING',
     has_mapping: 'boolean',
-    play_count: 'integer',
+    play_count: 'number',
     clone_of: 'ref',
     clone_of_name: { type: 'string', allowNull: true },
     letter: { type: 'string', allowNull: true },
@@ -363,65 +363,58 @@ module.exports = {
    * @param newScores - decoded scores
    * @param callback (error, [Score])
    */
-  addScores: function (game, machine, newScores, callback) {
+  addScores: async function (game, machine, newScores, callback) {
 
     let groupId = machine.group;
     let gameId = game.id;
     let machineIds = [machine.id]; //todo better finding of all scores for the group
 
+    if(!_.isFunction(callback)){
+      callback = (a, b) => {};
+    }
+
+
     //work out what scores do not exist in the scores that we have been given compared to whats in the database
 
     //should be able to use Score.findOrCreateEach
-    var filteredScores = [];
-    Score.find({game: gameId, machine: {'in': machineIds}}).exec(function (err, existingScores) {
+    let existingScores = await Score.find({game: gameId, machine: {'in': machineIds}});
 
-      //remove any exiting or invalid scores
-      filteredScores = Game.filterScores(newScores, existingScores);
+    //remove any exiting or invalid scores
+    let filteredScores = Game.filterScores(newScores, existingScores);
 
-      //stick the game id on the scores we want to save
-      filteredScores.forEach(function (score) {
-        score.game = gameId;
-        score.machine = machine.id;
-      });
-
-      //now insert the new scores
-      Score.createEach(filteredScores).fetch().exec(function (err, createdScores) {
-        // console.log(createdScores);
-        if (err) {
-          console.log(err);
-          callback(err);
-        } else {
-          //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
-          if(createdScores.length) {
-
-              //TODO: pull this out so it can be reused
-              Game.updateScoreAliases(groupId, game, function (err) {
-                if(err) { return callback(err, null); }
-
-                // console.log(game);
-                //we need to refetch the created scores so we have the updated alias data
-                var scoreIds = [];
-                createdScores.forEach(function(score){
-                  scoreIds.push(score.id);
-                });
-
-                //created some scores so update the score rank
-                Score.updateRanks(gameId, function(err){
-                  if(err) { return callback(err, null); }
-
-                  Score.find({ where: {id: {in: scoreIds }}, sort: 'rank ASC'}).exec(function(err, updateCreatedScores){
-                    // console.log("Created Scores");
-                    // console.log(updateCreatedScores);
-                    callback(err, updateCreatedScores);
-                  });
-                });
-              });
-          } else {
-            callback(err, createdScores);
-          }
-        }
-      });
+    //stick the game id on the scores we want to save
+    filteredScores.forEach(function (score) {
+      score.game = gameId;
+      score.machine = machine.id;
     });
+
+    //now insert the new scores
+    let createdScores = await Score.createEach(filteredScores).fetch();
+
+      //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
+    if(createdScores.length) {
+
+        //TODO: pull this out so it can be reused
+      await Game.updateScoreAliases(groupId, game, () => {});
+
+      //we need to re-fetch the created scores so we have the updated alias data
+      let scoreIds = [];
+      createdScores.forEach(function(score){
+        scoreIds.push(score.id);
+      });
+
+      //created some scores so update the score rank
+      await Score.updateRanks(gameId);
+
+      let updateCreatedScores = await Score.find({ where: {id: {in: scoreIds }}, sort: 'rank ASC'});
+
+      callback(null, updateCreatedScores);
+      return updateCreatedScores;
+    } else {
+      //callback(err, createdScores);
+      callback(null, createdScores);
+      return createdScores;
+    }
   },
 
   addRawScores: function (game, rawScoreBytesSting, fileType, callback) {
@@ -453,6 +446,7 @@ module.exports = {
     let result = await sails.sendNativeQuery(query, [groupId, game.id]);
 
     callback(null);
+    return result;
 
   },
 

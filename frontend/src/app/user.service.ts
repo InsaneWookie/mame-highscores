@@ -26,11 +26,32 @@ export class UserService {
       .pipe(catchError(this.handleError('createUser', new User)));
   }
 
-  createAlasis(alaseses: object[]) : Observable<object[]> {
+  createAlasis(alaseses: any[]) : Observable<object[]> {
 
     let requests = [];
     alaseses.forEach((a) => {
+      a.name = a.name.toUpperCase();
       requests.push(this.http.post('/api/v1/alias', a));
+    });
+
+    return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
+  }
+
+  removeAliases(aliases: object[]) : Observable<object[]> {
+
+    let requests = [];
+    aliases.forEach((a: any) => {
+      requests.push(this.http.delete(`/api/v1/alias/${a.id}`));
+    });
+
+    return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
+  }
+
+  updateAlasis(alaseses: object[]) : Observable<object[]> {
+
+    let requests = [];
+    alaseses.forEach((a) => {
+      requests.push(this.http.put(`/api/v1/alias/{}`, a));
     });
 
     return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
