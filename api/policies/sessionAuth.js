@@ -14,7 +14,7 @@ module.exports = function(req, res, next) {
   console.log(req.user);
   // return next();
 
-  if (req.user) {
+  if (req.user && req.session.selectedGroup) {
     return next();
   }
 

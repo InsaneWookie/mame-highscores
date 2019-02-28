@@ -20,6 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fas } from '@fortawesome/free-solid-svg-icons';
+import { LoginComponent } from './login/login.component';
 // import { far } from '@fortawesome/free-regular-svg-icons';
 
 @NgModule({
@@ -32,7 +33,8 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
     UsersComponent,
     UserCreateComponent,
     UserDetailComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,

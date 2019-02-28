@@ -10,6 +10,12 @@ var path = require('path');
 
 module.exports = {
 
+  find: async (req, res) => {
+    let groupId = 1;
+
+
+  },
+
   scores: function (req, res) {
     // Game.find()
     //  .populate('scores')
@@ -18,6 +24,8 @@ module.exports = {
     //     else { res.send(games); }
     //    });
   },
+
+
 
   search_list: function(req, res){
     sails.sendNativeQuery('SELECT id, name, full_name FROM game', function(err, results){
@@ -53,7 +61,7 @@ module.exports = {
     var gameId = req.param('id');
 
     Game.findOne({id: gameId}).populate('rawscores').exec(function(err, game){
-
+      //console.log('test');
     });
 
   },

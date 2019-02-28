@@ -6,23 +6,38 @@
  */
 
 module.exports = {
-	games: function(req, res) {
-		var userId = req.param('id');
 
-		var query = 
+
+  find: async (req, res) => {
+
+    let params = req.allParams();
+    let groupId = 1;
+
+console.log(req);
+    res.json(await User.find(JSON.parse(params.where)));
+    // var groupId = params.id;
+  },
+
+  findOne: async (req, res) => {
+    res.ok("test2");
+  },
+
+	games: async (req, res) => {
+		let userId = req.param('id');
+
+		let query =
 			"SELECT DISTINCT g.* FROM game g, score s, alias a \
 			WHERE g.id = s.game_id \
 			AND s.alias_id = a.id \
 			AND a.user_id = $1";
 
-    sails.sendNativeQuery(query, [userId], function(err, games){
-
-
-			res.json(games.rows);
+    let games = await sails.sendNativeQuery(query, [userId]);
+    console.log(games);
+    res.json(games.rows);
 			//games.forEach(function(game){
 			//	Scores.find({game_id: game.id}).exec(function(s))
 			//});
-		});
+
     
    },
 

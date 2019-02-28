@@ -27,6 +27,11 @@ module.exports = {
       columnName: 'group_id'
     },
 
+    gamesplayed: {
+      collection: "GamePlayed",
+      via: "machine"
+    }
+
     // toJSON: function() {
     //   var obj = this.toObject();
     //   delete obj.secret_key;

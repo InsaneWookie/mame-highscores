@@ -17,7 +17,19 @@ module.exports = {
     game: { 
       model: 'Game',
       columnName: 'game_id'
-     }
+    },
+
+    machine: {
+      model: 'Machine',
+      columnName: 'machine_id'
+    },
+
+
+    group: {
+      model: 'Group',
+      columnName: 'group_id'
+    }
+
   }
 };
 

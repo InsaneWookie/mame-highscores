@@ -20,7 +20,14 @@ module.exports = {
     user: {
       columnName: 'user_id',
       model: 'User'
+    },
+
+    aliases: {
+      collection: 'alias',
+      via: 'usergroup'
     }
+
+
   },
 
 

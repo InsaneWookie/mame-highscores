@@ -22,6 +22,11 @@ module.exports = {
       through: 'usergroup'
     },
 
+    gameplayed: {
+      collection: 'GamePlayed',
+      via: 'group'
+    },
+
     //users: {
     //  collection: 'User',
     //  references: 'a',

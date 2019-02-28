@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
     name: 'string',
 
-    user_group: {
+    usergroup: {
       model: 'UserGroup' ,
       columnName: 'user_group_id'
     },

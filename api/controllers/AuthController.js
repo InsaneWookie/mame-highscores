@@ -28,6 +28,7 @@ module.exports = {
         console.log(err);
         if(err) { return res.json(err); }
 
+        req.session.selectedGroup = 1;
         return res.json({
           message: info.message,
           user
