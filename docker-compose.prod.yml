@@ -15,20 +15,6 @@ services:
 #    command: node dist/main.js
     environment:
       NODE_ENV: production
-#      TYPEORM_CONNECTION: postgres
-#      TYPEORM_HOST: db
-#      TYPEORM_PORT: 5432
-#      TYPEORM_USERNAME: postgres
-#      TYPEORM_PASSWORD: example
-#      TYPEORM_DATABASE: mame-highscores-test
-#      TYPEORM_SYNCHRONIZE: 'false'
-#      TYPEORM_DROP_SCHEMA: 'false'
-#      TYPEORM_LOGGING: all
-#      TYPEORM_ENTITIES: '/home/node/app/dist/entity/*.entity.js'
-#      TYPEORM_ENTITIES_DIR: dist/src/entity
-    ports:
-      - "3000:3000"
-
   db:
     image: postgres:10.7-alpine
     restart: always
@@ -36,5 +22,3 @@ services:
       - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: example
-    ports:
-        - "5432:5432"
