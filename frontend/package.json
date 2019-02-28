@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --watch --poll 1000 --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -26,7 +27,7 @@
     "bootstrap": "^4.1.3",
     "core-js": "^2.5.4",
     "jquery": "^3.3.1",
-    "moment": "^2.22.2",
+    "moment": "^2.24.0",
     "ngx-bootstrap": "^3.1.1",
     "ngx-chips": "^2.0.0-beta.0",
     "ngx-moment": "^3.2.0",
@@ -37,7 +38,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.12.3",
     "@angular/cli": "~7.0.3",
-    "@angular/compiler-cli": "~7.0.1",
+    "@angular/compiler-cli": "^7.2.5",
     "@angular/language-service": "~7.0.1",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",

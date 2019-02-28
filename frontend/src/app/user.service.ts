@@ -31,8 +31,9 @@ export class UserService {
     let requests = [];
     alaseses.forEach((a) => {
       a.name = a.name.toUpperCase();
-      requests.push(this.http.post('/api/v1/alias', a));
     });
+
+    requests.push(this.http.post('/api/v1/alias', alaseses));
 
     return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
   }
@@ -41,8 +42,10 @@ export class UserService {
 
     let requests = [];
     aliases.forEach((a: any) => {
-      requests.push(this.http.delete(`/api/v1/alias/${a.id}`));
+
     });
+
+    requests.push(this.http.post(`/api/v1/alias/delete`, aliases));
 
     return forkJoin(requests).pipe(catchError(this.handleError('createAlasis', [])));
   }
@@ -69,5 +72,10 @@ export class UserService {
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };
+  }
+
+  inviteUser(inviteEmail: string): Observable<any> {
+    return this.http.post<any>('/api/v1/user/invite', {inviteEmail})
+      .pipe(catchError(this.handleError('getInviteUser', {})));
   }
 }

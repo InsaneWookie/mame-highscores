@@ -16,8 +16,8 @@
           </tr>
           <tr *ngFor="let game of lastPlayedGames">
             <td> <a href='#/games/{{game.id}}'>{{game.full_name}} </a></td>
-            <td>{{game.play_count}}</td>
-            <td>{{game.last_played | amTimeAgo}}</td>
+            <td>{{game.gameplayed.play_count}}</td>
+            <td>{{game.gameplayed.date_time | amTimeAgo}}</td>
           </tr>
         </table>
       </div>

@@ -8,24 +8,30 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <ul class="navbar-nav mr-auto" *ngIf="isLoggedIn">
             <li class="nav-item"><a class="nav-link" routerLink="/games" routerLinkActive="active">Games</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/users">Users</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/game-upload">Upload File</a></li>
+
+            <li class="nav-item"><a class="nav-link" routerLink="/profile/{{user.id}}">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" (click)="onLogout()" href="#">Logout</a></li>
             <!--<li class="nav-item"><a class="nav-link" href="#/settings">Settings</a></li>-->
             <!--<li class="nav-item"><a class="nav-link" href="#/admin">Admin</a></li>-->
             <!--<li class="nav-item"><a class="nav-link" routerLink="/profile/1">Profile</a></li>-->
         </ul>
-        <form class="navbar-form form-inline my-2 my-lg-0" role="search">
-            <div class="form-group" ng-controller="SearchCtrl">
-                <input class="form-control typeahead" type="text" placeholder="Search" ng-model="selected"
-                       typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)">
-            </div>
-        </form>
+        <ul class="navbar-nav mr-auto " *ngIf="!isLoggedIn">
+            <li class="nav-item"><a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a></li>
+        </ul>
+        <!--<form class="navbar-form form-inline my-2 my-lg-0" role="search" *ngIf="isLoggedIn">-->
+            <!--<div class="form-group">-->
+                <!--<input class="form-control typeahead" type="text" placeholder="Search" ng-model="selected"-->
+                       <!--typeahead="game.full_name + ' [' + game.name + ']' for game in games | filter:$viewValue | limitTo:8" typeahead-on-select="onSelected($item, $model, $label)">-->
+            <!--</div>-->
+        <!--</form>-->
     </div>
 
 </nav>
 
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 20px">
     <router-outlet></router-outlet>
 </div>

@@ -16,6 +16,9 @@ export class UserProfileComponent implements OnInit {
   newAliases = [];
   aliasesToRemove = [];
 
+  inviteEmail = '';
+  inviteLinkDisplay = '';
+
   constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) {
   }
 
@@ -52,8 +55,13 @@ export class UserProfileComponent implements OnInit {
   getUser(userId){
     this.userService.getUser(userId).subscribe(user => {
       this.user = user;
-      this.aliases = this.user.aliases; //.map((a) => a.name).join(',');
+      this.aliases = this.user.userGroups[0].aliases; //.map((a) => a.name).join(',');
     });
   }
 
+  onInviteSubmit() {
+    this.userService.inviteUser(this.inviteEmail).subscribe(response => {
+      this.inviteLinkDisplay = response.inviteLink;
+    });
+  }
 }

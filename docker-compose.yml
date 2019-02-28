@@ -2,6 +2,7 @@ version: '3'
 
 volumes:
   node_modules:
+  frontend_node_modules:
   pgdata:
 services:
   app:
@@ -9,17 +10,14 @@ services:
 #    command: node app.js
     command: tail -f /dev/null
     working_dir: /home/node/app
-    ports: 
-    - "1337:1337"
-    - "4200:4200"
-    - "9229:9229"
+    ports:
+    - "3000:3000"
     volumes:
       - .:/home/node/app
-      - /home/node/app/.tmp
-      - /home/node/app/frontend/node_modules
       - node_modules:/home/node/app/node_modules
+      - frontend_node_modules:/home/node/app/frontend/node_modules
   db:
-    image: postgres:10.5-alpine
+    image: postgres:10.7-alpine
     restart: always
     volumes:
       - pgdata:/var/lib/postgresql/data

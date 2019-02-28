@@ -1,0 +1,28 @@
+<div class="row">
+    <form class="form-horizontal col-md-4 offset-md-4" role="form" (ngSubmit)="onSubmit()" #registerForm="ngForm">
+
+        <div class="form-group">
+            <input class="form-control" type="text" name="username" placeholder="User name" [(ngModel)]="registerModel.username">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="email" placeholder="Email" [(ngModel)]="registerModel.email">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="password" placeholder="Password"
+                   [(ngModel)]="registerModel.password">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="password" name="repeat_password" placeholder="Repeat password"
+                   [(ngModel)]="registerModel.repeat_password">
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="invite_code" placeholder="Invite code"
+                   [(ngModel)]="registerModel.invite_code"/>
+        </div>
+        <div class="form-group">
+            <button class="btn btn-success btn-block" name="submit" type="submit">Register</button>
+        </div>
+
+
+    </form>
+</div>

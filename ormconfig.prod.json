@@ -1,0 +1,44 @@
+[
+  {
+    "environment": "production",
+    "name": "default",
+    "type": "postgres",
+    "host": "db",
+    "port": 5432,
+    "username": "postgres",
+    "password": "example",
+    "database": "mame-highscores",
+    "entities": [
+      "/home/node/app/dist/**/**.entity{.ts,.js}"
+    ],
+    "migrations": [
+      "/home/node/app/dist/migration/*{.ts,.js}"
+    ],
+    "synchronize": false,
+    "cli": {
+      "entitiesDir": "src",
+      "migrationsDir": "src/migration"
+    }
+  },
+  {
+    "environment": "test",
+    "name": "test",
+    "type": "postgres",
+    "host": "db",
+    "port": 5432,
+    "username": "postgres",
+    "password": "example",
+    "database": "mame-highscores-test",
+    "entities": [
+      "/home/node/app/dist/**/**.entity{.ts,.js}"
+    ],
+    "migrations": [
+      "/home/node/app/dist/migration/*{.ts,.js}"
+    ],
+    "synchronize": false,
+    "cli": {
+      "entitiesDir": "src",
+      "migrationsDir": "src/migration"
+    }
+  }
+]

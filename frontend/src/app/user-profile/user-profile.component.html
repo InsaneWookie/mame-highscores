@@ -2,7 +2,11 @@
 <h4> Email {{user.email}}</h4>
 <h4> Points {{user.points}}</h4>
 
-
+<form class="form-horizontal" role="form" (ngSubmit)="onInviteSubmit()" #inviteForm="ngForm">
+  <input name="invite_email" type="text" placeholder="invite email">
+  <button name="Invite">Invite</button><br>
+  <a [href]="inviteLinkDisplay">{{inviteLinkDisplay}}</a>
+</form>
 
 <form class="form-horizontal" role="form" (ngSubmit)="onSubmit()" #userForm="ngForm">
   <div class="form-group">

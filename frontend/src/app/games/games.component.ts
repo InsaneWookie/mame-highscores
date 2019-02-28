@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { GameService } from "../game.service";
-import { UserService } from "../user.service";
-import { Game } from "../models/game";
-import { User } from "../models/user";
+import { GameService } from '../game.service';
+import { UserService } from '../user.service';
+import { Game } from '../models/game';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-games',
@@ -35,16 +35,18 @@ export class GamesComponent implements OnInit {
       //TODO: think there is a better way of handling this pre processing. But want to do it on the backend anyway
 
       games.forEach((g) => {
-        g.scores.sort((a, b) => a.rank - b.rank);
-        g.top_scorer = (g.scores.length > 0) ? this.getUserFromAlias(g.scores[0].alias, users) : null;
+        g.scores = [];
+        g.top_scorer = null;
+        // g.scores.sort((a, b) => a.rank - b.rank);
+        // g.top_scorer = (g.scores.length > 0) ? this.getUserFromAlias(g.scores[0].alias, users) : null;
       });
 
-      this.games = games
+      this.games = games;
     });
   }
 
   getUserFromAlias(aliasId: number, users: User[]): User {
-    if(aliasId === null){
+    if (aliasId === null) {
       return null;
     }
 

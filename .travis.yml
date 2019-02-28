@@ -9,9 +9,13 @@ before_install:
 before_script:
   - sleep 5 #hacky sleep as we need to wait till the db container is up
   - docker-compose -f docker-compose.prod.yml exec db psql -U postgres -c "CREATE DATABASE \"mame-highscores-test\""
+  - docker-compose -f docker-compose.prod.yml exec app node ./node_modules/typeorm/cli.js migration:run -c test
+  - docker-compose -f docker-compose.prod.yml exec app npm install --only=dev
+
 
 script:
-  - docker-compose exec app npm run test-model
+  - docker-compose -f docker-compose.prod.yml exec app npm run test:e2e
+  - docker-compose -f docker-compose.prod.yml exec app npm run test
 
 before_deploy:
   - pip install --user awscli

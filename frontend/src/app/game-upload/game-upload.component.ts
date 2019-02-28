@@ -33,7 +33,7 @@ export class GameUploadComponent implements OnInit {
     this.http.post(endpoint, formData)
       .pipe(catchError(of))
       .subscribe((game) => {
-        console.log(game);
+
       });
 
   }

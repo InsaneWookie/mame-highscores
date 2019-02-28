@@ -31,8 +31,8 @@
           <td><a  *ngIf="score.name === '' || score.name === null" ><span class="glyphicon glyphicon-pencil"></span></a></td>
           <td>{{score.rank}}</td>
           <td>
-            <a *ngIf="score.alias != null" routerLink='/users/{{score.alias.user}}'>{{score.name}}</a>
-            <span *ngIf="score.alias == null">{{score.name}}</span>
+            <a *ngIf="score.user != null" routerLink='/users/{{score.user.id}}'>{{score.name}}</a>
+            <span *ngIf="score.user == null">{{score.name}}</span>
           </td>
           <td style='text-align:right'>{{score.score}}</td>
           <td style='text-align:right'>{{score.createdAt | amTimeAgo}}</td>

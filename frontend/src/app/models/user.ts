@@ -5,6 +5,7 @@ export class User {
   username: string;
   email: string;
   points: number;
+  userGroups: any;
   aliases: object[];
 
 
