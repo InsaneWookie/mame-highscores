@@ -166,7 +166,7 @@ describe('AppController (e2e)', () => {
       await request(app.getHttpServer())
         .post('/api/v1/game/upload').field('gamename', 'zerowing')
         //.set('Authorization', 'Bearer ' + accessToken)
-        .attach('filename', Buffer.from(bytes, 'hex'), 'zerowing.hi')
+        .attach('game', Buffer.from(bytes, 'hex'), 'zerowing.hi')
         .expect(201)
         .then((data) => {
 
@@ -181,7 +181,7 @@ describe('AppController (e2e)', () => {
       return await request(app.getHttpServer())
         .post('/api/v1/game/upload').field('gamename', 'zerowing')
         //.set('Authorization', 'Bearer ' + accessToken)
-        .attach('filename', Buffer.from(newBytes, 'hex'), 'zerowing.hi')
+        .attach('game', Buffer.from(newBytes, 'hex'), 'zerowing.hi')
         .expect(201)
         .then((data) => {
 
