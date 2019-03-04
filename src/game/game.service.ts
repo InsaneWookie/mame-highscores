@@ -46,7 +46,7 @@ export class GameService {
       .setParameter('groupId', groupId)
       //.where('gameplayed.id IS NOT NULL')
       .where('game.has_mapping = true')
-      .andWhere('game.clone_of IS NULL')
+      //.andWhere('game.clone_of IS NULL')
       .orderBy('game.' + sort[0], sort[1] as any) //Not sure if dynamically doing this order by is a good idea
       //.orderBy()
       .limit(1000)

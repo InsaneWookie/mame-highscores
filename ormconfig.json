@@ -18,7 +18,8 @@
     "cli": {
       "entitiesDir": "src",
       "migrationsDir": "src/migration"
-    }
+    },
+    "logging": true
   },
   {
     "environment": "test",

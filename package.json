@@ -21,7 +21,8 @@
     "travis:test:e2e": "jest --config .dist/test/jest-e2e.json",
     "start2": "node dist/server",
     "webpack": "webpack --config webpack.config.js --progress",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "dependencies": {
     "@nestjs/common": "^5.4.0",
