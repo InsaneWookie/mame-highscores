@@ -9,6 +9,7 @@ import { UserService } from '../user/user.service';
 import { JwtStrategy } from '../jwt.strategy';
 import { UserGroup } from "../entity/usergroup.entity";
 import { Repository } from "typeorm";
+import { ConfigService } from "../config/config.service";
 
 describe('Auth Controller', () => {
   let controller: AuthController;
@@ -17,7 +18,7 @@ describe('Auth Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         JwtModule.register({
-          secretOrPrivateKey: 'abc123',
+          secretOrPrivateKey: 'test',
           signOptions: {
             expiresIn: 3600,
           },
@@ -30,6 +31,10 @@ describe('Auth Controller', () => {
         AuthService,
         UserService,
         JwtStrategy,
+        {
+          provide: ConfigService,
+          useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+        },
         { provide: getRepositoryToken(User), useClass: Repository,},
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
       ]

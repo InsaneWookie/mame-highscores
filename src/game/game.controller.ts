@@ -38,17 +38,19 @@ export class GameController {
   }
 
   @Get(':id')
-  // @UseGuards(AuthGuard())
   find(@Param('id') id): Promise<Game> {
     const groupId = 1; // req.user.groupId;
     return this.gameService.find(id, groupId);
   }
 
-
+  /**
+   * TODO: check the api key
+   * @param file
+   * @param req
+   */
   @Post('upload')
   @UseInterceptors(FileInterceptor('filename'))
   upload(@UploadedFile() file, @Req() req){
-
     return this.gameService.upload(req.body.gamename, 1, file);
   }
 

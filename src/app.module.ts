@@ -20,6 +20,11 @@ import { ScoreService } from './score/score.service';
 import { ScoreModule } from './score/score.module';
 import { ConfigModule } from './config/config.module';
 import { getConnectionOptions } from "typeorm";
+import { AppController } from "./app.controller";
+import { ConfigService } from "./config/config.service";
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from "./jwt.strategy";
 
 @Module({
   imports: [
@@ -33,8 +38,8 @@ import { getConnectionOptions } from "typeorm";
     ScoreModule,
     ConfigModule
   ],
-  controllers: [ScoreController],
-  providers: [ScoredecoderService, ScoreService],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {
   constructor() {
