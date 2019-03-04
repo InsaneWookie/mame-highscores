@@ -161,7 +161,7 @@ describe('AppController (e2e)', () => {
 
       // console.log(user);
       const accessToken = this.jwtService.sign(user);
-      console.log(accessToken);
+      // console.log(accessToken);
 
       await request(app.getHttpServer())
         .post('/api/v1/game/upload').field('gamename', 'zerowing')

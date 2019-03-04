@@ -5,7 +5,9 @@ export class ConfigService {
   private readonly envConfig: { [key: string]: string };
 
   constructor(filePath: string) {
-   dotenv.config({ path: filePath });
+    if(fs.existsSync(filePath)) {
+      dotenv.config({ path: filePath });
+    }
    // console.log(process.env);
   }
 
