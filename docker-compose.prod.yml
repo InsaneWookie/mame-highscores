@@ -14,7 +14,7 @@ services:
     #    command: npm run start:prod
 #    command: node dist/main.js
     environment:
-      NODE_ENV: production
+      NODE_ENV: test
   db:
     image: postgres:10.7-alpine
     restart: always
