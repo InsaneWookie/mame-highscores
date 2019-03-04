@@ -30,6 +30,7 @@ RUN apk --no-cache --virtual build-dependencies add \
 COPY tsconfig*.json ./
 COPY nest-cli.json ./
 COPY ormconfig.prod.json ./ormconfig.json
+COPY test.env ./
 COPY src ./src
 COPY test ./test
 
