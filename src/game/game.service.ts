@@ -253,11 +253,21 @@ export class GameService {
    * @param machine
    * @param callback
    */
-  updatePlayedCount(game, machine, callback){
+  async updatePlayedCount(game: Game, machine){
     //add a played record
     // GamePlayed.create({game: game.id, machine: machine.id}).exec(function (err, newGamePLayed) { });
-    //
-    // //dont technically need to do this as it can be inferred from the gameplayed table
+    let gp = await this.gamePlayed.findOne({where: [{game: game.id}]});
+    if(!gp){
+      gp = new GamePlayed();
+      gp.game = game;
+      gp.machine = machine;
+      gp.play_count = 0;
+    }
+    gp.play_count = gp.play_count + 1;
+    gp.date_time = new Date();
+    return this.gamePlayed.save(gp);
+
+    //dont technically need to do this as it can be inferred from the gameplayed table
     // sails.sendNativeQuery('UPDATE game SET play_count = play_count + 1, last_played = NOW() WHERE id = $1', [game.id],
     //   function (err, result) {
     //     callback(err, result);
@@ -314,7 +324,7 @@ export class GameService {
    * @param {Machine} machine
    * @param {Game~uploadScoresCallback} callback(err, addedScores)
    */
-  async uploadScores(rawBytes, fileType, game, machine) {
+  async uploadScores(rawBytes, fileType, game: Game, machine) {
 
     let callback = (s, e) => {};
     if (typeof game !== 'object') {
@@ -331,9 +341,7 @@ export class GameService {
 
 
 
-    // Game.updatePlayedCount(game, machine, function (err, playCount) {
-    //   //don't care about the response at the moment.
-    // });
+    await this.updatePlayedCount(game, machine);
 
     //need to check if the game exists in the mapping file,
     //and if not then we add it to the database but flag it as missing
