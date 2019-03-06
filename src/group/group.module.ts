@@ -10,9 +10,13 @@ import { Group } from '../entity/group.entity';
 import { UserGroup } from '../entity/usergroup.entity';
 import { Alias } from '../entity/alias.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+  ],
   controllers: [GroupController],
   providers: [GroupService]
 })
