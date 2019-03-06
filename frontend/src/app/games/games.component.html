@@ -7,17 +7,17 @@
   </tr>
   <tr *ngFor="let game of games">
     <td>
-      <div *ngIf="game.clone_of"><a routerLink="/games/{{game.clone_of}}">{{game.full_name}}</a></div>
-      <div *ngIf="!game.clone_of"><a routerLink="/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></div>
+      <!--<div *ngIf="game.clone_of"><a routerLink="/games/{{game.clone_of}}">{{game.full_name}}</a></div>-->
+      <div><a routerLink="/games/{{game.id}}">{{game.full_name}} ({{game.name}})</a></div>
     </td>
-    <td *ngIf="game.scores.length > 0">
-      <div *ngIf="game.scores[0].alias"><a routerLink="/users/{{game.top_scorer.id}}">{{game.scores[0].name}}</a></div>
-      <div *ngIf="!game.scores[0].alias">{{game.scores[0].name}}</div>
+    <td *ngIf="game.topScore">
+      <!--<div *ngIf="game.topScore.name"><a routerLink="/users/{{game.top_scorer.id}}">{{game.topScore.name}}</a></div>-->
+      <div *ngIf="game.topScore.name">{{game.topScore.name}}</div>
     </td >
-    <td *ngIf="game.scores.length > 0">{{game.scores[0].score}}</td>
-    <td *ngIf="game.scores.length > 0">{{game.scores[0].createdAt | amTimeAgo}}</td>
-    <td *ngIf="game.scores.length == 0"></td>
-    <td *ngIf="game.scores.length == 0"></td>
-    <td *ngIf="game.scores.length == 0"></td>
+    <td *ngIf="game.topScore">{{game.topScore.score}}</td>
+    <td *ngIf="game.topScore">{{game.topScore.createdAt | amTimeAgo}}</td>
+    <td *ngIf="!game.topScore"></td>
+    <td *ngIf="!game.topScore"></td>
+    <td *ngIf="!game.topScore"></td>
   </tr>
 </table>

@@ -29,6 +29,13 @@ export class GameController {
     return this.gameService.findTopPlayers(groupId);
   }
 
+  @Get('latest_scores')
+  @UseGuards(AuthGuard())
+  latest_scores(@Req() req): Promise<any> {
+    const groupId = req.user.groupId;
+    return this.gameService.findLatestScores(groupId);
+  }
+
   @Get()
   @UseGuards(AuthGuard())
   findAll(@Req() req, @Query() params): Promise<Game[]> {

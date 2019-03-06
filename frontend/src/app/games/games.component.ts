@@ -37,6 +37,7 @@ export class GamesComponent implements OnInit {
       games.forEach((g) => {
         g.scores = [];
         g.top_scorer = null;
+        //g.topScore = null;
         // g.scores.sort((a, b) => a.rank - b.rank);
         // g.top_scorer = (g.scores.length > 0) ? this.getUserFromAlias(g.scores[0].alias, users) : null;
       });

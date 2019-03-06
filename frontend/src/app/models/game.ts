@@ -7,4 +7,5 @@ export class Game {
   name: string;
   scores: Score[];
   top_scorer: User;
+  topScore: any;
 }

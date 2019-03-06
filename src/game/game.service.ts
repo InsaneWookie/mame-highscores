@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Game } from '../entity/game.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getConnection } from 'typeorm';
+import { Repository, getConnection, In } from 'typeorm';
 import { GamePlayed } from '../entity/gameplayed.entity';
 import { Score } from '../entity/score.entity';
 import { User } from '../entity/user.entity';
@@ -40,9 +40,19 @@ export class GameService {
       .where('m.group_id = :groupId')
       .getQuery();
 
+    let topScoreQuery = `SELECT max(s.id) as s_id, s.game_id AS "s_game_id"
+                  FROM "score" "s"
+                         INNER JOIN "machine" "m" ON "m"."id" = "s"."machine_id"
+                  WHERE "m"."group_id" = :groupId
+                    AND "s"."rank" = 1
+                    group by s.game_id`;
+
     return await this.game.createQueryBuilder('game')
       .leftJoinAndSelect(`(${q})`, 'played', 'game.id = played.gp_game_id')
       .leftJoinAndMapOne('game.gameplayed', 'game.gameplayed', 'gameplayed', 'played.gp_id = gameplayed.id')
+      .leftJoinAndSelect(`(${topScoreQuery})`, 'ts', 'game.id = ts.s_game_id')
+      .leftJoinAndMapOne('game.topScore', 'game.topScore', 'topscore', 'ts.s_id = topscore.id')
+
       .setParameter('groupId', groupId)
       //.where('gameplayed.id IS NOT NULL')
       .where('game.has_mapping = true')
@@ -106,6 +116,21 @@ export class GameService {
 
     return await getConnection().query(pointsQuery, [groupId]);
 
+  }
+
+  async findLatestScores(groupId: number): Promise<object> {
+    let machine = await this.machine.find({where: {group: groupId}});
+
+    const machineIds = machine.map((m) => m.id);
+
+    return this.score.find({
+      where: { machine: In(machineIds)},
+      relations: ['game'],
+      order: {
+        createdAt: "DESC"
+      },
+      take: 10
+    })
   }
 
 
@@ -360,6 +385,10 @@ export class GameService {
 
       let newScores = decodedScores[game.name];
 
+      newScores = newScores.map((s) => {
+        return Object.assign(new Score(), s);
+      });
+
       let createdScores = await this.addScores(game, machine, newScores, null);
 
       if (createdScores.length > 0) {
@@ -400,7 +429,7 @@ export class GameService {
    * @param newScores - decoded scores
    * @param callback (error, [Score])
    */
-  async addScores (game: Game, machine: Machine, newScores, callback) {
+  async addScores (game: Game, machine: Machine, newScores : Score[], callback) {
 
     machine = await this.machine.findOne(machine.id, {relations: ['group']});
     let groupId = machine.group.id ;
@@ -423,14 +452,21 @@ export class GameService {
     //remove any exiting or invalid scores
     let filteredScores = this.filterScores(newScores, existingScores);
 
+    let scoreList : Score[] = [];
     //stick the game id on the scores we want to save
     filteredScores.forEach(function (score) {
-      score.game = {id: gameId};
-      score.machine = {id: machine.id};
+      let s = new Score();
+      s.score = score.score;
+      s.name = score.name;
+      s.game = game;
+      s.machine = machine;
+      scoreList.push(s);
+      // s.createdAt = new Date();
+      // score.updatedAt = new Date();
     });
 
     //now insert the new scores
-    let createdScores = await this.score.save(filteredScores);
+    let createdScores = await this.score.save(scoreList);
 
     //due to the way we are doing the ids, need to update the alias ids against the scores (easier to just do for all scores for this game)
     if(createdScores.length) {
@@ -445,7 +481,7 @@ export class GameService {
       });
 
       //created some scores so update the score rank
-      //await this.score.updateRanks(gameId); //TODO
+      await this.updateRanks(game, machine); //TODO
 
       let updateCreatedScores = await this.score.findByIds(scoreIds /*{order: { rank: 'ASC'}}*/);
 
@@ -457,6 +493,24 @@ export class GameService {
       return createdScores;
     }
   }
+
+  async updateRanks (game: Game, machine: Machine){
+    let query =
+      "UPDATE score s SET rank = r.rank \
+      FROM (SELECT id, rank() \
+        OVER (PARTITION BY game_id \
+        ORDER BY (0 || regexp_replace(score, E'[^0-9]+','','g'))::bigint DESC ) as rank \
+        FROM \
+        score \
+        WHERE game_id = $1 \
+        AND machine_id = $2) r \
+      WHERE s.id = r.id";
+
+
+    return getConnection().query(query, [game.id, machine.id]);
+  }
+
+
 
 //   async addRawScores(game, machine, rawScoreBytesSting, fileType, callback): any {
 //

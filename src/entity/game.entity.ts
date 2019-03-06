@@ -57,4 +57,7 @@ export class Game {
 
   latestPlayed: GamePlayed;
 
+  @OneToOne(type => Score, s => s.game)
+  topScore: Score;
+
 }

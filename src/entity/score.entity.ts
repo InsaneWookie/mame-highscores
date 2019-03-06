@@ -33,7 +33,7 @@ export class Score {
   createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt: Date = new Date();
 
   @ManyToOne(type => Alias, a => a.scores)
   @JoinColumn({ name: "alias_id" })

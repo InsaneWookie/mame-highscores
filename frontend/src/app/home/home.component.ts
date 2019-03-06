@@ -46,9 +46,14 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  getLatestScores() {
+    this.gameService.getLatestScores().subscribe(latestScores => this.lastestScores = latestScores);
+  }
+
   ngOnInit() {
     this.getTopPlayers();
     this.getLastPlayed();
+    this.getLatestScores()
   }
 
 }

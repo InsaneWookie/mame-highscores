@@ -49,6 +49,12 @@ export class GameService {
     ).pipe(catchError(this.handleError('getLastPlayed', [])));
   }
 
+  getLatestScores(): Observable<object[]> {
+    return this.http.get<object[]>(
+      '/api/v1/game/latest_scores'
+    ).pipe(catchError(this.handleError('getLatestScores', [])));
+  }
+
   getGame(gameId: number): Observable<Game> {
     return this.http.get<Game>(`/api/v1/game/${gameId}`).pipe(catchError(this.handleError('getGame', new Game)));
   }

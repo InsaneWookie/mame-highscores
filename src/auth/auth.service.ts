@@ -5,24 +5,17 @@ import { UserService } from '../user/user.service';
 import bcrypt = require('bcrypt');
 import { User } from '../entity/user.entity';
 import uuid = require('uuid/v4');
+import { ConfigService } from "../config/config.service";
 
 // import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(private readonly jwtService: JwtService,
-              private readonly userService: UserService) {
+              private readonly userService: UserService,
+              private readonly config: ConfigService) {
   }
 
-  async createToken() {
-    // const user: JwtPayload = { email: 'test@email.com' };
-    // const accessToken = this.jwtService.sign(user);
-    // console.log(accessToken);
-    // return {
-    //   expiresIn: 3600,
-    //   accessToken,
-    // };
-  }
 
   async login(userName: string, password: string) {
     const u = await this.userService.findByUserName(userName);
@@ -59,8 +52,10 @@ export class AuthService {
 
     // console.log(user);
     const accessToken = this.jwtService.sign(user);
+    // const decoded = this.jwtService.decode(accessToken);
+    // console.log(decoded);
     return {
-      expiresIn: 3600,
+      expiresIn: parseInt(this.config.get('JWT_EXPIRES_IN')),
       accessToken,
       userId: u.id,
     };
