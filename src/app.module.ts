@@ -25,6 +25,7 @@ import { ConfigService } from "./config/config.service";
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from "./jwt.strategy";
+import { MachineModule } from './machine/machine.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { JwtStrategy } from "./jwt.strategy";
     GroupModule,
     AliasModule,
     ScoreModule,
-    ConfigModule
+    ConfigModule,
+    MachineModule
   ],
   controllers: [AppController],
   providers: [],

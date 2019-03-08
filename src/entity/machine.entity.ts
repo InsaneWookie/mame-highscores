@@ -12,6 +12,9 @@ export class Machine {
 
   @Column()
   name: string;
+
+  @Column()
+  api_key: string;
   //
   @ManyToOne(type => Group, g => g.machines)
   @JoinColumn({ name: "group_id" })

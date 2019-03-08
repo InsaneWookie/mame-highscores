@@ -1,6 +1,6 @@
 import { Injectable} from '@nestjs/common';
 import { User } from '../entity/user.entity';
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { InjectRepository  } from '@nestjs/typeorm';
 import { UserGroup } from '../entity/usergroup.entity';
 import uuid = require('uuid/v4');
@@ -59,6 +59,48 @@ export class UserService {
     newUser.inviteCode = uuid();
 
     return this.save(newUser, groupId);
+  }
+
+
+  async getPoints(groupId: number, userId: number): Promise<any> {
+
+    // var userId = (user && typeof user === "object") ? user.id : user;
+
+    // var extraWhere = (!!userId) ? " AND u.id = $1 " : "";
+    // var queryParams = (!!userId) ? [ userId ] : [];
+
+    const pointsQuery =
+      ' SELECT u.id, u.username, player_total_points.total_points \
+        FROM \
+        (SELECT user_id, sum(points) total_points \
+         FROM \
+           (SELECT s.game_id, ug.user_id, min (s.rank) top_rank, \
+           CASE \
+           WHEN min (s.rank) = 1 THEN 8 \
+           WHEN min (s.rank) = 2 THEN 5 \
+           WHEN min (s.rank) = 3 THEN 3 \
+           WHEN min (s.rank) = 4 THEN 2 \
+           WHEN min (s.rank) = 5 THEN 1 \
+           ELSE 0 \
+           END as points \
+           FROM user_group ug \
+           JOIN alias a ON ug.id = a.user_group_id \
+              JOIN score s ON a.id = s.alias_id \
+           WHERE \
+            ug.group_id = $1 \
+            AND s.rank <= 5 \
+           GROUP BY s.game_id, ug.user_id ) player_points \
+         GROUP BY user_id \
+        ) \
+        player_total_points, \
+                "user" u \
+      WHERE player_total_points.user_id = u.id \
+      AND u.id = $2' +
+      // extraWhere +
+      'ORDER BY total_points DESC';
+
+    return getConnection().query(pointsQuery, [groupId, userId]);
+
   }
 
 }

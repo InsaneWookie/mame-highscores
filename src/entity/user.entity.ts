@@ -34,4 +34,7 @@ export class User {
 
   @OneToMany(type => UserGroup, userGroup => userGroup.user)
   userGroups: UserGroup[];
+
+
+  points: number
 }

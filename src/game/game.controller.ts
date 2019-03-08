@@ -53,13 +53,14 @@ export class GameController {
 
   /**
    * TODO: check the api key
+   * @param apiKey
    * @param file
    * @param req
    */
-  @Post('upload')
+  @Post('upload/:apiKey')
   @UseInterceptors(FileInterceptor('game'))
-  upload(@UploadedFile() file, @Req() req){
-    return this.gameService.upload(req.body.gamename, 1, file);
+  upload(@Param('apiKey') apiKey, @UploadedFile() file, @Req() req){
+    return this.gameService.upload(req.body.gamename, apiKey, file);
   }
 
 }

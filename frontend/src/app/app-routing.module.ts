@@ -11,6 +11,8 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './auth.guard';
+import { SettingsComponent } from "./settings/settings.component";
+import { MachineCreateComponent } from "./machine-create/machine-create.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -23,6 +25,8 @@ const routes: Routes = [
   {path: 'profile/:id', component: UserProfileComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register/:inviteCode', component: RegisterComponent},
+  {path: 'machine-create', component: MachineCreateComponent},
+  {path: 'settings', component: SettingsComponent},
 
 ];
 

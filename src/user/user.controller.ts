@@ -30,10 +30,17 @@ export class UserController {
     return {success: true, inviteLink: `http://localhost:4200/#/register/${result.inviteCode}`}
   }
 
+  // @Get(':id/scores')
+
   @Get(':id')
-  findOne(@Param('id') id, @Req() req): Promise<User> {
+  async findOne(@Param('id') id, @Req() req): Promise<User> {
     const groupId = req.user.groupId;
-    return this.userService.findOne(id, groupId);
+    let user = await this.userService.findOne(id, groupId);
+    let userPoints = await this.userService.getPoints(groupId, user.id);
+    console.log(userPoints);
+    user.points = userPoints[0].total_points;
+    console.log(user);
+    return user;
   }
 
   @Get()

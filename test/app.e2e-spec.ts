@@ -110,7 +110,7 @@ describe('AppController (e2e)', () => {
       Object.assign(game, gameData);
       await gameRepo.save(game);
 
-      let machine = Object.assign(new Machine(), {name: 'Test machine', group: group});
+      let machine = Object.assign(new Machine(), {name: 'Test machine', group: group, api_key: '1A2B3C'});
       let machine2 = Object.assign(new Machine(), {name: 'Test machine 2', group: group, api_key: 'abc123'});
       await machineRepo.save([machine, machine2]);
 
@@ -154,17 +154,17 @@ describe('AppController (e2e)', () => {
         '000000026002600260000000000000026002600260000000000000026002600260000000000000006000500040003000200140013' +
         '00120011001050';
 
-      const user: JwtPayload = {
-        userId: 1,
-        groupId: 1
-      };
+      // const user: JwtPayload = {
+      //   userId: 1,
+      //   groupId: 1
+      // };
 
       // console.log(user);
-      const accessToken = this.jwtService.sign(user);
+      // const accessToken = this.jwtService.sign(user);
       // console.log(accessToken);
 
       await request(app.getHttpServer())
-        .post('/api/v1/game/upload').field('gamename', 'zerowing')
+        .post('/api/v1/game/upload/1A2B3C').field('gamename', 'zerowing')
         //.set('Authorization', 'Bearer ' + accessToken)
         .attach('game', Buffer.from(bytes, 'hex'), 'zerowing.hi')
         .expect(201)
@@ -179,7 +179,7 @@ describe('AppController (e2e)', () => {
         });
 
       return await request(app.getHttpServer())
-        .post('/api/v1/game/upload').field('gamename', 'zerowing')
+        .post('/api/v1/game/upload/1A2B3C').field('gamename', 'zerowing')
         //.set('Authorization', 'Bearer ' + accessToken)
         .attach('game', Buffer.from(newBytes, 'hex'), 'zerowing.hi')
         .expect(201)

@@ -349,7 +349,7 @@ export class GameService {
    * @param {Machine} machine
    * @param {Game~uploadScoresCallback} callback(err, addedScores)
    */
-  async uploadScores(rawBytes, fileType, game: Game, machine) {
+  async uploadScores(rawBytes, fileType, game: Game, machine: Machine) {
 
     let callback = (s, e) => {};
     if (typeof game !== 'object') {
@@ -434,7 +434,7 @@ export class GameService {
     machine = await this.machine.findOne(machine.id, {relations: ['group']});
     let groupId = machine.group.id ;
     let gameId = game.id;
-    let machineIds = [machine.id]; //todo better finding of all scores for the group
+    let machineIds = (await this.machine.find({where: {group: groupId}})).map(m => m.id);
 
     if(!_.isFunction(callback)){
       callback = (a, b) => {};
@@ -481,7 +481,7 @@ export class GameService {
       });
 
       //created some scores so update the score rank
-      await this.updateRanks(game, machine); //TODO
+      await this.updateRanks(game, machineIds);
 
       let updateCreatedScores = await this.score.findByIds(scoreIds /*{order: { rank: 'ASC'}}*/);
 
@@ -494,7 +494,7 @@ export class GameService {
     }
   }
 
-  async updateRanks (game: Game, machine: Machine){
+  async updateRanks (game: Game, machines: number[]){
     let query =
       "UPDATE score s SET rank = r.rank \
       FROM (SELECT id, rank() \
@@ -503,11 +503,11 @@ export class GameService {
         FROM \
         score \
         WHERE game_id = $1 \
-        AND machine_id = $2) r \
+        AND machine_id = ANY($2)) r \
       WHERE s.id = r.id";
 
 
-    return getConnection().query(query, [game.id, machine.id]);
+    return getConnection().query(query, [game.id, machines]);
   }
 
 
@@ -575,7 +575,7 @@ export class GameService {
 // }
 
 
-  async upload(gameName, machineId, file): Promise<any> {
+  async upload(gameName, apiKey: string, file): Promise<any> {
 
     //const filePath = file.fd;
     const fileName = file.originalname;
@@ -588,7 +588,7 @@ export class GameService {
     }
 
     const game = await this.game.findOne({name: gameName});
-    const machine = await this.machine.findOne(machineId);
+    const machine = await this.machine.findOne({where: {api_key: apiKey}});
     const rawBuffer = file.buffer;
 
     const createdScores = await this.uploadScores(rawBuffer, fileType, game, machine);

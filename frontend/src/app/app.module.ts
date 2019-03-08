@@ -24,6 +24,8 @@ import { LoginComponent } from './login/login.component';
 import { AuthInterceptor } from "./http.interceptor";
 import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './auth.guard';
+import { SettingsComponent } from './settings/settings.component';
+import { MachineCreateComponent } from './machine-create/machine-create.component';
 // import { far } from '@fortawesome/free-regular-svg-icons';
 
 @NgModule({
@@ -39,6 +41,8 @@ import { AuthGuard } from './auth.guard';
     UserProfileComponent,
     LoginComponent,
     RegisterComponent,
+    SettingsComponent,
+    MachineCreateComponent,
   ],
   imports: [
     BrowserModule,
