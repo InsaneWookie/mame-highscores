@@ -26,6 +26,7 @@ import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './auth.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { MachineCreateComponent } from './machine-create/machine-create.component';
+import { InviteComponent } from './invite/invite.component';
 // import { far } from '@fortawesome/free-regular-svg-icons';
 
 @NgModule({
@@ -43,6 +44,7 @@ import { MachineCreateComponent } from './machine-create/machine-create.componen
     RegisterComponent,
     SettingsComponent,
     MachineCreateComponent,
+    InviteComponent,
   ],
   imports: [
     BrowserModule,

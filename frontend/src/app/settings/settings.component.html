@@ -1,4 +1,9 @@
 
+<h1>Group</h1>
+
+Name: {{group.name}}<br>
+Invite code: {{group.invite_code}}
+
 <h1>Machines</h1>
 
 <table class="table table-striped">
@@ -9,7 +14,7 @@
   </tr>
   <tr *ngFor="let machine of machines">
     <td> <a href='#/machine/{{machine.id}}'>{{machine.name}} </a></td>
-    <td>{{machine.name}}</td>
+    <td>{{machine.description}}</td>
     <td>{{machine.api_key}}</td>
   </tr>
 </table>

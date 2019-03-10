@@ -8,6 +8,8 @@ import { UserService } from '../user/user.service';
 import { UserModule } from '../user/user.module';
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
+import { GroupService } from "../group/group.service";
+import { MachineService } from "../machine/machine.service";
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { ConfigService } from "../config/config.service";
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, JwtStrategy],
+  providers: [AuthService, GroupService, MachineService, UserService, JwtStrategy],
 })
 export class AuthModule {
 

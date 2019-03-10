@@ -14,6 +14,9 @@ export class Machine {
   name: string;
 
   @Column()
+  description: string;
+
+  @Column()
   api_key: string;
   //
   @ManyToOne(type => Group, g => g.machines)

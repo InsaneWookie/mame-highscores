@@ -1,0 +1,21 @@
+<div class="row">
+
+  <form class="col-md-4 offset-md-4" (ngSubmit)="onSubmit()" #inviteForm="ngForm">
+    <div class="form-group">
+      <input class="form-control" name="username" placeholder="User name" [(ngModel)]="form.email">
+    </div>
+
+    <div class="form-group">
+      <input class="form-control" name="password" type="password" placeholder="Password"
+             [(ngModel)]="login.password">
+    </div>
+
+    <div class="form-group">
+      <button class="btn btn-success btn-block" type="submit">Submit</button>
+    </div>
+
+
+
+
+  </form>
+</div>

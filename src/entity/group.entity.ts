@@ -14,6 +14,9 @@ export class Group {
   @Column('text')
   description: string;
 
+  @Column()
+  invite_code: string;
+
   @OneToMany(type => Machine, m => m.group)
   machines: Machine[];
 

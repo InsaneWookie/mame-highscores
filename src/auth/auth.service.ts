@@ -6,6 +6,10 @@ import bcrypt = require('bcrypt');
 import { User } from '../entity/user.entity';
 import uuid = require('uuid/v4');
 import { ConfigService } from "../config/config.service";
+import { GroupService } from "../group/group.service";
+import { Group } from "../entity/group.entity";
+import { Machine } from "../entity/machine.entity";
+import { MachineService } from "../machine/machine.service";
 
 // import { JwtPayload } from './interfaces/jwt-payload.interface';
 
@@ -13,6 +17,8 @@ import { ConfigService } from "../config/config.service";
 export class AuthService {
   constructor(private readonly jwtService: JwtService,
               private readonly userService: UserService,
+              private readonly groupService: GroupService,
+              private readonly machineService: MachineService,
               private readonly config: ConfigService) {
   }
 
@@ -76,31 +82,56 @@ export class AuthService {
       throw 'Passwords do not match';
     }
 
-    if (!body.invite_code) {
-      throw 'Invite code not set';
-    }
+    // if (!body.invite_code) {
+    //   throw 'Invite code not set';
+    // }
 
     if(!body.username || body.username.trim() === ''){
       throw "Invalid user name"
     }
 
-    const inviteCode = body.invite_code;
-    const user = await this.userService.findOneByInviteCode(inviteCode);
+    let group: Group;
+    if(body.invite_code) {
+      const inviteCode = body.invite_code;
+      group = await this.groupService.findOneByInviteCode(inviteCode);
 
-    if (!user) {
-      throw 'Invalid invite code';
+      if (!group) {
+        throw 'Invalid invite code';
+      }
+    } else if(body.group_name && body.group_description){
+      group = new Group();
+      group.name = body.group_name;
+      group.description = body.group_description;
+      group.invite_code = Math.random().toString(36).slice(2,9);
+      group = await this.groupService.save(group);
+
+      const machine = new Machine();
+      machine.name = 'Default Machine';
+      // machine.group = group;
+      await this.machineService.create(group.id, machine);
+
+    } else {
+      throw 'No invite code or group details provided'
     }
 
     const userName = body.username;
     const password = body.password;
     const email = body.email;
 
+    let user = new User();
     user.username = userName;
     user.password = await this.hashPassword(password);
     user.email = email;
     user.inviteCode = null;
 
-    const newUser = await this.userService.save(user);
+    // user.groups = [group];
+    let newUser;
+    if(group){
+      newUser = await this.userService.save(user, group.id);
+    } else {
+      newUser = await this.userService.save(user);
+    }
+
     return this.login(newUser.username, password);
 
   }
@@ -118,7 +149,7 @@ export class AuthService {
       return await bcrypt.compare(inputPassword, storedPassword);
     } catch (e) {
       //invalid password
-      console.log(e);
+      // console.log(e);
       return false;
     }
 

@@ -19,7 +19,7 @@ export class MachineService {
     return this.machine.find({where: {group: groupId}});
   }
 
-  async save(groupId: number, machine: Machine) {
+  async create(groupId: number, machine: Machine) {
 
     machine.api_key = uuid();
     machine.group = await this.group.findOne(groupId);

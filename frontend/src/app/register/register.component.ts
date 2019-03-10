@@ -17,7 +17,9 @@ export class RegisterComponent implements OnInit {
     email: '',
     password: '',
     repeat_password: '',
-    invite_code: ''
+    invite_code: '',
+    group_name: '',
+    group_description: ''
 
   };
 
@@ -28,7 +30,7 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.registerModel);
+    // console.log(this.registerModel);
     this.http.post('/api/v1/auth/register', this.registerModel).subscribe((res :any) => {
       this.authService.login(res);
       window.location.href = '/';

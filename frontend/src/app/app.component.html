@@ -13,9 +13,9 @@
             <li class="nav-item"><a class="nav-link" routerLink="/users">Users</a></li>
             <li class="nav-item"><a class="nav-link" routerLink="/game-upload">Upload File</a></li>
 
-            <li class="nav-item"><a class="nav-link" routerLink="/profile/{{user.id}}">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" [routerLink]="['/profile/', user.id]">Profile</a></li>
+            <li class="nav-item"><a class="nav-link" routerLink="/settings">Settings</a></li>
             <li class="nav-item"><a class="nav-link" (click)="onLogout()" href="#">Logout</a></li>
-            <!--<li class="nav-item"><a class="nav-link" href="#/settings">Settings</a></li>-->
             <!--<li class="nav-item"><a class="nav-link" href="#/admin">Admin</a></li>-->
             <!--<li class="nav-item"><a class="nav-link" routerLink="/profile/1">Profile</a></li>-->
         </ul>

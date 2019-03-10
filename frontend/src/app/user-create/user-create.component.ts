@@ -33,7 +33,7 @@ export class UserCreateComponent implements OnInit {
 
     // console.log(this.user);
     this.userService.createUser(this.user).subscribe((user) => {
-      console.log(user);
+      // console.log(user);
 
       this.aliases.split(',').forEach(function (alias) {
         aliases.push({name: alias, user: user.id});

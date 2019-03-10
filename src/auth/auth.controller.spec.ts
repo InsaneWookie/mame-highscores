@@ -10,6 +10,10 @@ import { JwtStrategy } from '../jwt.strategy';
 import { UserGroup } from "../entity/usergroup.entity";
 import { Repository } from "typeorm";
 import { ConfigService } from "../config/config.service";
+import { GroupService } from "../group/group.service";
+import { MachineService } from "../machine/machine.service";
+import { Group } from "../entity/group.entity";
+import { Machine } from "../entity/machine.entity";
 
 describe('Auth Controller', () => {
   let controller: AuthController;
@@ -30,12 +34,16 @@ describe('Auth Controller', () => {
       providers: [
         AuthService,
         UserService,
+        GroupService,
+        MachineService,
         JwtStrategy,
         {
           provide: ConfigService,
           useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
         },
         { provide: getRepositoryToken(User), useClass: Repository,},
+        { provide: getRepositoryToken(Group), useClass: Repository,},
+        { provide: getRepositoryToken(Machine), useClass: Repository,},
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
       ]
     }).compile();

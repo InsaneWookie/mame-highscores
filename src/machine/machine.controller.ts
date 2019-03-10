@@ -18,6 +18,6 @@ export class MachineController {
 
   @Post()
   save(@Req() req, @Body() body){
-    return this.machineService.save(req.user.groupId, body as Machine);
+    return this.machineService.create(req.user.groupId, body as Machine);
   }
 }

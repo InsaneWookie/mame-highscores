@@ -37,9 +37,9 @@ export class UserController {
     const groupId = req.user.groupId;
     let user = await this.userService.findOne(id, groupId);
     let userPoints = await this.userService.getPoints(groupId, user.id);
-    console.log(userPoints);
-    user.points = userPoints[0].total_points;
-    console.log(user);
+     // console.log(userPoints);
+    user.points = (userPoints.length === 0) ? 0 : userPoints[0].total_points;
+    // console.log(user);
     return user;
   }
 

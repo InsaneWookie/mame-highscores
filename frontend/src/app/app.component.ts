@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { UserService } from "./user.service";
+import { User } from './models/user';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ export class AppComponent {
   title = 'Mame Highscores';
 
   isLoggedIn = false;
-  user = null;
+  user = new User;
 
   constructor(private readonly authService: AuthService,
               private userService: UserService,
