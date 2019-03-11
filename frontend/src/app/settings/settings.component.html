@@ -6,6 +6,11 @@ Invite code: {{group.invite_code}}
 
 <h1>Machines</h1>
 
+<div class="alert alert-primary" role="alert">
+  <p>To upload high score files. Post to <strong>{{host}}/api/v1/game/upload/[api key]</strong></p>
+  <p>Tutorial coming soon</p>
+</div>
+
 <table class="table table-striped">
   <tr>
     <th>Name</th>
@@ -13,8 +18,11 @@ Invite code: {{group.invite_code}}
     <th>API Key</th>
   </tr>
   <tr *ngFor="let machine of machines">
-    <td> <a href='#/machine/{{machine.id}}'>{{machine.name}} </a></td>
+    <td><a href='#/machine/{{machine.id}}'>{{machine.name}}</a></td>
     <td>{{machine.description}}</td>
-    <td>{{machine.api_key}}</td>
+    <td>{{machine.api_key}}
+      <br>
+      <small class="text-muted">{{host}}/api/v1/game/upload/{{machine.api_key}}</small>
+    </td>
   </tr>
 </table>

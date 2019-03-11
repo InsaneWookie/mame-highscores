@@ -14,6 +14,8 @@ export class SettingsComponent implements OnInit {
   group: Group = new Group();
   machines: Machine[];
 
+  host: string = '';
+
   constructor(
     private readonly machineService: MachineService,
     private readonly groupService: GroupService
@@ -23,6 +25,7 @@ export class SettingsComponent implements OnInit {
   ngOnInit() {
     this.getMachines();
     this.getGroups();
+    this.host = window.location.host;
   }
 
   getMachines(){
