@@ -4,7 +4,7 @@ import {
   Controller,
   Get,
   Param,
-  Post,
+  Post, Put,
   Req,
   UseGuards,
   UseInterceptors
@@ -12,13 +12,15 @@ import {
 import { User } from '../entity/user.entity';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from "../auth/auth.service";
 
 @Controller('user')
 @UseGuards(AuthGuard())
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
 
-  constructor(private readonly userService: UserService) {
+  constructor(private readonly userService: UserService,
+              private authService : AuthService) {
   }
 
   @Post('invite')
@@ -31,6 +33,35 @@ export class UserController {
   }
 
   // @Get(':id/scores')
+  @Put(':id')
+  async save(@Param('id') id, @Req() req, @Body() body){
+    const groupId = req.user.groupId;
+    const userId = req.user.user.id;
+
+    if(userId != id){
+      throw "can only update yourself";
+    }
+
+    let user = await this.userService.findOne(userId, groupId);
+
+    if (!user) {
+      throw "User not found"
+    }
+
+    if(!this.authService.isValidPassword(body.current_password, user.password)){
+      throw "Invalid current password"
+    }
+
+    if(body.new_password !== body.repeat_new_password){
+      throw "Passwords do not match"
+    }
+
+    user.password = await this.authService.hashPassword(body.new_password);
+    //user.email = body.email;
+
+    return await this.userService.save(user);
+  }
+
 
   @Get(':id')
   async findOne(@Param('id') id, @Req() req): Promise<User> {

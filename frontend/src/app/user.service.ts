@@ -26,6 +26,10 @@ export class UserService {
       .pipe(catchError(this.handleError('createUser', new User)));
   }
 
+  save(userId, user: any) {
+    return this.http.put<User>(`/api/v1/user/${userId}`, user);
+  }
+
   createAlasis(alaseses: any[]) : Observable<object[]> {
 
     let requests = [];
@@ -78,4 +82,6 @@ export class UserService {
     return this.http.post<any>('/api/v1/user/invite', {inviteEmail})
       .pipe(catchError(this.handleError('getInviteUser', {})));
   }
+
+
 }

@@ -15,6 +15,16 @@
       <tag-input [ngModel]='aliases' [identifyBy]="'id'" [displayBy]="'name'" (onAdd)="onAliasAdded($event)" (onRemove)="onAliasRemoved($event)"
                  theme='bootstrap' name="aliases"></tag-input>
     </div>
+<br>
+    <div>
+      <input name="current_password" [(ngModel)]='passwords.current_password' placeholder="current password">
+    </div>
+    <div>
+      <input name="new_password" [(ngModel)]='passwords.new_password' placeholder="new password">
+    </div>
+    <div>
+      <input name="repeat_new_password" [(ngModel)]='passwords.repeat_new_password' placeholder="repeat password">
+    </div>
   </div>
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">

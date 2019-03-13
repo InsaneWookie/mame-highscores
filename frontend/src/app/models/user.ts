@@ -5,8 +5,13 @@ export class User {
   username: string;
   email: string;
   points: number;
-  userGroups: any;
+  userGroups: any = [];
   aliases: object[];
+
+  current_password: string;
+  new_password: string;
+  repeat_new_password: string;
+
 
 
 }

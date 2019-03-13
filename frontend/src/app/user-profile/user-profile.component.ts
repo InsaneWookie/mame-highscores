@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from "@angular/router";
 import { User } from "../models/user";
 import { UserService } from "../user.service";
+import { concat, pipe } from "rxjs";
+import { concatMap } from "rxjs/operators";
 
 @Component({
   selector: 'app-user-profile',
@@ -12,6 +14,11 @@ export class UserProfileComponent implements OnInit {
 
   user: User = new User;
   aliases = [];
+  passwords = {
+    current_password: '',
+    new_password: '',
+    repeat_new_password: ''
+  };
 
   newAliases = [];
   aliasesToRemove = [];
@@ -40,6 +47,25 @@ export class UserProfileComponent implements OnInit {
 
   onSubmit() {
 
+    console.log(this.passwords);
+    // this.userService.save(this.user).pipe(
+    //   concatMap(r => this.userService.createAlasis(this.newAliases)),
+    //   concatMap(r => this.userService.removeAliases(this.aliasesToRemove))
+    // ).subscribe()
+    // concat(
+    //   [this.userService.save(this.user),
+    //     this.userService.createAlasis(this.newAliases),
+    //     this.userService.removeAliases(this.aliasesToRemove)]
+    // ).subscribe(
+    //   x => { console.log(x); },
+    //   err => console.log(err),
+    //   () => console.log('done'));
+
+    this.userService.save(this.user.id, this.passwords).subscribe(user => {
+      this.user = user;
+      //this.aliases = this.user.userGroups[0].aliases; //.map((a) => a.name).join(',');
+    });
+
     this.userService.createAlasis(this.newAliases).subscribe(() => {
       this.newAliases = [];
     });
@@ -58,6 +84,13 @@ export class UserProfileComponent implements OnInit {
       this.aliases = this.user.userGroups[0].aliases; //.map((a) => a.name).join(',');
     });
   }
+
+  // saveUser(){
+  //   return this.userService.save(this.user).subscribe(user => {
+  //     this.user = user;
+  //     //this.aliases = this.user.userGroups[0].aliases; //.map((a) => a.name).join(',');
+  //   });
+  // }
 
   onInviteSubmit() {
     this.userService.inviteUser(this.inviteEmail).subscribe(response => {

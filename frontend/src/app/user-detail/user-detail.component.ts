@@ -10,13 +10,12 @@ import { User } from "../models/user";
 })
 export class UserDetailComponent implements OnInit {
 
-  user: User = new User;
+  user: User = new User();
   topGames = [];
 
   constructor(private route: ActivatedRoute, private userService: UserService) { }
 
   ngOnInit() {
-
     this.route.params.subscribe(params => {
       this.getUser(params.id);
     });

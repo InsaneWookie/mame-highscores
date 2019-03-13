@@ -5,6 +5,7 @@ import { InjectRepository  } from '@nestjs/typeorm';
 import { UserGroup } from '../entity/usergroup.entity';
 import uuid = require('uuid/v4');
 import { promises } from "fs";
+import { AuthService } from "../auth/auth.service";
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,8 @@ export class UserService {
   constructor(@InjectRepository(User)
               private readonly userRepository: Repository<User>,
               @InjectRepository(UserGroup)
-              private readonly userGroupRepo: Repository<UserGroup>) {
+              private readonly userGroupRepo: Repository<UserGroup>
+              ) {
   }
 
 
@@ -40,13 +42,17 @@ export class UserService {
     return await this.userRepository.findOne({where: {username: userName}, relations: ['groups']});
   }
 
-  async save(user: User, groupId?: number): Promise<User> {
+  async save(user: User, groupId?: number, isNew?: boolean): Promise<User> {
 
     const newUser = await this.userRepository.save(user);
 
     if(groupId) {
+      let values: any = {group: groupId, user: user.id};
+      if(isNew){
+        values.isAdmin = true;
+      }
       await this.userGroupRepo.createQueryBuilder('ug').insert().into('user_group')
-        .values({group: groupId, user: user.id})
+        .values(values)
         .execute();
     }
     return newUser;

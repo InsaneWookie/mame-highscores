@@ -13,7 +13,8 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [PassportModule.register({ defaultStrategy: 'jwt' }),
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([Machine, Group])],
   controllers: [MachineController],
   providers: [MachineService]

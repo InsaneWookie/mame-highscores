@@ -8,6 +8,9 @@ export class UserGroup {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({name: 'is_admin'})
+  isAdmin: boolean;
+
   @ManyToOne(type => User, user => user.userGroups)
   @JoinColumn({ name: "user_id" })
   user: User;

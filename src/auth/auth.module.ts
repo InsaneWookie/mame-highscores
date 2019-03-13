@@ -10,6 +10,15 @@ import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
 import { GroupService } from "../group/group.service";
 import { MachineService } from "../machine/machine.service";
+import { Game } from "../entity/game.entity";
+import { Machine } from "../entity/machine.entity";
+import { GamePlayed } from "../entity/gameplayed.entity";
+import { User } from "../entity/user.entity";
+import { Score } from "../entity/score.entity";
+import { Group } from "../entity/group.entity";
+import { UserGroup } from "../entity/usergroup.entity";
+import { Alias } from "../entity/alias.entity";
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -24,10 +33,10 @@ import { MachineService } from "../machine/machine.service";
       })},
       inject: [ConfigService]
     }),
-    UserModule,
+    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias])
   ],
   controllers: [AuthController],
-  providers: [AuthService, GroupService, MachineService, UserService, JwtStrategy],
+  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy],
 })
 export class AuthModule {
 

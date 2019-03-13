@@ -91,6 +91,7 @@ export class AuthService {
     }
 
     let group: Group;
+    let isNew = false;
     if(body.invite_code) {
       const inviteCode = body.invite_code;
       group = await this.groupService.findOneByInviteCode(inviteCode);
@@ -99,6 +100,7 @@ export class AuthService {
         throw 'Invalid invite code';
       }
     } else if(body.group_name && body.group_description){
+      isNew = true;
       group = new Group();
       group.name = body.group_name;
       group.description = body.group_description;
@@ -127,7 +129,7 @@ export class AuthService {
     // user.groups = [group];
     let newUser;
     if(group){
-      newUser = await this.userService.save(user, group.id);
+      newUser = await this.userService.save(user, group.id, isNew);
     } else {
       newUser = await this.userService.save(user);
     }

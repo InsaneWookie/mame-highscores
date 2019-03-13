@@ -11,11 +11,31 @@ import { UserGroup } from '../entity/usergroup.entity';
 import { Alias } from '../entity/alias.entity';
 import { UserController } from './user.controller';
 import { PassportModule } from '@nestjs/passport';
+import { AuthService } from "../auth/auth.service";
+import { AuthModule } from "../auth/auth.module";
+import { GroupService } from "../group/group.service";
+import { MachineService } from "../machine/machine.service";
+import { JwtStrategy } from "../jwt.strategy";
+import { ConfigModule } from "../config/config.module";
+import { ConfigService } from "../config/config.service";
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
-    PassportModule.register({ defaultStrategy: 'jwt' })],
-  providers: [UserService],
+  imports: [
+    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => {
+        // console.log(config);
+        return ({
+          secretOrPrivateKey: config.get('JWT_KEY'),
+          signOptions: { expiresIn: parseInt(config.get('JWT_EXPIRES_IN')) },
+        })},
+      inject: [ConfigService]
+    }),
+  ],
+  providers: [UserService, AuthService, GroupService, MachineService, UserService, JwtStrategy],
   controllers: [UserController],
 })
 export class UserModule {
