@@ -19,6 +19,10 @@ export class MachineService {
     return this.machine.find({where: {group: groupId}});
   }
 
+  async find(groupId: number, id: number): Promise<Machine>{
+    return this.machine.findOne({where: {id: id, group: groupId}});
+  }
+
   async create(groupId: number, machine: Machine) {
 
     machine.api_key = uuid();

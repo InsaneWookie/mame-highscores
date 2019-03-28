@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { MachineService } from "./machine.service";
 import { Machine } from "../entity/machine.entity";
 import { AdminGuard } from "../auth/admin-auth.guard";
 
 @Controller('machine')
-@UseGuards(AuthGuard())
+@UseGuards(AuthGuard(), AdminGuard)
 export class MachineController {
 
   constructor(private readonly machineService: MachineService){
@@ -13,9 +13,14 @@ export class MachineController {
   }
 
   @Get()
-  @UseGuards(AuthGuard(), AdminGuard)
   findAll(@Req() req){
     return this.machineService.findAll(req.user.groupId);
+  }
+
+  @Get(':id')
+  find(@Param('id') id, @Req() req){
+
+    return this.machineService.find(req.user.groupId, id);
   }
 
   @Post()

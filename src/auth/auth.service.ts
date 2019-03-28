@@ -1,20 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt-payload.interface';
 import { UserService } from '../user/user.service';
-import bcrypt = require('bcrypt');
 import { User } from '../entity/user.entity';
-import uuid = require('uuid/v4');
 import { ConfigService } from "../config/config.service";
 import { GroupService } from "../group/group.service";
 import { Group } from "../entity/group.entity";
 import { Machine } from "../entity/machine.entity";
 import { MachineService } from "../machine/machine.service";
+import { LoginResponse } from "./login-response.interface"
+import bcrypt = require('bcrypt');
+import { LoginErrorResponse } from "./login-error-response.interface";
 
 // import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(private readonly jwtService: JwtService,
               private readonly userService: UserService,
               private readonly groupService: GroupService,
@@ -23,32 +26,38 @@ export class AuthService {
   }
 
 
-  async login(userName: string, password: string) {
+  async login(userName: string, password: string) : Promise<LoginResponse | LoginErrorResponse> {
+
+    let loginErrorResponse : LoginErrorResponse = {success: false, message: "Invalid username or password"};
     const u = await this.userService.findByUserName(userName);
 
     if (!u) {
-      throw 'User not found: ' + userName;
+      this.logger.log('User not found: ' + userName);
+      return loginErrorResponse;
     }
 
     if (!u.groups.length) {
-      throw 'No group for this user: ' + u.id;
+      this.logger.log( 'No group for this user: ' + u.id);
+      return loginErrorResponse;
     }
 
     if (u.groups.length > 1) {
-      throw 'More than group per user not supported yet, user: ' + u.id;
+      this.logger.log('More than group per user not supported yet, user: ' + u.id);
+      return loginErrorResponse;
     }
 
-    if (u.password === null) {
-      u.inviteCode = uuid();
-      await this.userService.save(u);
-      return {
-        registrationRequired: true,
-        inviteCode: u.inviteCode
-      };
-    }
+    // if (u.password === null) {
+    //   u.inviteCode = uuid();
+    //   await this.userService.save(u);
+    //   return {
+    //     registrationRequired: true,
+    //     inviteCode: u.inviteCode
+    //   };
+    // }
 
     if (!await this.isValidPassword(password, u.password)) {
-      throw 'Invalid password'; //TODO: 401?
+      this.logger.log('Invalid password');
+      return loginErrorResponse;
     }
 
     const user: JwtPayload = {
@@ -60,11 +69,13 @@ export class AuthService {
     const accessToken = this.jwtService.sign(user);
     // const decoded = this.jwtService.decode(accessToken);
     // console.log(decoded);
+
     return {
+      success: true,
       expiresIn: parseInt(this.config.get('JWT_EXPIRES_IN')),
       accessToken,
       userId: u.id,
-    };
+    } as LoginResponse;
   }
 
   async validateUser(payload: JwtPayload): Promise<any> {
@@ -151,7 +162,7 @@ export class AuthService {
       return await bcrypt.compare(inputPassword, storedPassword);
     } catch (e) {
       //invalid password
-      // console.log(e);
+      console.log(e);
       return false;
     }
 

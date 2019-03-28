@@ -26,7 +26,8 @@ const routes: Routes = [
   {path: 'profile/:id', component: UserProfileComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'machine-create', component: MachineCreateComponent},
+  {path: 'machine', component: MachineCreateComponent},
+  {path: 'machine/:id', component: MachineCreateComponent},
   {path: 'settings', component: SettingsComponent},
   {path: 'invite', component: InviteComponent},
 

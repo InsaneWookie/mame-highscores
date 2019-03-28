@@ -13,6 +13,7 @@ import { User } from '../entity/user.entity';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from "../auth/auth.service";
+import { isEmpty } from 'lodash'
 
 @Controller('user')
 @UseGuards(AuthGuard())
@@ -48,16 +49,20 @@ export class UserController {
       throw "User not found"
     }
 
-    if(!this.authService.isValidPassword(body.current_password, user.password)){
-      throw "Invalid current password"
+    if(!isEmpty(body.currentPassword)){
+      const isValidPassword = await this.authService.isValidPassword(body.currentPassword, user.password);
+      if(!isValidPassword){
+        throw "Invalid current password"
+      }
+
+      if(body.newPassword !== body.repeatNewPassword){
+        throw "Passwords do not match"
+      }
+
+      user.password = await this.authService.hashPassword(body.newPassword);
+      //user.email = body.email;
     }
 
-    if(body.new_password !== body.repeat_new_password){
-      throw "Passwords do not match"
-    }
-
-    user.password = await this.authService.hashPassword(body.new_password);
-    //user.email = body.email;
 
     return await this.userService.save(user);
   }

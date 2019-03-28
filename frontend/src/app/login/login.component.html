@@ -1,24 +1,45 @@
 <div class="row">
 
-    <form class="col-md-4 offset-md-4" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <form class="col-md-4 offset-md-4" (ngSubmit)="onSubmit()"
+          [formGroup]="loginForm">
         <div class="form-group">
-            <input class="form-control" name="username" placeholder="User name" [(ngModel)]="login.username">
+            <label class="col-12 col-form-label">Username</label>
+            <input class="form-control" required formControlName="username">
+            <div class="col-6 text-danger"
+                 *ngIf="username.invalid && (username.dirty || username.touched || loginForm.touched)">
+                Required
+            </div>
         </div>
 
         <div class="form-group">
-            <input class="form-control" name="password" type="password" placeholder="Password"
-                   [(ngModel)]="login.password">
+            <label class="col-12 col-form-label">Password</label>
+            <input class="form-control" type="password"
+                   required formControlName="password">
+            <div class="col-6 text-danger"
+                 *ngIf="password.invalid && (password.dirty || password.touched || loginForm.touched)">
+                Required
+            </div>
         </div>
 
         <div class="form-group">
-            <button class="btn btn-success btn-block" type="submit">Login</button>
+            <button class="btn btn-success btn-block" type="submit" [disabled]="loggingIn">Login</button>
         </div>
 
-        <div><a href="#">Forgot password</a></div>
-        <!--<div><a routerLink="/invite">Request invite</a></div>-->
-        <div><a routerLink="/register">Register</a></div>
-
+        <div class="form-group">
+            <div class="text-danger" *ngIf="invalidLogin">Invalid username or password</div>
+        </div>
 
     </form>
+
+
+</div>
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <!--<div><a href="#">Forgot password</a></div>-->
+        <!--<div><a routerLink="/invite">Request invite</a></div>-->
+        <div><a routerLink="/register">Register</a></div>
+    </div>
+
 </div>
 

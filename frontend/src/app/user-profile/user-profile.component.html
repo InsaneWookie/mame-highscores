@@ -1,36 +1,87 @@
-<h2> {{user.username}} </h2>
-<h4> Email {{user.email}}</h4>
-<h4> Points {{user.points}}</h4>
+<div class="row">
+    <div class="col-sm-12">
+        <h2> {{user.username}}
+            <small>({{user.email}})</small>
+        </h2>
 
-<!--<form class="form-horizontal" role="form" (ngSubmit)="onInviteSubmit()" #inviteForm="ngForm">-->
-  <!--<input name="invite_email" type="text" placeholder="invite email">-->
-  <!--<button name="Invite">Invite</button><br>-->
-  <!--<a [href]="inviteLinkDisplay">{{inviteLinkDisplay}}</a>-->
-<!--</form>-->
+        <h4> Points {{user.points}}</h4>
 
-<form class="form-horizontal" role="form" (ngSubmit)="onSubmit()" #userForm="ngForm">
-  <div class="form-group">
-    <h4><label class="col-sm-2 control-label">Aliases</label></h4>
-    <div class="col-sm-10">
-      <tag-input [ngModel]='aliases' [identifyBy]="'id'" [displayBy]="'name'" (onAdd)="onAliasAdded($event)" (onRemove)="onAliasRemoved($event)"
-                 theme='bootstrap' name="aliases"></tag-input>
-    </div>
-<br>
-    <div>
-      <input name="current_password" [(ngModel)]='passwords.current_password' placeholder="current password">
-    </div>
-    <div>
-      <input name="new_password" [(ngModel)]='passwords.new_password' placeholder="new password">
-    </div>
-    <div>
-      <input name="repeat_new_password" [(ngModel)]='passwords.repeat_new_password' placeholder="repeat password">
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">Save</button>
-    </div>
-  </div>
-</form>
+        <!--<form class="form-horizontal" role="form" (ngSubmit)="onInviteSubmit()" #inviteForm="ngForm">-->
+        <!--<input name="invite_email" type="text" placeholder="invite email">-->
+        <!--<button name="Invite">Invite</button><br>-->
+        <!--<a [href]="inviteLinkDisplay">{{inviteLinkDisplay}}</a>-->
+        <!--</form>-->
 
 
+        <form class="form-horizontal" role="form" (ngSubmit)="onSubmit()" #userForm="ngForm">
+            <div class="form-group">
+
+                <div>
+                    <tag-input [ngModel]='aliases' [identifyBy]="'id'" [displayBy]="'name'"
+                               (onAdd)="onAliasAdded($event)"
+                               (onRemove)="onAliasRemoved($event)"
+                               placeholder="+ alias"
+                               [addOnBlur]="true"
+                               theme='bootstrap' name="aliases"></tag-input>
+                </div>
+            </div>
+            <div class="form-group">
+                <div>
+                    <button type="submit" class="btn btn-default">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-12">
+
+        <h4>Change password</h4>
+        <form class="col-sm-12"  role="form" (ngSubmit)="changePasswordForm.valid && onChangePasswordSubmit()"
+               [formGroup]="changePasswordForm">
+
+
+            <div class="form-group form-row" style="align-items:center;">
+                <label class="col-12 col-form-label">Old password</label>
+                <input class="form-control col-12 col-md-6" type="password"
+                       required
+                       formControlName="currentPassword"
+                        >
+                <div class="col-6 text-danger"
+                     *ngIf="currentPassword.invalid && (currentPassword.dirty || currentPassword.touched)">
+                    Required
+                </div>
+            </div>
+
+            <div class="form-group form-row " style="align-items:center;">
+                <label class="col-12 col-form-label">New password</label>
+                <input class="form-control col-12 col-md-6" required type="password"
+                       formControlName="newPassword"
+                       >
+                <div class="col-6 text-danger" *ngIf="newPassword.invalid && (newPassword.dirty || newPassword.touched)">
+                    Required
+                </div>
+                <div class="col-6 text-danger" *ngIf="newPassword.value !== '' && changePasswordForm.errors?.passwordsMatch">
+                    Passwords do not match
+                </div>
+            </div>
+
+            <div class="form-group form-row" style="align-items:center;">
+                <label class="col-12 col-form-label">Confirm new password</label>
+                <input class="form-control col-12 col-md-6" required type="password"
+                       formControlName="repeatNewPassword">
+                <div class="col-6 text-danger"
+                     *ngIf="repeatNewPassword.invalid && (repeatNewPassword.dirty || repeatNewPassword.touched)">
+                    Required
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <button type="submit" class="btn btn-default" [disabled]="changePasswordForm.invalid || isSaving" >Update password</button>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+<!--<div *ngIf="changePasswordForm.invalid && (changePasswordForm.dirty || changePasswordForm.touched)"-->
+<!--class="alert alert-danger"></div>-->

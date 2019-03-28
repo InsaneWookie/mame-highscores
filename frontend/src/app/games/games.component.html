@@ -1,4 +1,12 @@
-<table class="table table-striped" cg-busy="loadingPromise">
+<ngb-pagination [collectionSize]="27" [(page)]="page" [boundaryLinks]="false"
+                [maxSize]="0" [pageSize]="1" (pageChange)="pageChanged($event)"  aria-label="Custom pagination"
+                class="d-flex justify-content-center">
+  <!--<ng-template ngbPaginationPrevious>Prev</ng-template>-->
+  <!--<ng-template ngbPaginationNext>Next</ng-template>-->
+  <ng-template ngbPaginationNumber let-p>{{ getPageSymbol(p) }}</ng-template>
+</ngb-pagination>
+
+<table class="table table-striped">
   <tr>
     <th> Game</th>
     <th> Top Name</th>

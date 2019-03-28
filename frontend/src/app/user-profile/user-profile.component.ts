@@ -4,6 +4,15 @@ import { User } from "../models/user";
 import { UserService } from "../user.service";
 import { concat, pipe } from "rxjs";
 import { concatMap } from "rxjs/operators";
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { Validators } from '@angular/forms';
+
+export const passwordsMatch: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+  const newPassword = control.get('newPassword');
+  const repeatNewPassword = control.get('repeatNewPassword');
+// debugger;
+  return (newPassword.value !== repeatNewPassword.value) ? {'passwordsMatch':  true} : null
+};
 
 @Component({
   selector: 'app-user-profile',
@@ -14,17 +23,20 @@ export class UserProfileComponent implements OnInit {
 
   user: User = new User;
   aliases = [];
-  passwords = {
-    current_password: '',
-    new_password: '',
-    repeat_new_password: ''
-  };
+
+  changePasswordForm = new FormGroup({
+    currentPassword: new FormControl('', [Validators.required]),
+    newPassword: new FormControl(''),
+    repeatNewPassword: new FormControl(''),
+  }, { validators: passwordsMatch});
 
   newAliases = [];
   aliasesToRemove = [];
 
   inviteEmail = '';
   inviteLinkDisplay = '';
+
+  isSaving = false;
 
   constructor(private route: ActivatedRoute, private router: Router, private userService: UserService) {
   }
@@ -36,18 +48,34 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
+  get currentPassword(){
+    return this.changePasswordForm.get('currentPassword');
+  }
+
+  get newPassword(){
+    return this.changePasswordForm.get('newPassword');
+  }
+
+  get repeatNewPassword(){
+    return this.changePasswordForm.get('repeatNewPassword');
+  }
+
+
   onAliasAdded(event) {
     event.name = event.name.toUpperCase();
     this.newAliases.push({name: event.name, user: this.user.id});
   }
 
   onAliasRemoved(event){
-    this.aliasesToRemove.push(event);
+    if(event.id){ //only add to remove list if its been saved
+      this.aliasesToRemove.push(event);
+    }
+
   }
 
   onSubmit() {
 
-    console.log(this.passwords);
+
     // this.userService.save(this.user).pipe(
     //   concatMap(r => this.userService.createAlasis(this.newAliases)),
     //   concatMap(r => this.userService.removeAliases(this.aliasesToRemove))
@@ -61,10 +89,7 @@ export class UserProfileComponent implements OnInit {
     //   err => console.log(err),
     //   () => console.log('done'));
 
-    this.userService.save(this.user.id, this.passwords).subscribe(user => {
-      this.user = user;
-      //this.aliases = this.user.userGroups[0].aliases; //.map((a) => a.name).join(',');
-    });
+
 
     this.userService.createAlasis(this.newAliases).subscribe(() => {
       this.newAliases = [];
@@ -76,6 +101,15 @@ export class UserProfileComponent implements OnInit {
     //this.userService.updateAlasis(aliases).subscribe(() => {
       //this.router.navigateByUrl(`user-detail/${user.id}`)
     //});
+  }
+
+  onChangePasswordSubmit(){
+    // console.warn(this.changePasswordForm.value);
+    this.isSaving=true;
+    this.userService.save(this.user.id, this.changePasswordForm.value).subscribe(user => {
+      this.user = user;
+      this.isSaving = false;
+    }, (err) => { this.isSaving = false; } );
   }
 
   getUser(userId){

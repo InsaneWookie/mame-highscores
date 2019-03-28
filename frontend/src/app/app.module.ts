@@ -28,6 +28,8 @@ import { SettingsComponent } from './settings/settings.component';
 import { MachineCreateComponent } from './machine-create/machine-create.component';
 import { InviteComponent } from './invite/invite.component';
 // import { far } from '@fortawesome/free-regular-svg-icons';
+import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -49,12 +51,14 @@ import { InviteComponent } from './invite/invite.component';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
     MomentModule,
     TagInputModule,
     BrowserAnimationsModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    NgbPaginationModule
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,

@@ -24,4 +24,7 @@ export class MachineService {
   // getGame(gameId: number): Observable<Game> {
   //   return this.http.get<Game>(`/api/v1/game/${gameId}`).pipe(catchError(this.handleError('getGame', new Game)));
   // }
+  getMachine(machineId: number) {
+    return this.http.get<Machine>(`/api/v1/machine/${machineId}`);
+  }
 }

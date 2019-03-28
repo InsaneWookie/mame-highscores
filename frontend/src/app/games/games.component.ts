@@ -3,6 +3,7 @@ import { GameService } from '../game.service';
 import { UserService } from '../user.service';
 import { Game } from '../models/game';
 import { User } from '../models/user';
+import { map, tap } from "rxjs/operators";
 
 @Component({
   selector: 'app-games',
@@ -14,7 +15,17 @@ export class GamesComponent implements OnInit {
   games: Game[];
   users: User[];
 
+  allGames: Game[];
+
+  page = 1;
+
   constructor(private gameService: GameService, private userService: UserService) {
+  }
+
+  getPageSymbol(current: number) {
+    let pages: string[] = ['0-9', "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+      "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+    return pages[current - 1];
   }
 
   ngOnInit() {
@@ -22,28 +33,36 @@ export class GamesComponent implements OnInit {
   }
 
   getUsers(): void {
-    this.userService.getUsers().subscribe(users => {
-      this.users = users;
+    // this.userService.getUsers().subscribe(users => {
+    //   this.users = users;
+    // });
 
-      this.getGames(users);
-    });
+    this.getGames(null);
+
+  }
+
+  pageChanged($event) {
+    this.setPage();
+  }
+
+  setPage() {
+    const symbol = this.getPageSymbol(this.page);
+
+    if (symbol === '0-9') {
+      this.games = this.allGames.filter((g) => g.full_name !== null && g.full_name.charAt(0).toLowerCase().match(/^[0-9]/));
+    } else {
+      this.games = this.allGames.filter((g) => g.full_name !== null && g.full_name.charAt(0).toLowerCase() === symbol.toLowerCase());
+    }
 
   }
 
   getGames(users: User[]): void {
-    this.gameService.getGames().subscribe((games) => {
-      //TODO: think there is a better way of handling this pre processing. But want to do it on the backend anyway
-
-      games.forEach((g) => {
-        g.scores = [];
-        g.top_scorer = null;
-        //g.topScore = null;
-        // g.scores.sort((a, b) => a.rank - b.rank);
-        // g.top_scorer = (g.scores.length > 0) ? this.getUserFromAlias(g.scores[0].alias, users) : null;
+    this.gameService.getGames()
+    // .pipe(map(g => g.slice(0, 100)))
+      .subscribe((games) => {
+        this.allGames = games;
+        this.setPage();
       });
-
-      this.games = games;
-    });
   }
 
   getUserFromAlias(aliasId: number, users: User[]): User {
