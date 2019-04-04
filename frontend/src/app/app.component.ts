@@ -25,7 +25,7 @@ export class AppComponent {
 
   ngOnInit() {
     // this.isLoggedIn = this.authService.isLoggedIn();
-    this.isLoggedIn = this.authService.loggedIn;
+    this.isLoggedIn = this.authService.isLoggedIn();
     this.sub = this.authService.loginChange.subscribe(value => { this.isLoggedIn = value; });
     this.userService.getUser(this.authService.getUserId()).subscribe(user => this.user = user);
   }
