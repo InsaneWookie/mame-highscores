@@ -56,7 +56,8 @@ export class LoginComponent implements OnInit {
 
       if(res.success){
         this.authService.login(res);
-        window.location.href = '/';
+        //window.location.href = '/';
+        this.router.navigate(['/']);
       } else {
         this.invalidLogin = true;
         this.loggingIn = false;

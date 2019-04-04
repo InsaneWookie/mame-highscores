@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { User } from "./models/user";
 import { HttpClient } from "@angular/common/http";
 
@@ -8,6 +8,9 @@ import { HttpClient } from "@angular/common/http";
   providedIn: 'root'
 })
 export class AuthService {
+
+  loggedIn: any;
+  loginChange: Subject<boolean> = new Subject<boolean>();
 
   constructor(private http: HttpClient) {
   }
@@ -25,6 +28,8 @@ export class AuthService {
     localStorage.setItem('id_token', res.accessToken);
     localStorage.setItem('expires_at', JSON.stringify(expiresAt.valueOf()));
     localStorage.setItem('user_id', res.userId);
+
+    this.loginChange.next(this.isLoggedIn());
   }
 
   // login(): Observable<User> {
@@ -47,6 +52,8 @@ export class AuthService {
   logout() {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+
+    this.loginChange.next(this.isLoggedIn());
   }
 
   getUserId() {

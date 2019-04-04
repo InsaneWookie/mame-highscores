@@ -16,14 +16,23 @@ export class AppComponent {
   isLoggedIn = false;
   user = new User;
 
+  sub: any;
+
   constructor(private readonly authService: AuthService,
               private userService: UserService,
               private router: Router) {
   }
 
   ngOnInit() {
-    this.isLoggedIn = this.authService.isLoggedIn();
+    // this.isLoggedIn = this.authService.isLoggedIn();
+    this.isLoggedIn = this.authService.loggedIn;
+    this.sub = this.authService.loginChange.subscribe(value => { this.isLoggedIn = value; });
     this.userService.getUser(this.authService.getUserId()).subscribe(user => this.user = user);
+  }
+
+  ngOnDestroy() {
+    //prevent memory leak when component destroyed
+    this.sub.unsubscribe();
   }
 
   onLogout() {
@@ -33,4 +42,5 @@ export class AppComponent {
     this.router.navigate(['/login']);
 
   }
+
 }
