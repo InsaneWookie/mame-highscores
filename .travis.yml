@@ -17,9 +17,9 @@ script:
 - docker-compose -f docker-compose.prod.yml exec app npm run test
 
 before_deploy:
-- zip mame-highscores.deploy.zip docker-compose.aws.yml appspec.yml scripts
+- zip mame-highscores-deploy.zip docker-compose.aws.yml appspec.yml scripts/*
 - mkdir -p dpl_cd_upload
-- mv mame-highscores-deploy.zip dpl_cd_upload/
+- mv mame-highscores-deploy.zip dpl_cd_upload/mame-highscores-deploy.zip
 - pip install --user awscli
 - eval $(aws ecr get-login --no-include-email --region ap-southeast-2)
 
