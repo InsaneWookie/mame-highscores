@@ -8,13 +8,13 @@ services:
     image: 474801623431.dkr.ecr.ap-southeast-2.amazonaws.com/mame-highscores/app:latest
     working_dir: /home/node/app
     restart: always
-    command: node app.js
+    command: node dist/main.js
     environment:
       NODE_ENV: production
   db:
-    image: postgres:10.5-alpine
+    image: postgres:10.7-alpine
     restart: always
     volumes:
     - pgdata:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD:
+      POSTGRES_PASSWORD: example

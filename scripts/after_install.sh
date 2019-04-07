@@ -1,0 +1,2 @@
+echo $(aws ecr get-authorization-token --region ap-southeast-2 --output text --query 'authorizationData[].authorizationToken' | base64 -d | cut -d: -f2) | docker login -u AWS https://474801623431.dkr.ecr.ap-southeast-2.amazonaws.com --password-stdin
+docker-compose -f /home/ec2-user/mame-highscores/docker-compose.aws.yml pull

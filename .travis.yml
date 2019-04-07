@@ -1,28 +1,50 @@
 services:
-  - docker
+- docker
 
 before_install:
-  - export PATH=$PATH:$HOME/.local/bin
-  - docker-compose -f docker-compose.prod.yml up --build -d
-  - docker ps -a
+- export PATH=$PATH:$HOME/.local/bin
+- docker-compose -f docker-compose.prod.yml up --build -d
+- docker ps -a
 
 before_script:
-  - sleep 5 #hacky sleep as we need to wait till the db container is up
-  - docker-compose -f docker-compose.prod.yml exec db psql -U postgres -c "CREATE DATABASE \"mame-highscores-test\""
-  - docker-compose -f docker-compose.prod.yml exec app node ./node_modules/typeorm/cli.js migration:run -c test
-  - docker-compose -f docker-compose.prod.yml exec app npm install --only=dev
+- sleep 5
+- docker-compose -f docker-compose.prod.yml exec db psql -U postgres -c "CREATE DATABASE \"mame-highscores-test\""
+- docker-compose -f docker-compose.prod.yml exec app node ./node_modules/typeorm/cli.js migration:run -c test
+- docker-compose -f docker-compose.prod.yml exec app npm install --only=dev
 
-
-script:
-  - docker-compose -f docker-compose.prod.yml exec app npm run test:e2e
-  - docker-compose -f docker-compose.prod.yml exec app npm run test
+#script:
+#- docker-compose -f docker-compose.prod.yml exec app npm run test:e2e
+#- docker-compose -f docker-compose.prod.yml exec app npm run test
 
 before_deploy:
-  - pip install --user awscli
-  - eval $(aws ecr get-login --no-include-email --region ap-southeast-2)
+- zip mame-highscores.deploy.zip docker-compose.aws.yml appspec.yml scripts
+- mkdir -p dpl_cd_upload
+- mv mame-highscores-deploy.zip dpl_cd_upload/mame-highscores-deploy.zip
+- pip install --user awscli
+- eval $(aws ecr get-login --no-include-email --region ap-southeast-2)
 
 deploy:
-  provider: script
+- provider: script
   script: bash deploy.sh
-  on:
+  on: &2
     branch: master
+- provider: s3
+  access_key_id: AKIAW5DDB2GDUANHWQGC
+  secret_access_key: &1
+    secure: L3xhqb3rrWB+Q+VM0PjTRaJYmpUrbSNFwOYiNcvUUXrklPmNBrZnNP1h6CN0nTN8SS41a+bW44C37eNlhRNPpVsCScvRvemrCcQrMycTKHu0zUfySHvGY9sNjDEiREil9WBDiF695mj4xyM4dCTg5PVrh59o9ivDhKCa9WJEo24=
+  local_dir: dpl_cd_upload
+  skip_cleanup: true
+  region: ap-southeast-2
+  on: *2
+#    repo: InsaneWookie/mame-highscores
+  bucket: mame-highscores-deploy
+- provider: codedeploy
+  access_key_id: AKIAW5DDB2GDUANHWQGC
+  secret_access_key: *1
+  bucket: mame-highscores-deploy
+  region: ap-southeast-2
+  key: mame-highscores-deploy.zip
+  bundle_type: zip
+  application: MameHighscores
+  deployment_group: MameHighscoresDeployGroup
+  on: *2
