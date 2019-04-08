@@ -1,3 +1,4 @@
+#!/bin/bash
 #do DB backup
 mkdir -p /home/ec2-user/mame-backups
 docker-compose -f /home/ec2-user/mame-highscores/docker-compose.aws.yml exec db pg_dump -U postgres mame-highscores > "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
