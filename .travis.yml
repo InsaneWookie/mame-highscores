@@ -36,7 +36,6 @@ deploy:
   skip_cleanup: true
   region: ap-southeast-2
   on: *2
-#    repo: InsaneWookie/mame-highscores
   bucket: mame-highscores-deploy
 - provider: codedeploy
   access_key_id: AKIAW5DDB2GDUANHWQGC

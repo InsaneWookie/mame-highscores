@@ -9,6 +9,8 @@ services:
     working_dir: /home/node/app
     restart: always
     command: node dist/main.js
+    env_file:
+      - app.env
     environment:
       NODE_ENV: production
   db:
