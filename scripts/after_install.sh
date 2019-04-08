@@ -1,8 +1,8 @@
 #!/bin/bash
 #do DB backup
 mkdir -p /home/ec2-user/mame-backups
-docker-compose -f /home/ec2-user/mame-highscores/docker-compose.aws.yml exec db pg_dump -U postgres mame-highscores > "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
-tar -czvf "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz" "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
+docker-compose -f /home/ec2-user/mame-highscores/docker-compose.aws.yml exec -T db pg_dump -U postgres mame-highscores > "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
+tar -czvf "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz" -C "/home/ec2-user/mame-backups" "mame-highscores-`date +'%Y-%m-%d'`.sql"
 aws s3 cp "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz" s3://mame-highscores-backup
 rm "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
 rm "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz"
