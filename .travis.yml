@@ -27,7 +27,7 @@ deploy:
 - provider: script
   script: bash deploy.sh
   on: &2
-    branch: feature/deploy_test
+    branch: master
 - provider: s3
   access_key_id: AKIAW5DDB2GDUANHWQGC
   secret_access_key: &1
