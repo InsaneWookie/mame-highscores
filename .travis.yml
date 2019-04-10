@@ -46,4 +46,5 @@ deploy:
   bundle_type: zip
   application: MameHighscores
   deployment_group: MameHighscoresDeployGroup
+  wait_until_deployed: true
   on: *2
