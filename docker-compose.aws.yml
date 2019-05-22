@@ -13,6 +13,12 @@ services:
       - app.env
     environment:
       NODE_ENV: production
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-southeast-2
+        awslogs-group: arcadehiscores
+        awslogs-stream: app
   db:
     image: postgres:10.7-alpine
     restart: always
@@ -20,3 +26,9 @@ services:
     - pgdata:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: example
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ap-southeast-2
+        awslogs-group: arcadehiscores
+        awslogs-stream: db

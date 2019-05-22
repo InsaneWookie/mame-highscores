@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { UserService } from "./user.service";
 import { User } from './models/user';
 
@@ -26,8 +25,12 @@ export class AppComponent {
   ngOnInit() {
     // this.isLoggedIn = this.authService.isLoggedIn();
     this.isLoggedIn = this.authService.isLoggedIn();
-    this.sub = this.authService.loginChange.subscribe(value => { this.isLoggedIn = value; });
-    this.userService.getUser(this.authService.getUserId()).subscribe(user => this.user = user);
+    this.sub = this.authService.loginChange.subscribe(value => {
+      this.isLoggedIn = value;
+      this.getUser();
+    });
+    this.getUser();
+
   }
 
   ngOnDestroy() {
@@ -35,9 +38,16 @@ export class AppComponent {
     this.sub.unsubscribe();
   }
 
+  getUser(){
+    if(this.isLoggedIn){
+      this.userService.getUser(this.authService.getUserId()).subscribe(user => this.user = user);
+    }
+  }
+
   onLogout() {
     this.authService.logout();
     this.isLoggedIn = false;
+    this.user = new User;
 
     this.router.navigate(['/login']);
 

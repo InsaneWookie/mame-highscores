@@ -108,6 +108,7 @@ export class UserProfileComponent implements OnInit {
     this.isSaving=true;
     this.userService.save(this.user.id, this.changePasswordForm.value).subscribe(user => {
       this.user = user;
+      this.changePasswordForm.reset();
       this.isSaving = false;
     }, (err) => { this.isSaving = false; } );
   }
