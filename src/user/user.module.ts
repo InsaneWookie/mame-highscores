@@ -20,9 +20,11 @@ import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
 import { JwtModule } from '@nestjs/jwt';
 import { MailerService } from "../mailer/mailer.service";
+import { LoggerModule } from "../logger.module";
 
 @Module({
   imports: [
+
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

@@ -24,12 +24,13 @@ import { AppController } from "./app.controller";
 import { MachineModule } from './machine/machine.module';
 import { MailerModule } from './mailer/mailer.module';
 import { MailerService } from "./mailer/mailer.service";
+import { AppLogger } from "./applogger.service";
+import { LoggerModule } from "./logger.module";
 import * as path from "path";
-
-
 
 @Module({
   imports: [
+    LoggerModule,
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
@@ -59,9 +60,10 @@ import * as path from "path";
   ],
   controllers: [AppController],
   providers: [MailerService],
+  exports: [LoggerModule]
 })
 export class AppModule {
-  constructor() {
-    console.log(process.env.NODE_ENV)
+  constructor(private readonly logger: AppLogger) {
+    logger.log(`NODE_ENV=${process.env.NODE_ENV}`, 'AppModule');
   }
 }
