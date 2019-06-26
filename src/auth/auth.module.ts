@@ -19,9 +19,11 @@ import { Group } from "../entity/group.entity";
 import { UserGroup } from "../entity/usergroup.entity";
 import { Alias } from "../entity/alias.entity";
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from "../logger.module";
 
 @Module({
   imports: [
+
     PassportModule.register({defaultStrategy: 'jwt'}),
     JwtModule.registerAsync({
       imports: [ConfigModule],

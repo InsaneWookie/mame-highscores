@@ -6,6 +6,7 @@ import { UserGroup } from '../entity/usergroup.entity';
 import uuid = require('uuid/v4');
 import { promises } from "fs";
 import { AuthService } from "../auth/auth.service";
+import { AppLogger } from "../applogger.service";
 
 @Injectable()
 export class UserService {
@@ -13,8 +14,10 @@ export class UserService {
   constructor(@InjectRepository(User)
               private readonly userRepository: Repository<User>,
               @InjectRepository(UserGroup)
-              private readonly userGroupRepo: Repository<UserGroup>
+              private readonly userGroupRepo: Repository<UserGroup>,
+              private readonly l: AppLogger
               ) {
+    l.log("this is a test", "UserService");
   }
 
 

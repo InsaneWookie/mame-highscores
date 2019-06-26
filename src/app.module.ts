@@ -26,9 +26,12 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from "./jwt.strategy";
 import { MachineModule } from './machine/machine.module';
+import { AppLogger } from "./applogger.service";
+import { LoggerModule } from "./logger.module";
 
 @Module({
   imports: [
+    LoggerModule,
     TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     AuthModule,
@@ -42,9 +45,10 @@ import { MachineModule } from './machine/machine.module';
   ],
   controllers: [AppController],
   providers: [],
+  exports: [LoggerModule]
 })
 export class AppModule {
-  constructor() {
-    console.log(process.env.NODE_ENV)
+  constructor(private readonly logger: AppLogger) {
+    logger.log(`NODE_ENV=${process.env.NODE_ENV}`, 'AppModule');
   }
 }
