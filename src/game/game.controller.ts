@@ -9,8 +9,9 @@ import {
   Req,
   Param,
   Logger,
-  UseInterceptors, FileInterceptor, UploadedFile
+  UseInterceptors, UploadedFile
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express'
 import { Game } from '../entity/game.entity';
 import { GameService } from './game.service';
 import { AuthGuard } from '@nestjs/passport';
