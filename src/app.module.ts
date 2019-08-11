@@ -33,7 +33,7 @@ import * as path from "path";
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
-      "host": "192.168.99.100",
+      "host": "db",
       "port": 5432,
       "username": "postgres",
       "password": "example",
