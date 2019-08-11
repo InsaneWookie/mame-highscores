@@ -38,6 +38,10 @@ export class UserService {
     return await this.userRepository.findOne({inviteCode});
   }
 
+  async fundOneByResetToken(token: string ){
+    return await this.userRepository.findOne({passwordResetToken: token});
+  }
+
   async findByUserName(userName: string): Promise<User> {
     return await this.userRepository.findOne({where: {username: userName}, relations: ['groups']});
   }

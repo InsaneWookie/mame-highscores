@@ -29,6 +29,8 @@ import { MachineCreateComponent } from './machine-create/machine-create.componen
 import { InviteComponent } from './invite/invite.component';
 // import { far } from '@fortawesome/free-regular-svg-icons';
 import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 
 @NgModule({
@@ -47,6 +49,8 @@ import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
     SettingsComponent,
     MachineCreateComponent,
     InviteComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

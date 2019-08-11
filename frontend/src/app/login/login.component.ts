@@ -1,26 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '../models/user';
-import * as moment from 'moment';
 import { Router } from '@angular/router';
 import { AuthService } from "../auth.service";
-import { AbstractControl, AsyncValidator, FormControl, FormGroup, ValidationErrors, Validators } from "@angular/forms";
-import { passwordsMatch } from "../user-profile/user-profile.component";
-import { Observable } from "rxjs";
-import { catchError, map } from "rxjs/operators";
+import {  FormControl, FormGroup, Validators } from "@angular/forms";
 
-// export class UniqueAlterEgoValidator implements AsyncValidator {
-//   constructor(private authService: AuthService) {}
-//
-//   validate(
-//     ctrl: AbstractControl
-//   ): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-//     return this.heroesService.isAlterEgoTaken(ctrl.value).pipe(
-//       map(isTaken => (isTaken ? { uniqueAlterEgo: true } : null)),
-//       catchError(() => null)
-//     );
-//   }
-// }
+
 
 @Component({
   selector: 'app-login',

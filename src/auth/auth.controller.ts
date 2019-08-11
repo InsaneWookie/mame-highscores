@@ -16,4 +16,14 @@ export class AuthController {
   async register(@Body() body) {
     return await this.authService.register(body);
   }
+
+  @Post('request_password_reset')
+  async requestPasswordReset(@Body() body){
+    return await this.authService.requestPasswordReset(body.username);
+  }
+
+  @Post('reset_password')
+  async resetPassword(@Body() body){
+    return await this.authService.resetPassword(body);
+  }
 }

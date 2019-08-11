@@ -19,17 +19,33 @@ import { ScoreController } from './score/score.controller';
 import { ScoreService } from './score/score.service';
 import { ScoreModule } from './score/score.module';
 import { ConfigModule } from './config/config.module';
-import { getConnectionOptions } from "typeorm";
+import { getConnectionOptions, getMetadataArgsStorage } from "typeorm";
 import { AppController } from "./app.controller";
-import { ConfigService } from "./config/config.service";
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
-import { JwtStrategy } from "./jwt.strategy";
 import { MachineModule } from './machine/machine.module';
+import { MailerModule } from './mailer/mailer.module';
+import { MailerService } from "./mailer/mailer.service";
+import * as path from "path";
+
+
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({
+      "keepConnectionAlive": true,
+      "type": "postgres",
+      "host": "192.168.99.100",
+      "port": 5432,
+      "username": "postgres",
+      "password": "example",
+      "database": "mame-highscores",
+      "entities": getMetadataArgsStorage().tables.map(tbl => tbl.target),
+      //"migrations": ["src/migration/*{.ts,.js}"],
+      "synchronize": false,
+      // "cli": {
+      //   "entitiesDir": "src",
+      //   "migrationsDir": "src/migration"
+      // }
+    }),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     AuthModule,
     GameModule,
@@ -38,10 +54,11 @@ import { MachineModule } from './machine/machine.module';
     AliasModule,
     ScoreModule,
     ConfigModule,
-    MachineModule
+    MachineModule,
+    MailerModule
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [MailerService],
 })
 export class AppModule {
   constructor() {

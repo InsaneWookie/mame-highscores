@@ -10,6 +10,8 @@ services:
 #    command: node app.js
     command: tail -f /dev/null
     working_dir: /home/node/app
+    env_file:
+      - development.env
     ports:
     - "3000:3000"
     - "4200:4200"

@@ -9,8 +9,10 @@ import { Group } from "../entity/group.entity";
 import { Machine } from "../entity/machine.entity";
 import { MachineService } from "../machine/machine.service";
 import { LoginResponse } from "./login-response.interface"
-import bcrypt = require('bcrypt');
 import { LoginErrorResponse } from "./login-error-response.interface";
+import * as uuid from "uuid/v4";
+import { MailerService } from "../mailer/mailer.service";
+import bcrypt = require('bcrypt');
 
 // import { JwtPayload } from './interfaces/jwt-payload.interface';
 
@@ -22,7 +24,8 @@ export class AuthService {
               private readonly userService: UserService,
               private readonly groupService: GroupService,
               private readonly machineService: MachineService,
-              private readonly config: ConfigService) {
+              private readonly config: ConfigService,
+              private readonly mailerService: MailerService) {
   }
 
 
@@ -145,6 +148,8 @@ export class AuthService {
       newUser = await this.userService.save(user);
     }
 
+    //send confirm email?
+
     return this.login(newUser.username, password);
 
   }
@@ -169,4 +174,44 @@ export class AuthService {
     return false;
 
   }
+
+  async requestPasswordReset(userName: string){
+    //find user
+    const u = await this.userService.findByUserName(userName);
+
+    console.log(u);
+    if(u && u.email){
+      u.passwordResetToken = uuid();
+      await this.userService.save(u);
+
+      const emailText = this.config.get("BASE_URL") + `/reset-password/${u.passwordResetToken}`;
+      await this.mailerService.sendMail("rowan.tate@gmail.com", "Password Reset Request", emailText);
+    }
+
+
+    //no user so just continue
+    return {success: true}
+  }
+
+  async resetPassword(body: any) {
+    const resetToken = body.passwordResetToken;
+    const password = body.password;
+    const repeatPassword = body.repeatPassword;
+
+    if(resetToken && resetToken.length > 10){
+
+      const user = await this.userService.fundOneByResetToken(resetToken);
+
+      if(user && user.passwordResetToken === resetToken && password === repeatPassword){
+        user.password = await this.hashPassword(password);
+        user.passwordResetToken = null;
+        await this.userService.save(user);
+        return {success: true}
+      }
+    }
+
+    return {success: false}
+  }
+
+
 }

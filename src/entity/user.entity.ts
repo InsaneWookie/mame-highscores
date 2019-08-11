@@ -23,6 +23,10 @@ export class User {
   @Column({type: 'text', name: 'invite_code'})
   inviteCode: string;
 
+  @Exclude()
+  @Column({name: 'password_reset_token'})
+  passwordResetToken: string;
+
   @CreateDateColumn({type: 'timestamptz'})
   createdAt: Date;
 
@@ -37,4 +41,6 @@ export class User {
 
 
   points: number
+
+
 }

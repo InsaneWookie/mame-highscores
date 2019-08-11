@@ -14,6 +14,8 @@ import { AuthGuard } from './auth.guard';
 import { SettingsComponent } from "./settings/settings.component";
 import { MachineCreateComponent } from "./machine-create/machine-create.component";
 import { InviteComponent } from "./invite/invite.component";
+import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
+import { ResetPasswordComponent } from "./reset-password/reset-password.component";
 
 const routes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -26,6 +28,8 @@ const routes: Routes = [
   {path: 'profile/:id', component: UserProfileComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
+  {path: 'forgot-password', component: ForgotPasswordComponent},
+  {path: 'reset-password/:key', component: ResetPasswordComponent},
   {path: 'machine', component: MachineCreateComponent},
   {path: 'machine/:id', component: MachineCreateComponent},
   {path: 'settings', component: SettingsComponent},

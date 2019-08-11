@@ -19,6 +19,7 @@ import { Group } from "../entity/group.entity";
 import { UserGroup } from "../entity/usergroup.entity";
 import { Alias } from "../entity/alias.entity";
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { MailerService } from "../mailer/mailer.service";
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias])
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy],
+  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy, ConfigService, MailerService],
 })
 export class AuthModule {
 
