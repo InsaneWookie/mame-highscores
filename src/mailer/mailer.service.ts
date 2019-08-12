@@ -28,7 +28,7 @@ export class MailerService {
     }
 
     return transporter.sendMail({
-      from: 'no-reply@arcadehiscores.com',
+      from: 'Arcade Hiscores <no-reply@arcadehiscores.com>',
       to: to,
       subject: subject,
       text: text
