@@ -10,7 +10,6 @@ export class MailerService {
 
   sendMail(to :string, subject: string, text: string ) {
 
-    //AWS.config.loadFromPath('./aws.config.json');
     AWS.config.update({
       region: 'us-west-2',
       accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
@@ -24,11 +23,12 @@ export class MailerService {
     if(process.env.NODE_ENV === 'production'){
       transporter = nodemailer.createTransport({SES: aws});
     } else {
+      console.log(text);
       transporter = nodemailer.createTransport({streamTransport: true, newline: 'unix', buffer: true});
     }
 
     return transporter.sendMail({
-      from: 'test@arcadehiscores.com',
+      from: 'no-reply@arcadehiscores.com',
       to: to,
       subject: subject,
       text: text

@@ -25,17 +25,19 @@ export class ResetPasswordComponent implements OnInit {
 
   isSaving = false;
 
-  constructor(private readonly authService: AuthService, private route: ActivatedRoute) { }
+  constructor(private readonly authService: AuthService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
   }
 
 
-  onChangePasswordSubmit(){
+  async onChangePasswordSubmit(){
     // console.warn(this.changePasswordForm.value);
     this.isSaving=true;
     const resetToken = this.route.snapshot.paramMap.get('key');
-    this.authService.resetPassword(resetToken, this.newPassword.value, this.repeatNewPassword.value)
+    await this.authService.resetPassword(resetToken, this.newPassword.value, this.repeatNewPassword.value);
+
+    await this.router.navigate(['/']);
   }
 
   get newPassword(){

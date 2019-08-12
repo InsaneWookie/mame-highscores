@@ -31,3 +31,7 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+##Frontend
+
+See README.md in `frontend` folder
+

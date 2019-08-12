@@ -56,9 +56,9 @@ export class AuthService {
     this.loginChange.next(this.isLoggedIn());
   }
 
-  resetPassword(passwordResetToken: string, password: string, repeatPassword: string){
+  async resetPassword(passwordResetToken: string, password: string, repeatPassword: string){
 
-    this.http.post('/api/v1/auth/reset_password', {passwordResetToken, password, repeatPassword}).subscribe((res: any) => {
+    await this.http.post('/api/v1/auth/reset_password', {passwordResetToken, password, repeatPassword}).subscribe((res: any) => {
 
       if(!res.success){
         console.log("error resetting password");

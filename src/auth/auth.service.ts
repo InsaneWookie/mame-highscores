@@ -170,24 +170,23 @@ export class AuthService {
       console.log(e);
       return false;
     }
-
-    return false;
-
   }
 
   async requestPasswordReset(userName: string){
     //find user
     const u = await this.userService.findByUserName(userName);
 
-    console.log(u);
+    //TODO: add reset timeout
     if(u && u.email){
       u.passwordResetToken = uuid();
       await this.userService.save(u);
 
-      const emailText = this.config.get("BASE_URL") + `/reset-password/${u.passwordResetToken}`;
-      await this.mailerService.sendMail("rowan.tate@gmail.com", "Password Reset Request", emailText);
-    }
+      //TODO: nice email template
+      const emailText = 'Please visit the following link to reset your password\n' +
+        this.config.get("BASE_URL") + `/#/reset-password/${u.passwordResetToken}`;
 
+      await this.mailerService.sendMail(u.email, "Password Reset Request", emailText);
+    }
 
     //no user so just continue
     return {success: true}
