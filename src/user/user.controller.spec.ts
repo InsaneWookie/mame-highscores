@@ -14,6 +14,7 @@ import { ConfigService } from "../config/config.service";
 import { Group } from "../entity/group.entity";
 import { Machine } from "../entity/machine.entity";
 import { JwtModule } from '@nestjs/jwt';
+import { MailerService } from "../mailer/mailer.service";
 
 describe('User Controller', () => {
   let controller: UserController;
@@ -35,6 +36,7 @@ describe('User Controller', () => {
         GroupService,
         MachineService,
         JwtStrategy,
+        MailerService,
         {
           provide: ConfigService,
           useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
