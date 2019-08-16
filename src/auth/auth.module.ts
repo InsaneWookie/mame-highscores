@@ -21,10 +21,10 @@ import { Alias } from "../entity/alias.entity";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerService } from "../mailer/mailer.service";
 import { LoggerModule } from "../logger.module";
+import { AppLogger } from "../applogger.service";
 
 @Module({
   imports: [
-
     PassportModule.register({defaultStrategy: 'jwt'}),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -39,7 +39,7 @@ import { LoggerModule } from "../logger.module";
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias])
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy, ConfigService, MailerService],
+  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy, ConfigService, MailerService, AppLogger],
 })
 export class AuthModule {
 

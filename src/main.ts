@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import { join } from 'path';
 import { AppLogger } from "./applogger.service";
+import { AllExceptionsFilter } from "./all-exception.filter";
 declare const module: any;
 
 async function bootstrap() {
@@ -12,6 +13,7 @@ async function bootstrap() {
   //(process.env.NODE_ENV==='production') ? {logger: new AppLogger()} : {logger: false}
   app.setGlobalPrefix('api/v1');
   app.useLogger(app.get(AppLogger));
+  //app.useGlobalFilters(new AllExceptionsFilter(app.get(AppLogger)));
 
   // app.use(session({
   //   secret: 'a secret',
@@ -20,8 +22,6 @@ async function bootstrap() {
   //   saveUninitialized: true,
   //   cookie: { path: '/', httpOnly: true, secure: false, maxAge: null }
   // }));
-
-  // console.log(join(__dirname, '..', 'assets'));
 
   app.useStaticAssets(join(__dirname, '..', 'assets'));
 
@@ -38,4 +38,11 @@ process.on('unhandledRejection', (reason, p) => {
   console.log(p);
   // application specific logging, throwing an error, or other logic here
 });
+//
+// process.on('uncaughtException', (reason, p) => {
+//   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+//   console.log(reason.stack);
+//   console.log(p);
+//   // application specific logging, throwing an error, or other logic here
+// });
 bootstrap();

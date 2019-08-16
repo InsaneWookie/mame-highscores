@@ -17,7 +17,7 @@ export class UserService {
               private readonly userGroupRepo: Repository<UserGroup>,
               private readonly l: AppLogger
               ) {
-    l.log("this is a test", "UserService");
+    // l.log("this is a test", "UserService");
   }
 
 

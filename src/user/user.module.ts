@@ -21,6 +21,7 @@ import { ConfigService } from "../config/config.service";
 import { JwtModule } from '@nestjs/jwt';
 import { MailerService } from "../mailer/mailer.service";
 import { LoggerModule } from "../logger.module";
+import { AppLogger } from "../applogger.service";
 
 @Module({
   imports: [
@@ -38,7 +39,7 @@ import { LoggerModule } from "../logger.module";
       inject: [ConfigService]
     }),
   ],
-  providers: [UserService, AuthService, GroupService, MachineService, UserService, JwtStrategy, MailerService],
+  providers: [UserService, AuthService, GroupService, MachineService, UserService, JwtStrategy, MailerService, AppLogger],
   controllers: [UserController],
 })
 export class UserModule {

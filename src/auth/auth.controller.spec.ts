@@ -15,6 +15,7 @@ import { MachineService } from "../machine/machine.service";
 import { Group } from "../entity/group.entity";
 import { Machine } from "../entity/machine.entity";
 import { MailerService } from "../mailer/mailer.service";
+import { AppLogger } from "../applogger.service";
 
 describe('Auth Controller', () => {
   let controller: AuthController;
@@ -39,6 +40,7 @@ describe('Auth Controller', () => {
         MachineService,
         JwtStrategy,
         MailerService,
+        AppLogger,
         {
           provide: ConfigService,
           useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),

@@ -24,6 +24,13 @@ import * as assert from "assert";
 import { AppController } from "../src/app.controller";
 import { JwtPayload } from "../src/auth/jwt-payload.interface";
 import { JwtService } from '@nestjs/jwt';
+import { AppLogger } from "../src/applogger.service";
+import { UserService } from "../src/user/user.service";
+import { AuthService } from "../src/auth/auth.service";
+import { GroupService } from "../src/group/group.service";
+import { MachineService } from "../src/machine/machine.service";
+import { JwtStrategy } from "../src/jwt.strategy";
+import { MailerService } from "../src/mailer/mailer.service";
 
 describe('AppController (e2e)', () => {
   let app;
@@ -34,7 +41,7 @@ describe('AppController (e2e)', () => {
       imports: [
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "db",
+          "host": "192.168.99.100",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -56,9 +63,10 @@ describe('AppController (e2e)', () => {
         GroupModule,
         AliasModule,
         ScoreModule,
-        ConfigModule
+        ConfigModule,
       ],
       controllers: [AppController],
+      providers: [AppLogger],
     }).compile();
 
     app = moduleFixture.createNestApplication();
