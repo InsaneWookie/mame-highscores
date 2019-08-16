@@ -30,7 +30,6 @@ import * as path from "path";
 
 @Module({
   imports: [
-    LoggerModule,
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
@@ -47,6 +46,8 @@ import * as path from "path";
       //   "migrationsDir": "src/migration"
       // }
     }),
+    LoggerModule,
+    TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     AuthModule,
     GameModule,

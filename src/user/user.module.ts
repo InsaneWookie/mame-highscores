@@ -25,7 +25,6 @@ import { AppLogger } from "../applogger.service";
 
 @Module({
   imports: [
-
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
