@@ -63,7 +63,7 @@ export class UserProfileComponent implements OnInit {
 
   onAliasAdded(event) {
     event.name = event.name.toUpperCase();
-    this.newAliases.push({name: event.name, user: this.user.id});
+    this.newAliases.push({name: event.name});
   }
 
   onAliasRemoved(event){
@@ -91,12 +91,18 @@ export class UserProfileComponent implements OnInit {
 
 
 
-    this.userService.createAlasis(this.newAliases).subscribe(() => {
+    this.userService.createAlasis(this.newAliases).subscribe((newAliases: any) => {
       this.newAliases = [];
+      //this.aliases.push(...newAliases[0].map(a => { return { id: a.id, name: a.name }}));
+
+      //need to refresh the data to the added aliases get their ids
+      this.getUser(this.user.id);
     });
+
     this.userService.removeAliases(this.aliasesToRemove).subscribe(() => {
       this.aliasesToRemove = [];
     });
+
 
     //this.userService.updateAlasis(aliases).subscribe(() => {
       //this.router.navigateByUrl(`user-detail/${user.id}`)

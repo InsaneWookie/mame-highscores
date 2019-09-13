@@ -6,7 +6,7 @@ volumes:
   pgdata:
 services:
   app:
-    image: node:10.11.0
+    image: node:10.16
 #    command: node app.js
     command: tail -f /dev/null
     working_dir: /home/node/app

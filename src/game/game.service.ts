@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Game } from '../entity/game.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getConnection, In } from 'typeorm';
+import { getConnection, In, Repository } from 'typeorm';
 import { GamePlayed } from '../entity/gameplayed.entity';
 import { Score } from '../entity/score.entity';
 import { User } from '../entity/user.entity';
+
+import { ScoredecoderService } from '../scoredecoder/scoredecoder.service';
+import { Machine } from "../entity/machine.entity";
 import _ = require('underscore');
 import path = require("path");
 
-import { ScoredecoderService } from '../scoredecoder/scoredecoder.service';
-
 import gameMaps = require('../scoredecoder/game_mappings/gameMaps.json');
-import { Machine } from "../entity/machine.entity";
 
 @Injectable()
 export class GameService {
@@ -472,7 +472,7 @@ export class GameService {
     if(createdScores.length) {
 
       //TODO: pull this out so it can be reused
-      await this.updateScoreAliases(groupId, game, () => {});
+      await this.updateScoreAliasesByGame(groupId, game, () => {});
 
       //we need to re-fetch the created scores so we have the updated alias data
       let scoreIds = [];
@@ -529,15 +529,17 @@ export class GameService {
  * @param {Game} game
  * @param callback(err)
  */
-  async updateScoreAliases(groupId, game, callback) {
+  async updateScoreAliasesByGame(groupId, game, callback) {
 
-    let query = "UPDATE score SET alias_id = a.id " +
-      "FROM user_group ug, alias a " +
-      "WHERE ug.user_id = a.user_group_id " +
-      "AND lower(score.name) = lower(a.name) " +
-      "AND ug.group_id = $1 " +
-      "AND score.game_id = $2 " +
-      "AND score.machine_id IN (SELECT machine_id FROM machine WHERE group_id = $1)";
+    let query = `
+        UPDATE score SET alias_id = a.id
+        FROM  alias a
+        JOIN user_group ug ON a.user_group_id = ug.id
+        WHERE
+        lower(score.name) = lower(a.name)
+        AND ug.group_id = $1
+        AND score.game_id = $2
+        AND score.machine_id IN (SELECT m.id FROM machine m WHERE group_id = $1)`;
 
     let result = await getConnection().query(query, [groupId, game.id]);
 
@@ -545,6 +547,21 @@ export class GameService {
     return result;
 
 }
+
+  async updateScoreAliasesByUser(groupId, userId) {
+
+    let query = `
+        UPDATE score SET alias_id = a.id
+        FROM  alias a
+        JOIN user_group ug ON a.user_group_id = ug.id
+        WHERE
+        lower(score.name) = lower(a.name)
+        AND ug.group_id = $1
+        AND ug.user_id = $2
+        AND score.machine_id IN (SELECT m.id FROM machine m WHERE group_id = $1)`;
+
+    return await getConnection().query(query, [groupId, userId]);
+  }
 //
 // /**
 //  * This function goes through the game mappings and sets game.has_mapping to true
@@ -598,5 +615,7 @@ export class GameService {
     return scores;
 
   }
+
+
 
 }
