@@ -11,7 +11,7 @@ RUN npm install
 RUN npm run build:prod
 
 
-FROM node:10.15-alpine
+FROM node:10.16-alpine
 
 WORKDIR /home/node/app
 
@@ -41,5 +41,4 @@ COPY --from=frontend /home/node/app/assets ./assets
 EXPOSE 3000
 
 CMD ["node", "./dist/src/main.js"]
-
 
