@@ -523,6 +523,7 @@ export class GameService {
 //   return newRawScore;
 //   }
 //
+
 /**
  * This updates all the aliases against the scores (just does a blanket update off all scores for a game)
  * @param groupId

@@ -41,7 +41,7 @@ describe('AppController (e2e)', () => {
       imports: [
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "192.168.99.100",
+          "host": "db",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -96,6 +96,7 @@ describe('AppController (e2e)', () => {
       await getConnection().query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE machine RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE "user_group" RESTART IDENTITY CASCADE');
 
 
       var gameData = {

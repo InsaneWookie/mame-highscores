@@ -13,8 +13,8 @@ before_script:
 - docker-compose -f docker-compose.prod.yml exec app npm install --only=dev
 
 script:
-#- docker-compose -f docker-compose.prod.yml exec app npm run test:e2e
 - docker-compose -f docker-compose.prod.yml exec app npm run test
+- docker-compose -f docker-compose.prod.yml exec app npm run test:e2e
 
 before_deploy:
 - zip mame-highscores-deploy.zip docker-compose.aws.yml appspec.yml scripts/*
