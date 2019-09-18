@@ -25,4 +25,13 @@ export class ScoreService {
       .orderBy('score.rank', "ASC")
       .getMany();
   }
+
+  async removeAliases(aliasIds: any[]){
+    console.log(aliasIds);
+    await this.scoreRepo.createQueryBuilder('score')
+      .update(Score)
+      .set({alias: null})
+      .where("score.alias_id IN (:...aliasIds)", {aliasIds: aliasIds})
+      .execute();
+  }
 }

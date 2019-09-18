@@ -69,16 +69,7 @@ describe('AppController (e2e)', () => {
     gameService = moduleFixture.get<GameService>(GameService);
   });
 
-  beforeEach(async () => {
 
-    await getConnection().query('TRUNCATE TABLE score RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE alias RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE game RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE machine RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE');
-    await getConnection().query('TRUNCATE TABLE "user_group" RESTART IDENTITY CASCADE');
-  });
 
   async function fixtureSetup(gameData){
 
@@ -120,6 +111,19 @@ describe('AppController (e2e)', () => {
 
   describe('#updateScoreAliasesByGame()', () => {
 
+    beforeEach(async () => {
+
+      await getConnection().query('TRUNCATE TABLE score RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE rawscore RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE alias RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE gameplayed RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE game RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE machine RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE "group" RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE "user_group" RESTART IDENTITY CASCADE');
+    });
+
     /**
      * Test that linking score to alias works correctly
      */
@@ -141,9 +145,9 @@ describe('AppController (e2e)', () => {
       const alias = await aliasRepo.findOne({name: 'ABC'});
       const machine = await machineRepo.findOne({api_key: '1A2B3C'});
 
-      assert.notEqual(null, game);
-      assert.notEqual(null, alias);
-      assert.notEqual(null, machine);
+      assert.notStrictEqual(undefined, game);
+      assert.notStrictEqual(undefined, alias);
+      assert.notStrictEqual(undefined, machine);
 
       await scoreRepo.save(Object.assign(new Score(), {game, alias: null, name: 'ABC', score: '1234', machine}));
 

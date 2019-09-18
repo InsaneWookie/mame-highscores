@@ -39,9 +39,7 @@ export class AliasController {
     }
 
     //TODO: check all deletes are valid for logged in user
-
-
-    return this.aliasService.removeAll(body);
+    return this.aliasService.removeAll(body, req.user.user.id);
   }
 
 }

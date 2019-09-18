@@ -4,6 +4,7 @@ import { Alias } from "../entity/alias.entity";
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserGroup } from "../entity/usergroup.entity";
 import { GameService } from "../game/game.service";
+import { ScoreService } from "../score/score.service";
 
 @Injectable()
 export class AliasService {
@@ -12,7 +13,8 @@ export class AliasService {
               private readonly aliasRepository: Repository<Alias>,
               @InjectRepository(UserGroup)
               private readonly userGroupRepository: Repository<UserGroup>,
-              private readonly gameService: GameService) {
+              private readonly gameService: GameService,
+              private readonly scoreService: ScoreService) {
   }
 
   async saveAll(body: any, userId : any, groupId? : any) : Promise<Alias[]>{
@@ -35,13 +37,12 @@ export class AliasService {
 
     let result = await this.aliasRepository.save(newAliases);
 
-   await this.gameService.updateScoreAliasesByUser(groupId, userId);
-   // await this.gameService.updateRanks()
+    await this.gameService.updateScoreAliasesByUser(groupId, userId);
 
     return result;
   }
 
-  async removeAll(body: any, groupId? : any) : Promise<Alias[]>{
+  async removeAll(body: any, userId: any, groupId? : any) : Promise<Alias[]>{
 
     const aliases: any[] = body;
     const newAliases: Alias[] = [];
@@ -51,6 +52,7 @@ export class AliasService {
     // const userGroup = await this.userGroupRepository
     //   .findOne({user: userId, group: groupId});
 
+    await this.scoreService.removeAliases(aliases.map(a => a.id));
 
     aliases.forEach((a) => {
       const alias = new Alias();
@@ -59,6 +61,8 @@ export class AliasService {
       newAliases.push(alias);
     });
 
-    return this.aliasRepository.remove(newAliases)
+    await this.gameService.updateScoreAliasesByUser(groupId, userId);
+
+    return await this.aliasRepository.remove(newAliases)
   }
 }

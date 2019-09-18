@@ -547,7 +547,7 @@ export class GameService {
     callback(result);
     return result;
 
-}
+  }
 
   async updateScoreAliasesByUser(groupId, userId) {
 

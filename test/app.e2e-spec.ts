@@ -91,7 +91,9 @@ describe('AppController (e2e)', () => {
     beforeEach(async () => {
 
       await getConnection().query('TRUNCATE TABLE score RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE rawscore RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE alias RESTART IDENTITY CASCADE');
+      await getConnection().query('TRUNCATE TABLE gameplayed RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE game RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE "user" RESTART IDENTITY CASCADE');
       await getConnection().query('TRUNCATE TABLE machine RESTART IDENTITY CASCADE');
