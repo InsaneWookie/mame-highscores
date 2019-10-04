@@ -39,8 +39,11 @@ export class User {
   @OneToMany(type => UserGroup, userGroup => userGroup.user)
   userGroups: UserGroup[];
 
+  @Column({name: 'is_admin'})
+  isAdmin: boolean;
 
   points: number
+
 
 
 }

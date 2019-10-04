@@ -3,10 +3,13 @@ import * as nodemailer from 'nodemailer';
 import * as AWS from 'aws-sdk';
 import { ConfigService } from "../config/config.service";
 import * as Mail from "nodemailer/lib/mailer";
+import { AppLogger } from "../applogger.service";
+
 
 @Injectable()
 export class MailerService {
-  constructor(private readonly config: ConfigService){}
+  constructor(private readonly config: ConfigService,
+              private readonly l: AppLogger){}
 
   sendMail(to :string, subject: string, text: string ) {
 
@@ -23,7 +26,7 @@ export class MailerService {
     if(process.env.NODE_ENV === 'production'){
       transporter = nodemailer.createTransport({SES: aws});
     } else {
-      console.log(text);
+      this.l.log(text,  'MailerService');
       transporter = nodemailer.createTransport({streamTransport: true, newline: 'unix', buffer: true});
     }
 
@@ -33,13 +36,13 @@ export class MailerService {
       subject: subject,
       text: text
     }).then((info) => {
-      console.log(info.envelope);
-      console.log(info.messageId);
+      this.l.log(info.envelope, 'MailerService');
+      this.l.log(info.messageId, 'MailerService');
       if(info.message){
-        console.log(info.message.toString());
+        this.l.log(info.message.toString(),  'MailerService');
       }
     }).catch((err) => {
-      console.error(err);
+      this.l.error(err,  'MailerService');
     });
   }
 }

@@ -1,12 +1,15 @@
 import { Injectable} from '@nestjs/common';
 import { User } from '../entity/user.entity';
-import { getConnection, Repository } from 'typeorm';
+import { DeleteResult, getConnection, Repository } from 'typeorm';
 import { InjectRepository  } from '@nestjs/typeorm';
 import { UserGroup } from '../entity/usergroup.entity';
 import uuid = require('uuid/v4');
 import { promises } from "fs";
 import { AuthService } from "../auth/auth.service";
 import { AppLogger } from "../applogger.service";
+import { AliasService } from "../alias/alias.service";
+import { Alias } from "../entity/alias.entity";
+import { Score } from "../entity/score.entity";
 
 @Injectable()
 export class UserService {
@@ -15,6 +18,9 @@ export class UserService {
               private readonly userRepository: Repository<User>,
               @InjectRepository(UserGroup)
               private readonly userGroupRepo: Repository<UserGroup>,
+              private readonly aliasRepo: Repository<Alias>,
+              private readonly scoreRepo: Repository<Score>,
+              private readonly aliasService: AliasService,
               private readonly l: AppLogger
               ) {
     // l.log("this is a test", "UserService");
@@ -65,6 +71,21 @@ export class UserService {
     return newUser;
   }
 
+  async delete(user: User): Promise<User> {
+
+    //unlink user group
+
+    //if they are they have no more user groups then delete the user record
+
+    //unlink alias
+    // await this.scoreRepo.delete({ where: { alias: 1}});
+    //
+    //
+    // await this.aliasRepo.delete({where: {user: 1}});
+
+    return await this.userRepository.remove(user);
+  }
+
   async inviteUser(groupId: number, inviteEmail: string): Promise<User>{
 
     const newUser = new User();
@@ -74,13 +95,7 @@ export class UserService {
     return this.save(newUser, groupId);
   }
 
-
   async getPoints(groupId: number, userId: number): Promise<any> {
-
-    // var userId = (user && typeof user === "object") ? user.id : user;
-
-    // var extraWhere = (!!userId) ? " AND u.id = $1 " : "";
-    // var queryParams = (!!userId) ? [ userId ] : [];
 
     const pointsQuery =
       ' SELECT u.id, u.username, player_total_points.total_points \
@@ -114,6 +129,10 @@ export class UserService {
 
     return getConnection().query(pointsQuery, [groupId, userId]);
 
+  }
+
+  async findByEmail(email: any) {
+    return await this.userRepository.findOne({where: {email: email}, relations: ['groups']});
   }
 
 }

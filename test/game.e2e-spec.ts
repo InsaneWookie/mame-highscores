@@ -33,7 +33,7 @@ describe('AppController (e2e)', () => {
       imports: [
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "db",
+          "host": "192.168.99.100",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -68,8 +68,6 @@ describe('AppController (e2e)', () => {
     jwtService = moduleFixture.get<JwtService>(JwtService);
     gameService = moduleFixture.get<GameService>(GameService);
   });
-
-
 
   async function fixtureSetup(gameData){
 

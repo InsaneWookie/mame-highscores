@@ -17,16 +17,15 @@ import { GroupModule } from "../src/group/group.module";
 import { AliasModule } from "../src/alias/alias.module";
 import { ScoreModule } from "../src/score/score.module";
 import { ConfigModule } from "../src/config/config.module";
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import * as assert from "assert";
+import { AppController } from "../src/app.controller";
+import { JwtService } from '@nestjs/jwt';
 import { AppLogger } from "../src/applogger.service";
 import { GameService } from '../src/game/game.service';
-import * as request from 'supertest';
-import { AliasController } from "../src/alias/alias.controller";
-import { AliasService } from "../src/alias/alias.service";
-import { ScoreService } from "../src/score/score.service";
-import { ScoredecoderService } from "../src/scoredecoder/scoredecoder.service";
+import { UserService } from "../src/user/user.service";
 import { JwtPayload } from "../src/auth/jwt-payload.interface";
-import { PassportModule } from "@nestjs/passport";
+import * as request from 'supertest';
+
 
 async function fixtureSetup(gameData){
 
@@ -67,25 +66,17 @@ async function fixtureSetup(gameData){
 }
 
 
-describe('AliasController (e2e)', () => {
+describe('UserController (e2e)', () => {
   let app;
   let jwtService;
-  // let gameService : GameService;
+  let userService : UserService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        JwtModule.register({
-          secretOrPrivateKey: 'test',
-          signOptions: {
-            expiresIn: 3600,
-          },
-        }),
-        PassportModule.register({ defaultStrategy: 'jwt' }),
-
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "192.168.99.100",
+          "host": "db",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -98,8 +89,7 @@ describe('AliasController (e2e)', () => {
           "cli": {
             "entitiesDir": "src",
             "migrationsDir": "src/migration"
-          },
-          // "logging": true
+          }
         }),
         TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
         AuthModule,
@@ -110,8 +100,8 @@ describe('AliasController (e2e)', () => {
         ScoreModule,
         ConfigModule,
       ],
-      controllers: [AliasController],
-      providers: [AppLogger, AliasService, GameService, ScoreService, ScoredecoderService, AuthModule],
+      controllers: [AppController],
+      providers: [AppLogger],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -119,7 +109,7 @@ describe('AliasController (e2e)', () => {
     await app.init();
 
     jwtService = moduleFixture.get<JwtService>(JwtService);
-
+    userService = moduleFixture.get<UserService>(UserService);
   });
 
   beforeEach(async () => {
@@ -144,49 +134,47 @@ describe('AliasController (e2e)', () => {
 
 
 
-  it('/api/v1/alias (POST) delete alias without scores', async () => {
+  it('/api/v1/user (DELETE) delete user', async () => {
 
     const user: JwtPayload = {
       userId: 1,
       groupId: 1
     };
 
-    // console.log(user);
-    const accessToken = jwtService.sign(user);
-    // console.log(accessToken);
+    //enable admin on logged in user
+    const u = await userService.findOne(1,1);
+    u.isAdmin = true;
+    await userService.save(u);
 
-    return await request(app.getHttpServer())
-      .post('/api/v1/alias/delete')
-      .set('Authorization', 'Bearer ' + accessToken)
-      .send([{"id": 1,"name":"ABC"}])
-      .expect(201)
-      //.expect('Hello World!');
-  });
-
-  it('/api/v1/alias (POST) delete alias with score', async () => {
-
-    let alias = getRepository(Alias).findOne(1);
-
-    let score = Object.assign(new Score(), {name: 'ABC', score: '1234', alias: 1, game: 1, machine: 1});
-
-    await getRepository(Score).save(score);
-
-    const user: JwtPayload = {
-      userId: 1,
-      groupId: 1
-    };
+    //create new user
+    let user2 = new User();
+    user2.username = 'test2';
+    user2.email = 'test2@example.com';
+    user2.password = 'password';
+    await userService.save(user2, 1);
 
     // console.log(user);
     const accessToken = jwtService.sign(user);
     // console.log(accessToken);
 
-    return await request(app.getHttpServer())
-      .post('/api/v1/alias/delete')
+    await request(app.getHttpServer())
+      .delete('/api/v1/user/2')
       .set('Authorization', 'Bearer ' + accessToken)
-      .send([{"id": 1,"name":"ABC"}])
-      .expect(201)
+      //.send([{"id": 1,"name":"ABC"}])
+      .expect(200);
     //.expect('Hello World!');
+
+    const deleteUser = await userService.findOne(user2.id, 1);
+
+    assert.strictEqual(deleteUser, undefined);
+
+
   });
+
+  // it('/api/v1/alias (POST) delete alias with score', async () => {
+  //
+  //
+  // });
 
   afterAll(async () => {
     await app.close();

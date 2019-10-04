@@ -1,7 +1,7 @@
 import {
   Body,
   ClassSerializerInterceptor,
-  Controller,
+  Controller, Delete,
   Get,
   Param,
   Post, Put,
@@ -65,6 +65,26 @@ export class UserController {
 
 
     return await this.userService.save(user);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id, @Req() req, @Body() body){
+
+    const groupId = req.user.groupId;
+    const loggedInUserId = req.user.user.id;
+
+    if(parseInt(loggedInUserId) === parseInt(id)){
+      throw "Can't delete yourself"
+    }
+
+    const loggedInUser = await this.userService.findOne(loggedInUserId, groupId);
+
+    if(!loggedInUser.isAdmin){
+      throw "Access denied"
+    }
+
+    const userToDelete = await this.userService.findOne(id, groupId);
+    return await this.userService.delete(userToDelete);
   }
 
 

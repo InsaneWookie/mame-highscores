@@ -86,33 +86,32 @@ export class GameService {
     // var queryParams = (!!userId) ? [ userId ] : [];
 
     const pointsQuery =
-      ' SELECT u.id, u.username, player_total_points.total_points \
-        FROM \
-        (SELECT user_id, sum(points) total_points \
-         FROM \
-           (SELECT s.game_id, ug.user_id, min (s.rank) top_rank, \
-           CASE \
-           WHEN min (s.rank) = 1 THEN 8 \
-           WHEN min (s.rank) = 2 THEN 5 \
-           WHEN min (s.rank) = 3 THEN 3 \
-           WHEN min (s.rank) = 4 THEN 2 \
-           WHEN min (s.rank) = 5 THEN 1 \
-           ELSE 0 \
-           END as points \
-           FROM user_group ug \
-           JOIN alias a ON ug.id = a.user_group_id \
-              JOIN score s ON a.id = s.alias_id \
-           WHERE \
-            ug.group_id = $1 \
-            AND s.rank <= 5 \
-           GROUP BY s.game_id, ug.user_id ) player_points \
-         GROUP BY user_id \
-        ) \
-        player_total_points, \
-                "user" u \
-      WHERE player_total_points.user_id = u.id ' +
-      // extraWhere +
-      'ORDER BY total_points DESC';
+      `SELECT u.id, u.username, player_total_points.total_points
+        FROM 
+        (SELECT user_id, sum(points) total_points 
+         FROM 
+           (SELECT s.game_id, ug.user_id, min (s.rank) top_rank, 
+           CASE 
+           WHEN min (s.rank) = 1 THEN 8 
+           WHEN min (s.rank) = 2 THEN 5 
+           WHEN min (s.rank) = 3 THEN 3 
+           WHEN min (s.rank) = 4 THEN 2 
+           WHEN min (s.rank) = 5 THEN 1 
+           ELSE 0 
+           END as points 
+           FROM user_group ug 
+           JOIN alias a ON ug.id = a.user_group_id 
+              JOIN score s ON a.id = s.alias_id 
+           WHERE 
+            ug.group_id = $1 
+            AND s.rank <= 5 
+           GROUP BY s.game_id, ug.user_id ) player_points 
+         GROUP BY user_id 
+        ) 
+        player_total_points, 
+                "user" u 
+      WHERE player_total_points.user_id = u.id
+      ORDER BY total_points DESC`;
 
     return await getConnection().query(pointsQuery, [groupId]);
 

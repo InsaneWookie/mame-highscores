@@ -26,7 +26,7 @@ export class AliasController {
     //   throw "Invalid user in alias"
     // }
 
-    return this.aliasService.saveAll(body, req.user.user.id,  groupId)
+    return this.aliasService.saveAll(body, req.user.user.id,  groupId);
 
   }
 

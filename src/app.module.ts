@@ -19,21 +19,20 @@ import { ScoreController } from './score/score.controller';
 import { ScoreService } from './score/score.service';
 import { ScoreModule } from './score/score.module';
 import { ConfigModule } from './config/config.module';
-import { getConnectionOptions, getMetadataArgsStorage } from "typeorm";
+import { getMetadataArgsStorage } from "typeorm";
 import { AppController } from "./app.controller";
 import { MachineModule } from './machine/machine.module';
 import { MailerModule } from './mailer/mailer.module';
 import { MailerService } from "./mailer/mailer.service";
 import { AppLogger } from "./applogger.service";
 import { LoggerModule } from "./logger.module";
-import * as path from "path";
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
-      "host": "db",
+      "host": "192.168.99.100",
       "port": 5432,
       "username": "postgres",
       "password": "example",
@@ -41,14 +40,14 @@ import * as path from "path";
       "entities": getMetadataArgsStorage().tables.map(tbl => tbl.target),
       //"migrations": ["src/migration/*{.ts,.js}"],
       "synchronize": false,
+      //"logging": true
       // "cli": {
       //   "entitiesDir": "src",
       //   "migrationsDir": "src/migration"
       // }
     }),
-    LoggerModule,
-    TypeOrmModule.forRoot(),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+    LoggerModule,
     AuthModule,
     GameModule,
     UserModule,

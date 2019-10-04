@@ -1,12 +1,13 @@
 <!--<a href="#/users-create">New User</a>-->
 
 <table class="table table-striped">
-  <tr>
-    <th>User Name</th>
-    <th>Aliases</th>
-  </tr>
+<!--  <tr>-->
+<!--    <th>User Name</th>-->
+<!--    <th>Aliases</th>-->
+<!--  </tr>-->
   <tr *ngFor="let user of users">
     <td><a routerLink="/users/{{user.id}}">{{user.username}}</a></td>
-    <td><span *ngFor="let alias of user.aliases; let last = last;">{{alias.name}}{{last ? '' : ', '}}</span></td>
+<!--    <td><span *ngFor="let alias of user.aliases; let last = last;">{{alias.name}}{{last ? '' : ', '}}</span></td>-->
+    <td style="text-align: right"><button class="btn btn-danger" >Delete</button></td>
   </tr>
 </table>

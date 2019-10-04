@@ -104,6 +104,13 @@ export class AuthService {
       throw "Invalid user name"
     }
 
+    const existingUser = await this.userService.findByEmail(body.email);
+    console.log(existingUser);
+    console.log(body);
+    if(existingUser){
+      throw "User already exists with this email address";
+    }
+
     let group: Group;
     let isNew = false;
     if(body.invite_code) {

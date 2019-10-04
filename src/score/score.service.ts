@@ -27,7 +27,7 @@ export class ScoreService {
   }
 
   async removeAliases(aliasIds: any[]){
-    console.log(aliasIds);
+    // console.log(aliasIds);
     await this.scoreRepo.createQueryBuilder('score')
       .update(Score)
       .set({alias: null})
