@@ -22,6 +22,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { MailerService } from "../mailer/mailer.service";
 import { LoggerModule } from "../logger.module";
 import { AppLogger } from "../applogger.service";
+import { AliasService } from 'src/alias/alias.service';
+import { ScoreService } from 'src/score/score.service';
+import { GameService } from 'src/game/game.service';
+import { ScoredecoderService } from 'src/scoredecoder/scoredecoder.service';
 
 @Module({
   imports: [
@@ -38,7 +42,9 @@ import { AppLogger } from "../applogger.service";
       inject: [ConfigService]
     }),
   ],
-  providers: [UserService, AuthService, GroupService, MachineService, UserService, JwtStrategy, MailerService, AppLogger],
+  providers: [UserService, AuthService, GroupService, 
+    AliasService, ScoreService, MachineService, JwtStrategy, 
+    MailerService, AppLogger, GameService, ScoreService, ScoredecoderService],
   controllers: [UserController],
 })
 export class UserModule {

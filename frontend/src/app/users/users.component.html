@@ -8,6 +8,6 @@
   <tr *ngFor="let user of users">
     <td><a routerLink="/users/{{user.id}}">{{user.username}}</a></td>
 <!--    <td><span *ngFor="let alias of user.aliases; let last = last;">{{alias.name}}{{last ? '' : ', '}}</span></td>-->
-    <td style="text-align: right"><button class="btn btn-danger" >Delete</button></td>
+    <td *ngIf="user.id !== loggedInUser.id && loggedInUser.isAdmin" style="text-align: right"><button class="btn btn-danger">Delete</button></td>
   </tr>
 </table>

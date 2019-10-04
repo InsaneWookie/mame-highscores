@@ -18,7 +18,9 @@ export class UserService {
               private readonly userRepository: Repository<User>,
               @InjectRepository(UserGroup)
               private readonly userGroupRepo: Repository<UserGroup>,
+              @InjectRepository(Alias)
               private readonly aliasRepo: Repository<Alias>,
+              @InjectRepository(Score)
               private readonly scoreRepo: Repository<Score>,
               private readonly aliasService: AliasService,
               private readonly l: AppLogger

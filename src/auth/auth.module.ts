@@ -22,6 +22,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MailerService } from "../mailer/mailer.service";
 import { LoggerModule } from "../logger.module";
 import { AppLogger } from "../applogger.service";
+import { AliasService } from 'src/alias/alias.service';
+import { GameService } from 'src/game/game.service';
+import { ScoreService } from 'src/score/score.service';
+import { ScoredecoderService } from 'src/scoredecoder/scoredecoder.service';
 
 @Module({
   imports: [
@@ -38,8 +42,9 @@ import { AppLogger } from "../applogger.service";
     }),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias])
   ],
-  controllers: [AuthController],
-  providers: [AuthService, UserService, GroupService, MachineService, JwtStrategy, ConfigService, MailerService, AppLogger],
+  controllers: [AuthController],  
+  providers: [AuthService, UserService, GroupService, AliasService, GameService, ScoreService,
+     MachineService, JwtStrategy, ConfigService, MailerService, AppLogger, ScoredecoderService],
 })
 export class AuthModule {
 

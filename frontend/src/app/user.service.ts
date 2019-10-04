@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from "rxjs";
-import { catchError } from "rxjs/operators";
+import { catchError, shareReplay } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { User } from "./models/user";
 
@@ -17,7 +17,7 @@ export class UserService {
   }
 
   getUser(userId: number) : Observable<User>{
-    return this.http.get<User>(`/api/v1/user/${userId}`)
+    return this.http.get<User>(`/api/v1/user/${userId}`)// .pipe(shareReplay(2))
       .pipe(catchError(this.handleError('getUser', new User)));
   }
 
