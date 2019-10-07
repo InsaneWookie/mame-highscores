@@ -107,8 +107,8 @@ export class AuthService {
     }
 
     const existingUser = await this.userService.findByEmail(body.email);
-    console.log(existingUser);
-    console.log(body);
+    //console.log(existingUser);
+    //console.log(body);
     if(existingUser){
       throw "User already exists with this email address";
     }
