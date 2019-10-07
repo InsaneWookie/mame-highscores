@@ -5,6 +5,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserGroup } from '../entity/usergroup.entity';
 import { Repository } from "typeorm";
 import { AppLogger } from "../applogger.service";
+import { Alias } from "../entity/alias.entity";
+import { Score } from "../entity/score.entity";
 
 describe('UserService', () => {
   let service: UserService;
@@ -16,6 +18,8 @@ describe('UserService', () => {
         AppLogger,
         { provide: getRepositoryToken(User), useClass: Repository,},
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
+        { provide: getRepositoryToken(Alias), useClass: Repository,},
+        { provide: getRepositoryToken(Score), useClass: Repository,},
       ],
     }).compile();
 

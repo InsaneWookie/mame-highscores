@@ -13,7 +13,9 @@ import { ScoreController } from "./score.controller";
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score])],
-  providers: [ScoreService],
   controllers: [ScoreController],
+  providers: [ScoreService],
+  exports: [ScoreService],
+
 })
 export class ScoreModule {}

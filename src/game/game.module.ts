@@ -7,15 +7,16 @@ import { GamePlayed } from "../entity/gameplayed.entity";
 import { User } from "../entity/user.entity";
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from "../jwt.strategy";
 import { ScoredecoderService } from '../scoredecoder/scoredecoder.service';
 import { Score } from '../entity/score.entity';
 
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
+
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score])],
-  providers: [GameService, ScoredecoderService],
   controllers: [GameController],
+  providers: [GameService, ScoredecoderService],
+  exports: [GameService]
 })
 export class GameModule {}

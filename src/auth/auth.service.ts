@@ -13,19 +13,21 @@ import { LoginErrorResponse } from "./login-error-response.interface";
 import * as uuid from "uuid/v4";
 import { MailerService } from "../mailer/mailer.service";
 import bcrypt = require('bcrypt');
+import { AppLogger } from "../applogger.service";
 
 // import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
+  // private readonly logger = new Logger(AuthService.name);
 
   constructor(private readonly jwtService: JwtService,
               private readonly userService: UserService,
               private readonly groupService: GroupService,
               private readonly machineService: MachineService,
               private readonly config: ConfigService,
-              private readonly mailerService: MailerService) {
+              private readonly mailerService: MailerService,
+              private readonly logger: AppLogger) {
   }
 
 

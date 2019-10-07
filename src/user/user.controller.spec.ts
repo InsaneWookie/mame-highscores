@@ -16,6 +16,8 @@ import { Machine } from "../entity/machine.entity";
 import { JwtModule } from '@nestjs/jwt';
 import { MailerService } from "../mailer/mailer.service";
 import { AppLogger } from "../applogger.service";
+import { Alias } from "../entity/alias.entity";
+import { Score } from "../entity/score.entity";
 
 describe('User Controller', () => {
   let controller: UserController;
@@ -47,6 +49,8 @@ describe('User Controller', () => {
         { provide: getRepositoryToken(Group), useClass: Repository,},
         { provide: getRepositoryToken(Machine), useClass: Repository,},
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
+        { provide: getRepositoryToken(Alias), useClass: Repository,},
+        { provide: getRepositoryToken(Score), useClass: Repository,},
       ],
     }).compile();
 

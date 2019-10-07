@@ -8,11 +8,7 @@ export class GroupController {
 
   constructor(
     private readonly groupService: GroupService
-  ) {
-
-
-  }
-
+  ) {}
 
   @Get()
   find(@Req() req){

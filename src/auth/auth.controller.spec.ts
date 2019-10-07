@@ -16,6 +16,8 @@ import { Group } from "../entity/group.entity";
 import { Machine } from "../entity/machine.entity";
 import { MailerService } from "../mailer/mailer.service";
 import { AppLogger } from "../applogger.service";
+import { Alias } from "../entity/alias.entity";
+import { Score } from "../entity/score.entity";
 
 describe('Auth Controller', () => {
   let controller: AuthController;
@@ -43,12 +45,14 @@ describe('Auth Controller', () => {
         AppLogger,
         {
           provide: ConfigService,
-          useValue: new ConfigService(`${process.env.NODE_ENV || 'development'}.env`),
+          useValue: new ConfigService(`${process.env.NODE_ENV || 'test'}.env`),
         },
         { provide: getRepositoryToken(User), useClass: Repository,},
         { provide: getRepositoryToken(Group), useClass: Repository,},
         { provide: getRepositoryToken(Machine), useClass: Repository,},
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
+        { provide: getRepositoryToken(Alias), useClass: Repository,},
+        { provide: getRepositoryToken(Score), useClass: Repository,},
       ]
     }).compile();
 

@@ -14,12 +14,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameService } from "../game/game.service";
 import { ScoredecoderService } from "../scoredecoder/scoredecoder.service";
 import { ScoreService } from "../score/score.service";
+import { GameModule } from "../game/game.module";
+import { ScoreModule } from "../score/score.module";
 
 @Module({
   imports: [
+    PassportModule.register({defaultStrategy: 'jwt'}),
+
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
-    PassportModule.register({defaultStrategy: 'jwt'})],
-  providers: [AliasService, GameService, ScoreService, ScoredecoderService],
+
+    GameModule,
+    ScoreModule
+  ],
+
+  providers: [AliasService],
   controllers: [AliasController]
 })
 export class AliasModule {}

@@ -17,6 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     TypeOrmModule.forFeature([Machine, Group])],
   controllers: [MachineController],
-  providers: [MachineService]
+  providers: [MachineService],
+  exports: [MachineService]
 })
 export class MachineModule {}

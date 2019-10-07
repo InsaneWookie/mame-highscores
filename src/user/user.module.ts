@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -26,11 +26,14 @@ import { AliasService } from 'src/alias/alias.service';
 import { ScoreService } from 'src/score/score.service';
 import { GameService } from 'src/game/game.service';
 import { ScoredecoderService } from 'src/scoredecoder/scoredecoder.service';
+import { ModuleRef } from "@nestjs/core";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+
+    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
@@ -41,11 +44,13 @@ import { ScoredecoderService } from 'src/scoredecoder/scoredecoder.service';
         })},
       inject: [ConfigService]
     }),
+
+    // AuthModule,
+    // ModuleRef
   ],
-  providers: [UserService, AuthService, GroupService, 
-    AliasService, ScoreService, MachineService, JwtStrategy, 
-    MailerService, AppLogger, GameService, ScoreService, ScoredecoderService],
+  providers: [UserService],
   controllers: [UserController],
+  exports: [UserService]
 })
 export class UserModule {
 }

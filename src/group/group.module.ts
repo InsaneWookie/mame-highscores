@@ -18,6 +18,7 @@ import { PassportModule } from '@nestjs/passport';
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
   ],
   controllers: [GroupController],
-  providers: [GroupService]
+  providers: [GroupService],
+  exports: [GroupService]
 })
 export class GroupModule {}

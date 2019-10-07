@@ -2,7 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller, Delete,
-  Get,
+  Get, OnModuleInit,
   Param,
   Post, Put,
   Req,
@@ -14,14 +14,21 @@ import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from "../auth/auth.service";
 import { isEmpty } from 'lodash'
+import { ModuleRef } from "@nestjs/core";
 
 @Controller('user')
 @UseGuards(AuthGuard())
 @UseInterceptors(ClassSerializerInterceptor)
-export class UserController {
+export class UserController implements OnModuleInit{
+
+  private authService: AuthService;
 
   constructor(private readonly userService: UserService,
-              private authService : AuthService) {
+              private readonly  moduleRef: ModuleRef) {
+  }
+
+  onModuleInit() {
+    this.authService = this.moduleRef.get(AuthService, {strict: false});
   }
 
   @Post('invite')

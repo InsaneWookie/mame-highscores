@@ -21,7 +21,6 @@ import * as assert from "assert";
 import { AppController } from "../src/app.controller";
 import { JwtService } from '@nestjs/jwt';
 import { AppLogger } from "../src/applogger.service";
-import { GameService } from '../src/game/game.service';
 import { UserService } from "../src/user/user.service";
 import { JwtPayload } from "../src/auth/jwt-payload.interface";
 import * as request from 'supertest';

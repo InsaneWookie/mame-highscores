@@ -22,9 +22,25 @@ import { MailerModule } from './mailer/mailer.module';
 import { MailerService } from "./mailer/mailer.service";
 import { AppLogger } from "./applogger.service";
 import { LoggerModule } from "./logger.module";
+import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from "@nestjs/jwt";
+import { ConfigService } from "./config/config.service";
 
 @Module({
   imports: [
+    PassportModule.register({defaultStrategy: 'jwt'}),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => {
+        // console.log(config);
+        return ({
+          secretOrPrivateKey: config.get('JWT_KEY'),
+          signOptions: { expiresIn: parseInt(config.get('JWT_EXPIRES_IN')) },
+        })},
+      inject: [ConfigService]
+    }),
+
+    ConfigModule,
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
@@ -43,23 +59,26 @@ import { LoggerModule } from "./logger.module";
       // }
     }),
     TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+
     LoggerModule,
+
+    //modules needed to enable controllers
     AuthModule,
     GameModule,
     UserModule,
     GroupModule,
     AliasModule,
     ScoreModule,
-    ConfigModule,
     MachineModule,
-    MailerModule
+
   ],
   controllers: [AppController],
-  providers: [MailerService],
-  exports: [LoggerModule]
+  providers: [],
+  exports: []
 })
 export class AppModule {
   constructor(private readonly logger: AppLogger) {
+    // console.log(process.env);
     logger.log(`NODE_ENV=${process.env.NODE_ENV}`, 'AppModule');
   }
 }

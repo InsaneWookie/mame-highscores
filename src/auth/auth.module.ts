@@ -1,4 +1,4 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { DynamicModule, forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { PassportModule } from '@nestjs/passport';
@@ -26,25 +26,37 @@ import { AliasService } from 'src/alias/alias.service';
 import { GameService } from 'src/game/game.service';
 import { ScoreService } from 'src/score/score.service';
 import { ScoredecoderService } from 'src/scoredecoder/scoredecoder.service';
+import { GroupModule } from "../group/group.module";
+import { MachineModule } from "../machine/machine.module";
+import { MailerModule } from "../mailer/mailer.module";
 
 @Module({
   imports: [
     PassportModule.register({defaultStrategy: 'jwt'}),
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
         // console.log(config);
         return ({
-        secretOrPrivateKey: config.get('JWT_KEY'),
-        signOptions: { expiresIn: parseInt(config.get('JWT_EXPIRES_IN')) },
+          secret: config.get('JWT_KEY'),
+          signOptions: { expiresIn: parseInt(config.get('JWT_EXPIRES_IN')) },
       })},
       inject: [ConfigService]
     }),
-    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias])
+    TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+
+    UserModule,
+    GroupModule,
+    MachineModule,
+    MailerModule
+
   ],
-  controllers: [AuthController],  
-  providers: [AuthService, UserService, GroupService, AliasService, GameService, ScoreService,
-     MachineService, JwtStrategy, ConfigService, MailerService, AppLogger, ScoredecoderService],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy],
+  exports: [AuthService]
+  // providers: [AuthService, UserService, GroupService, AliasService, GameService, ScoreService,
+  //    MachineService, JwtStrategy, ConfigService, MailerService, AppLogger, ScoredecoderService],
 })
 export class AuthModule {
 

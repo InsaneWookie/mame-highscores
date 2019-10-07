@@ -22,8 +22,8 @@ export class UserService {
               private readonly aliasRepo: Repository<Alias>,
               @InjectRepository(Score)
               private readonly scoreRepo: Repository<Score>,
-              private readonly aliasService: AliasService,
-              private readonly l: AppLogger
+            //  private readonly aliasService: AliasService,
+            //   private readonly l: AppLogger
               ) {
     // l.log("this is a test", "UserService");
   }
