@@ -49,7 +49,8 @@ import { MailerModule } from "../mailer/mailer.module";
     UserModule,
     GroupModule,
     MachineModule,
-    MailerModule
+    MailerModule,
+
 
   ],
   controllers: [AuthController],

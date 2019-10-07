@@ -22,6 +22,11 @@ import { AppController } from "../src/app.controller";
 import { JwtService } from '@nestjs/jwt';
 import { AppLogger } from "../src/applogger.service";
 import { GameService } from '../src/game/game.service';
+import { GameController } from "../src/game/game.controller";
+import { ScoredecoderService } from "../src/scoredecoder/scoredecoder.service";
+import { JwtStrategy } from "../src/jwt.strategy";
+import { LoggerModule } from "../src/logger.module";
+import { PassportModule } from "@nestjs/passport";
 
 describe('AppController (e2e)', () => {
   let app;
@@ -31,9 +36,10 @@ describe('AppController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "192.168.99.100",
+          "host": "db",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -49,16 +55,15 @@ describe('AppController (e2e)', () => {
           }
         }),
         TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
-        AuthModule,
-        GameModule,
-        UserModule,
-        GroupModule,
-        AliasModule,
-        ScoreModule,
-        ConfigModule,
+
+        LoggerModule,
+
+        AuthModule
+
+
       ],
-      controllers: [AppController],
-      providers: [AppLogger],
+      controllers: [GameController],
+      providers: [GameService, JwtStrategy, ScoredecoderService],
     }).compile();
 
     app = moduleFixture.createNestApplication();

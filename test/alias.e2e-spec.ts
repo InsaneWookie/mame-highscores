@@ -27,6 +27,7 @@ import { ScoreService } from "../src/score/score.service";
 import { ScoredecoderService } from "../src/scoredecoder/scoredecoder.service";
 import { JwtPayload } from "../src/auth/jwt-payload.interface";
 import { PassportModule } from "@nestjs/passport";
+import { LoggerModule } from "../src/logger.module";
 
 async function fixtureSetup(gameData){
 
@@ -75,17 +76,17 @@ describe('AliasController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
-        JwtModule.register({
-          secretOrPrivateKey: 'test',
-          signOptions: {
-            expiresIn: 3600,
-          },
-        }),
+        // JwtModule.register({
+        //   secretOrPrivateKey: 'test',
+        //   signOptions: {
+        //     expiresIn: 3600,
+        //   },
+        // }),
         PassportModule.register({ defaultStrategy: 'jwt' }),
 
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "192.168.99.100",
+          "host": "db",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -102,16 +103,16 @@ describe('AliasController (e2e)', () => {
           // "logging": true
         }),
         TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+
+        LoggerModule,
+
         AuthModule,
         GameModule,
-        UserModule,
-        GroupModule,
-        AliasModule,
         ScoreModule,
-        ConfigModule,
+
       ],
       controllers: [AliasController],
-      providers: [AppLogger, AliasService, GameService, ScoreService, ScoredecoderService, AuthModule],
+      providers: [AliasService],
     }).compile();
 
     app = moduleFixture.createNestApplication();

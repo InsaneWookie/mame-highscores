@@ -24,6 +24,9 @@ import { AppLogger } from "../src/applogger.service";
 import { UserService } from "../src/user/user.service";
 import { JwtPayload } from "../src/auth/jwt-payload.interface";
 import * as request from 'supertest';
+import { UserController } from "../src/user/user.controller";
+import { PassportModule } from "@nestjs/passport";
+import { LoggerModule } from "../src/logger.module";
 
 
 async function fixtureSetup(gameData){
@@ -73,6 +76,8 @@ describe('UserController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+
         TypeOrmModule.forRoot({
           "type": "postgres",
           "host": "db",
@@ -92,15 +97,16 @@ describe('UserController (e2e)', () => {
         }),
         TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
         AuthModule,
-        GameModule,
-        UserModule,
-        GroupModule,
-        AliasModule,
-        ScoreModule,
-        ConfigModule,
+        // GameModule,
+        // UserModule,
+        // GroupModule,
+        // AliasModule,
+        // ScoreModule,
+        // ConfigModule,
+        LoggerModule
       ],
-      controllers: [AppController],
-      providers: [AppLogger],
+      controllers: [UserController],
+      providers: [UserService],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -133,7 +139,7 @@ describe('UserController (e2e)', () => {
 
 
 
-  it('/api/v1/user (DELETE) delete user', async () => {
+  it.skip('/api/v1/user (DELETE) delete user', async () => {
 
     const user: JwtPayload = {
       userId: 1,

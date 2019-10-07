@@ -23,6 +23,8 @@ import * as assert from "assert";
 import { AppController } from "../src/app.controller";
 import { JwtService } from '@nestjs/jwt';
 import { AppLogger } from "../src/applogger.service";
+import { MachineModule } from "../src/machine/machine.module";
+import { LoggerModule } from "../src/logger.module";
 
 describe('AppController (e2e)', () => {
   let app;
@@ -33,7 +35,7 @@ describe('AppController (e2e)', () => {
       imports: [
         TypeOrmModule.forRoot({
           "type": "postgres",
-          "host": "192.168.99.100",
+          "host": "db",
           "port": 5432,
           "username": "postgres",
           "password": "example",
@@ -49,16 +51,20 @@ describe('AppController (e2e)', () => {
           }
         }),
         TypeOrmModule.forFeature([Game, Machine, GamePlayed, User, Score, Group, UserGroup, Alias]),
+
+        LoggerModule,
+
         AuthModule,
         GameModule,
         UserModule,
         GroupModule,
         AliasModule,
         ScoreModule,
-        ConfigModule,
+        MachineModule,
+
       ],
       controllers: [AppController],
-      providers: [AppLogger],
+      providers: [],
     }).compile();
 
     app = moduleFixture.createNestApplication();
