@@ -18,6 +18,7 @@ import { MailerService } from "../mailer/mailer.service";
 import { AppLogger } from "../applogger.service";
 import { Alias } from "../entity/alias.entity";
 import { Score } from "../entity/score.entity";
+import { Game } from "../entity/game.entity";
 
 describe('User Controller', () => {
   let controller: UserController;
@@ -51,6 +52,7 @@ describe('User Controller', () => {
         { provide: getRepositoryToken(UserGroup), useClass: Repository,},
         { provide: getRepositoryToken(Alias), useClass: Repository,},
         { provide: getRepositoryToken(Score), useClass: Repository,},
+        { provide: getRepositoryToken(Game), useClass: Repository,},
       ],
     }).compile();
 
