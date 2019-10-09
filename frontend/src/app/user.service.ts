@@ -3,6 +3,7 @@ import { forkJoin, Observable, of } from "rxjs";
 import { catchError, shareReplay } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 import { User } from "./models/user";
+import { Game } from "./models/game";
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,12 @@ export class UserService {
   getUser(userId: number) : Observable<User>{
     return this.http.get<User>(`/api/v1/user/${userId}`)// .pipe(shareReplay(2))
       .pipe(catchError(this.handleError('getUser', new User)));
+  }
+
+
+  getGames(userId: any) : Observable<Game[]>{
+    return this.http.get<Game[]>(`/api/v1/user/${userId}/games`)
+      .pipe(catchError(this.handleError('getGames', [])));
   }
 
   createUser(user: User) : Observable<User>{
@@ -82,6 +89,8 @@ export class UserService {
     return this.http.post<any>('/api/v1/user/invite', {inviteEmail})
       .pipe(catchError(this.handleError('getInviteUser', {})));
   }
+
+
 
 
 }

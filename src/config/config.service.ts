@@ -14,4 +14,8 @@ export class ConfigService {
   get(key: string): string {
     return process.env[key];
   }
+
+  getBaseUrl(): string {
+    return this.get('BASE_URL');
+  }
 }
