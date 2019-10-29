@@ -8,7 +8,37 @@ Invite code: {{group.invite_code}}
 
 <div class="alert alert-primary" role="alert">
   <p>To upload high score files. Post to <strong>{{host}}/api/v1/game/upload/[api key]</strong></p>
-  <p>Tutorial coming soon</p>
+  <h2>Retro Pie</h2>
+  <div class="alert alert-warning" role="alert">Currently only lr-mame2003-plus (MAME 2003-Plus) is supported</div>
+  <p>
+      To have scores automatically uploaded when exiting a game, a custom script is required to watch the high score files for changes. SSH access is required to make these changes to your raspberry pi
+  </p>
+First install required tools for watching files<br>
+<code>sudo apt-get install inotify-tools</code><br>
+Create a new file called mame_file_watcher.sh in /home/pi<br>
+<code>nano /home/pi/mame_file_watcher.sh</code><br>
+Add the following code to the file you just made<br>
+<pre><code>#!/bin/bash
+
+api_key = "[machine api key here]"
+
+while true; do
+  inotifywait -e close_write --format '%w%f' /home/pi/RetroPie/roms/mame-libretro/mame2003/hi | 
+  while read file; do
+    curl -F game=@"$file" "arcadehiscores.com/api/v1/game/upload/$api_key"
+    echo 
+  done
+done
+</code></pre>
+
+Replace your machine api key where it says [machine api key here]<br>
+Save and exit<br>
+Enable start on boot by adding crontab entry<br>
+<code>sudo crontab -e</code><br>
+At the bottom add <code>@reboot /bin/bash /home/pi/mame_file_watcher.sh &</code><br>
+Save and exit<br>
+Reboot the Pi
+  
 </div>
 
 <button class="btn btn-success" routerLink="/machine">New</button>
