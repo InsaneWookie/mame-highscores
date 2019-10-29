@@ -18,17 +18,19 @@ First install required tools for watching files<br>
 Create a new file called mame_file_watcher.sh in /home/pi<br>
 <code>nano /home/pi/mame_file_watcher.sh</code><br>
 Add the following code to the file you just made<br>
-<pre><code>#!/bin/bash
+<pre><code>
+#!/bin/bash
 
-api_key = "[machine api key here]"
+apikey="[machine api key here]"
 
 while true; do
   inotifywait -e close_write --format '%w%f' /home/pi/RetroPie/roms/mame-libretro/mame2003/hi | 
   while read file; do
-    curl -F game=@"$file" "arcadehiscores.com/api/v1/game/upload/$api_key"
+    curl -F game=@"$file" "arcadehiscores.com/api/v1/game/upload/${{ '{' + 'apikey' + '}' }}"
     echo 
   done
 done
+
 </code></pre>
 
 Replace your machine api key where it says [machine api key here]<br>
