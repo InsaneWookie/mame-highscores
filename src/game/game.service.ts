@@ -277,10 +277,10 @@ export class GameService {
    * @param machine
    * @param callback
    */
-  async updatePlayedCount(game: Game, machine){
+  async updatePlayedCount(game: Game, machine: Machine){
     //add a played record
     // GamePlayed.create({game: game.id, machine: machine.id}).exec(function (err, newGamePLayed) { });
-    let gp = await this.gamePlayed.findOne({where: [{game: game.id}]});
+    let gp = await this.gamePlayed.findOne({where: [{game: game.id, machine: machine.id}]});
     if(!gp){
       gp = new GamePlayed();
       gp.game = game;
