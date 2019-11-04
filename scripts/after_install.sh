@@ -7,6 +7,9 @@ aws s3 cp "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz
 rm "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.sql"
 rm "/home/ec2-user/mame-backups/mame-highscores-`date +'%Y-%m-%d'`.tar.gz"
 
+#clean up unused containers (we run out of disk space otherwise)
+docker image prune
+
 #pull container
 echo $(aws ecr get-authorization-token --region ap-southeast-2 --output text --query 'authorizationData[].authorizationToken' | base64 -d | cut -d: -f2) | docker login -u AWS https://474801623431.dkr.ecr.ap-southeast-2.amazonaws.com --password-stdin
 docker-compose -f /home/ec2-user/mame-highscores/docker-compose.aws.yml pull
