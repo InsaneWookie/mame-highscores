@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light mx-auto" role="navigation" id="nav_bar">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" id="nav_bar">
     <div class="container">
         <a class="navbar-brand" routerLink="/" routerLinkActive="active">Arcade Hi Scores
             <small style="font-size: 0.5em">(1.0v)</small>
@@ -9,7 +9,8 @@
         </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto" *ngIf="isLoggedIn">
+
+            <ul class="navbar-nav mr-auto" *ngIf="isLoggedIn" >
                 <li class="nav-item"><a class="nav-link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link" routerLink="/games">Games</a></li>
                 <li class="nav-item"><a class="nav-link" routerLink="/users">Users</a></li>
@@ -18,13 +19,17 @@
                 <li class="nav-item"><a class="nav-link" [routerLink]="['/profile/', user.id]">Profile</a></li>
                 <li *ngIf="user.userGroups.length" class="nav-item"><a class="nav-link"
                                                                        routerLink="/settings">Settings</a></li>
-                <li class="nav-item"><a class="nav-link" (click)="onLogout()" href="#">Logout</a></li>
+
                 <!--<li class="nav-item"><a class="nav-link" href="#/admin">Admin</a></li>-->
                 <!--<li class="nav-item"><a class="nav-link" routerLink="/profile/1">Profile</a></li>-->
             </ul>
-            <ul class="navbar-nav mr-auto " *ngIf="!isLoggedIn">
-                <li class="nav-item"><a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a></li>
-            </ul>
+            <span *ngIf="isLoggedIn">
+                <button class="btn btn-primary" (click)="onLogout()" href="#">Logout</button>
+            </span>
+
+            <span *ngIf="!isLoggedIn" class="ml-auto">
+                <button class="btn btn-primary" routerLink="/login">Login</button>
+            </span>
             <!--<form class="navbar-form form-inline my-2 my-lg-0" role="search" *ngIf="isLoggedIn">-->
             <!--<div class="form-group">-->
             <!--<input class="form-control typeahead" type="text" placeholder="Search" ng-model="selected"-->
