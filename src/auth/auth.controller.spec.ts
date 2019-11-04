@@ -26,7 +26,7 @@ describe('Auth Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         JwtModule.register({
-          secretOrPrivateKey: 'test',
+          secret: 'test',
           signOptions: {
             expiresIn: 3600,
           },

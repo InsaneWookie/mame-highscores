@@ -34,7 +34,7 @@ import { ConfigService } from "./config/config.service";
       useFactory: async (config: ConfigService) => {
         // console.log(config);
         return ({
-          secretOrPrivateKey: config.get('JWT_KEY'),
+          secret: config.get('JWT_KEY'),
           signOptions: { expiresIn: parseInt(config.get('JWT_EXPIRES_IN')) },
         })},
       inject: [ConfigService]
@@ -44,7 +44,7 @@ import { ConfigService } from "./config/config.service";
     TypeOrmModule.forRoot({
       "keepConnectionAlive": true,
       "type": "postgres",
-      "host": "192.168.99.100",
+      "host": "db",
       "port": 5432,
       "username": "postgres",
       "password": "example",

@@ -11,8 +11,8 @@ import { forkJoin, Observable, of } from "rxjs";
 })
 export class UsersComponent implements OnInit {
 
-  users: object[];
-  loggedInUser: User;
+  users: object[] = [];
+  loggedInUser: User  ;
 
   constructor(
     private userService: UserService,
@@ -20,8 +20,11 @@ export class UsersComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getUsers();
-    this.userService.getUser(this.authService.getUserId()).subscribe(user => this.loggedInUser = user);
+
+    this.userService.getUser(this.authService.getUserId()).subscribe(user => {
+      this.loggedInUser = user;
+      this.getUsers();
+    });
   }
 
   getUsers(): void {
