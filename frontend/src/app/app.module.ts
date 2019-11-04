@@ -31,6 +31,8 @@ import { InviteComponent } from './invite/invite.component';
 import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthGuardAllow } from "./auth.guard-allow";
 
 
 @NgModule({
@@ -51,6 +53,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     InviteComponent,
     ForgotPasswordComponent,
     ResetPasswordComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,7 +71,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
-  }, AuthGuard],
+  }, AuthGuard, AuthGuardAllow],
   bootstrap: [AppComponent]
 })
 export class AppModule {

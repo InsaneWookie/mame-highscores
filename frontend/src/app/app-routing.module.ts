@@ -16,9 +16,12 @@ import { MachineCreateComponent } from "./machine-create/machine-create.componen
 import { InviteComponent } from "./invite/invite.component";
 import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
 import { ResetPasswordComponent } from "./reset-password/reset-password.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
+import { AuthGuardAllow } from "./auth.guard-allow";
 
 const routes: Routes = [
-  {path: '', component: HomeComponent, canActivate: [AuthGuard]},
+  {path: '', component: HomeComponent, canActivate: [AuthGuardAllow]},
+  {path: 'dashboard', component: DashboardComponent},
   {path: 'games', component: GamesComponent},
   {path: 'games/:id', component: GameDetailComponent},
   {path: 'game-upload', component: GameUploadComponent},

@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 import { AuthService } from "../auth.service";
 import {  FormControl, FormGroup, Validators } from "@angular/forms";
 
-
-
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -41,7 +39,7 @@ export class LoginComponent implements OnInit {
       if(res.success){
         this.authService.login(res);
         //window.location.href = '/';
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
       } else {
         this.invalidLogin = true;
         this.loggingIn = false;
