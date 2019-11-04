@@ -10,7 +10,7 @@ import { User } from './models/user';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Mame Highscores';
+  title = 'frontend';
 
   isLoggedIn = false;
   user = new User;
